@@ -151,25 +151,35 @@
 
 
 (defn nose
-  [dev?]
-  )
+  [{:keys [head-cx head-cy eye-cxa eye-cxb eye-cy] :as measures} dev?]
+  (let [nose-x head-cx]
+    (merge measures
+      )))
+
+
+(defn head
+  [{:keys [cx cy width height]} dev?]
+  {:head-cx cx
+   :head-cy cy
+   :head-width width
+   :head-height height
+   :head-rx (/ width 2)
+   :head-ry (/ height 2)})
 
 
 (defn face
   [dev?]
-  (let [cx 400
-        cy 150
-        width (if dev?
-                150
-                (rand-nth (range 100 200 0.1)))
-        height (if dev?
+  (let [basics {:cx 400
+                :cy 150
+                :width (if dev?
+                         150
+                         (rand-nth (range 100 200 0.1)))
+                :height (if dev?
                  200
-                 (rand-nth (range 150 200 0.1)))]
-    {:head-cx cx :head-cy cy
-     :head-width width
-     :head-height height
-     :head-rx (/ width 2)
-     :head-ry (/ height 2)}))
+                 (rand-nth (range 150 200 0.1)))}]
+    (-> (head basics dev?)
+      (eyes dev?)
+      (nose dev?))))
 
 
 (defcomponent app
