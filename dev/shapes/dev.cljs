@@ -18,9 +18,12 @@
 
 
 (defn pupils
-  [{:keys [x y width height ecxa ecxb ecy rx ry cy]}]
-  (let [pr #_(/ (/ (+ rx ry) 2) (rand-nth (range 2 8)))
-        (/ (/ (+ rx ry) 2) 3)
+  [{:keys [x y width height ecxa ecxb ecy rx ry cy]}
+   dev?]
+  (let [pr (if dev?
+             (/ (/ (+ rx ry) 2) 3)
+             (/ (/ (+ rx ry) 2) (rand-nth (range 2 8))))
+        
         
         pcxa ecxa
         pcxb ecxb
@@ -36,31 +39,39 @@
 
 
 (defn eyes
-  [{:keys [cx cy width height rx] :as measures}]
+  [{:keys [cx cy width height rx] :as measures}
+   dev?]
   (let [ecx-offset
-        ;;        (/ rx (+ (rand) 2))
-        (/ rx 2.5)
+        (if dev?
+          (/ rx 2.5)
+          (/ rx (+ (rand) 2)))
         ;;        (/ rx 3)
         
         ecxa (- cx ecx-offset)
         ecxb (+ cx ecx-offset)
 
         ecy-offset (/ height 20)
-        ecy #_(rand-nth (range
-                         (- cy ecy-offset)
-                         (+ cy ecy-offset)))
-        cy
+        ecy
+        (if dev?
+          cy
+          (rand-nth (range
+                      (- cy ecy-offset)
+                      (+ cy ecy-offset))))
 
         rx-max (- cx ecxa)
         rx-min (- rx-max (/ width 20))
-        rx  ;; (rand-nth (range rx-min rx-max 0.1))
-        (+ rx-min (/ (- rx-max rx-min) 8))
-        ry ;;(/ height (rand-nth (range 6 11 0.1)))
-        (/ height 9)
+        rx (if dev?
+             (+ rx-min (/ (- rx-max rx-min) 8))
+             (rand-nth (range rx-min rx-max 0.1)))
+        
+        ry (if dev?
+             (/ height 9)
+             (/ height (rand-nth (range 6 11 0.1))))
+        
 
         eye-map (merge measures
                   {:ecxa ecxa :ecxb ecxb :ecy ecy :rx rx :ry ry})]
-    (merge eye-map (pupils eye-map))))
+    (merge eye-map (pupils eye-map dev?))))
 
 
 (defhtml draw-eyes
@@ -83,7 +94,7 @@
 (defn face
   []
   (let [cx 400
-        cy 200
+        cy 150
         width 150
         height 200]
     {:cx cx :cy cy
@@ -100,6 +111,13 @@
   (render-state [_ {:keys [measurements]}]
     (html
       [:div.container
+       [:h1 {:style {:user-select "none"
+                     :-ms-user-select "none"
+                     :-moz-user-select "none"
+                     :-webkit-user-select "none"}}
+        (if (:dev? data)
+          "Dev mode on"
+          "Dev mode off")]
        [:svg {:version 1.1
               :baseProfile "full"
               :width js/window.innerWidth
@@ -113,14 +131,20 @@
           :on-click (fn [e]
                       (om/set-state! owner :shapes
                         "hi"))}]
+        [:rect.dev-mode-on
+         {:x 10 :y 0 :width 100 :height 50 :fill "green"
+          :on-click #(om/update! data :dev? true)}]
+        [:rect.dev-mode-off
+         {:x 10 :y 60 :width 100 :height 50 :fill "red"
+          :on-click #(om/update! data :dev? false)}]
+        
         (let [{:keys [cx cy rx ry width height]} measurements]
           [:g.face {:fill "white" :stroke "black" :stroke-width 3}
            [:ellipse {:cx cx :cy cy :rx rx :ry ry
                       :stroke-width 3
                       :fill "white"
                       :stroke "black"}]
-           (draw-eyes (eyes measurements))])]])))
-
+           (draw-eyes (eyes measurements (:dev? data)))])]])))
 
 
 (when-not (repl/alive?)
