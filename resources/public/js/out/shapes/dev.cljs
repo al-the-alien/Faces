@@ -18,77 +18,67 @@
 
 
 (defn pupils
-  [{:keys [x y width height cxa cxb cxy rx ry cy]}]
+  [{:keys [x y width height ecxa ecxb ecy rx ry cy]}]
   (let [pr #_(/ (/ (+ rx ry) 2) (rand-nth (range 2 8)))
         (/ (/ (+ rx ry) 2) 3)
         
-        pcxa cxa
-        pcxb cxb
-        pcy cy
+        pcxa ecxa
+        pcxb ecxb
+        pcy ecy
 
         sr (/ pr 4)
-        scxa (- (+ cxa pr) sr)
-        scxb (- (+ cxb pr) sr)
-        scy (+ (- cy pr) sr)]
+        scxa (- (+ ecxa pr) sr)
+        scxb (- (+ ecxb pr) sr)
+        scy (+ (- ecy pr) sr)]
     {:pr pr
      :pcxa pcxa :pcxb pcxb :pcy pcy
      :sr sr :scxa scxa :scxb scxb :scy scy}))
 
 
 (defn eyes
-  [{:keys [x y width height rx]}]
-  (let [cx-offset
-;;        (/ rx (+ (rand) 2))
+  [{:keys [cx cy width height rx] :as measures}]
+  (let [ecx-offset
+        ;;        (/ rx (+ (rand) 2))
         (/ rx 2.5)
         ;;        (/ rx 3)
         
-        cxa (- x cx-offset)
-        cxb (+ x cx-offset)
+        ecxa (- cx ecx-offset)
+        ecxb (+ cx ecx-offset)
 
-        cy-offset (/ height 20)
-        cy #_(rand-nth (range
-                      (- y cy-offset)
-                      (+ y cy-offset)))
-        y
+        ecy-offset (/ height 20)
+        ecy #_(rand-nth (range
+                         (- cy ecy-offset)
+                         (+ cy ecy-offset)))
+        cy
 
-        rx-max (- x cxa)
+        rx-max (- cx ecxa)
         rx-min (- rx-max (/ width 20))
         rx  ;; (rand-nth (range rx-min rx-max 0.1))
-                (+ rx-min (/ (- rx-max rx-min) 8))
+        (+ rx-min (/ (- rx-max rx-min) 8))
         ry ;;(/ height (rand-nth (range 6 11 0.1)))
         (/ height 9)
 
-        prx (/ rx 4)
-        pry (/ rx 4)
-
-        srx (/ prx 4)
-        sry srx
-        scxa (- (+ cxa prx) srx)
-        scxb (- (+ cxb prx) srx)
-        scy (+ (- cy pry) sry)
-
-        eye-map {:cxa cxa :cxb cxb :cy cy :rx rx :ry ry                 
-                 :scxa scxa :scxb scxb :scy scy
-                 :srx srx :sry sry}]
+        eye-map (merge measures
+                  {:ecxa ecxa :ecxb ecxb :ecy ecy :rx rx :ry ry})]
     (merge eye-map (pupils eye-map))))
 
 
 (defhtml draw-eyes
-  [{:keys [cxa cxb cy rx ry
+  [{:keys [ecxa ecxb ecy rx ry
            pr pcxa pcxb pcy
            scxa scxb scy sr]}]
   [:g.eyes
-   [:ellipse {:cx cxa :cy cy :rx rx :ry ry}]
+   [:ellipse {:cx ecxa :cy ecy :rx rx :ry ry}]
    [:circle.pupil {:cx pcxa :cy pcy :r pr
-              :fill "black"}]
+                   :fill "black"}]
    [:circle.shine {:cx scxa :cy scy :r sr
-                    :stroke "white"}]
+                   :stroke "white"}]
    
-   [:ellipse {:cx cxb :cy cy :rx rx :ry ry}]
+   [:ellipse {:cx ecxb :cy ecy :rx rx :ry ry}]
    [:circle.pupil {:cx pcxb :cy pcy :r pr
-              :fill "black"}]
+                   :fill "black"}]
    [:circle.shine {:cx scxb :cy scy :r sr
-                    :stroke "white"}]])
+                   :stroke "white"}]])
 
 (defn face
   []
@@ -96,7 +86,7 @@
         cy 200
         width 150
         height 200]
-    {:x cx :y cy
+    {:cx cx :cy cy
      :width width
      :height height
      :rx (/ width 2)
@@ -122,12 +112,12 @@
           :fill "transparent"
           :on-click (fn [e]
                       (om/set-state! owner :shapes
-                                     "hi"))}]
-        (let [{:keys [x y rx ry width height]} measurements]
+                        "hi"))}]
+        (let [{:keys [cx cy rx ry width height]} measurements]
           [:g.face {:fill "white" :stroke "black" :stroke-width 3}
-           [:ellipse {:cx x :cy y :rx rx :ry ry
-                     :stroke-width 3
-                     :fill "white"
+           [:ellipse {:cx cx :cy cy :rx rx :ry ry
+                      :stroke-width 3
+                      :fill "white"
                       :stroke "black"}]
            (draw-eyes (eyes measurements))])]])))
 
