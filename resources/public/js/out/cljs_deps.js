@@ -34,6 +34,7 @@ goog.addDependency("../figwheel/client/heads_up.js", ['figwheel.client.heads_up'
 goog.addDependency("../figwheel/client.js", ['figwheel.client'], ['goog.Uri', 'cljs.core', 'cljs.core.async', 'figwheel.client.file_reloading', 'figwheel.client.utils', 'cljs.repl', 'figwheel.client.heads_up', 'figwheel.client.socket', 'clojure.string']);
 goog.addDependency("../dommy/utils.js", ['dommy.utils'], ['cljs.core']);
 goog.addDependency("../dommy/core.js", ['dommy.core'], ['cljs.core', 'dommy.utils', 'clojure.string']);
-goog.addDependency("../shapes/dev.js", ['shapes.dev'], ['weasel.repl', 'om_tools.core', 'cljs.core', 'sablono.core', 'figwheel.client', 'om.core', 'dommy.core']);
+goog.addDependency("../shapes/proportional.js", ['shapes.proportional'], ['om_tools.core', 'cljs.core', 'sablono.core', 'om.core', 'dommy.core']);
+goog.addDependency("../shapes/dev.js", ['shapes.dev'], ['weasel.repl', 'om_tools.core', 'cljs.core', 'sablono.core', 'figwheel.client', 'shapes.proportional', 'om.core', 'dommy.core']);
 goog.addDependency("../shapes/main.js", ['shapes.main'], ['om_tools.core', 'cljs.core', 'sablono.core', 'om.core', 'dommy.core']);
 goog.addDependency("../shapes/core.js", ['shapes.core'], ['cljs.core']);

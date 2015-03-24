@@ -1,11 +1,8 @@
-(ns shapes.dev
+(ns shapes.proportional
   (:require [om.core :as om]
             [sablono.core :as html :refer-macros [html defhtml]]
             [om-tools.core :refer-macros [defcomponent]]
-            [dommy.core :refer-macros [sel1]]
-            [weasel.repl :as repl]
-            [figwheel.client :as figwheel]
-            [shapes.proportional :as p])
+            [dommy.core :refer-macros [sel1]])
   (:refer-clojure :exclude [println]))
 
 
@@ -179,68 +176,5 @@
              200
              (rand-nth (range 150 200 0.1)))})
 
-(defn face
-  [dev? & {:keys [proportional?]}]
-  (if proportional?
-    (-> (p/basic-measurements dev?)
-      (p/head dev?)
-      (p/eyes dev?)
-      (p/nose dev?))
-    (-> (basic-measurements dev?)
-      (head dev?)
-      (eyes dev?)
-      (nose dev?))))
 
 
-(defcomponent app
-  [data owner]
-  (init-state [_]
-    {:measurements (face (:dev? data)) :proportional? false})
-  (render-state [_ {:keys [measurements]}]
-    (html
-      [:div.container
-       [:h1 {:style {:user-select "none"
-                     :-ms-user-select "none"
-                     :-moz-user-select "none"
-                     :-webkit-user-select "none"}}
-        (if (:dev? data)
-          "Dev mode on"
-          "Dev mode off")]
-       [:svg {:version 1.1
-              :baseProfile "full"
-              :width js/window.innerWidth
-              :height js/window.innerHeight
-              :xmlns "http://www.w3.org/2000/svg"}
-        [:rect#background
-         {:x 0 :y 0
-          :width "100%"
-          :height "100%"
-          :fill "transparent"
-          :on-click (fn [e]
-                      (om/set-state! owner :measurements
-                        (face (:dev? @data))))}]
-        [:rect.dev-mode-on
-         {:x 10 :y 0 :width 100 :height 50 :fill "green"
-          :on-click #(do (om/update! data :dev? true)
-                         (om/set-state! owner :measurements
-                           (face (:dev? @data) :proportional? false)))}]
-        [:rect.dev-mode-off
-         {:x 10 :y 60 :width 100 :height 50 :fill "red"
-          :on-click #(om/update! data :dev? false)}]
-        
-        (let [{:keys [head-cx head-cy head-rx head-ry
-                      head-width head-height]} measurements]
-          [:g.face {:fill "white" :stroke "black" :stroke-width 3}
-           [:ellipse {:cx head-cx :cy head-cy :rx head-rx :ry head-ry
-                      :stroke-width 3
-                      :fill "white"
-                      :stroke "black"}]
-           (draw-eyes (eyes measurements (:dev? data)))])]])))
-
-
-(when-not (repl/alive?)
-  (repl/connect "ws://localhost:9001"))
-
-(figwheel/start {:build-id "dev"})
-
-(om/root app app-state {:target (sel1 :#app)})
