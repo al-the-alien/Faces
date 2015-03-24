@@ -17,51 +17,59 @@
 
 
 (defn eyes
-  [{:keys [x y width height]}]
-  (let [x-offset (/ width (rand-nth (range 4 6)))
-        rx x-offset
-        ry (/ height (rand-nth (range 2.5 6 0.1)))
-        cy (- y (/ height 6#_(rand-nth (range 4 8))))
-        cx-offset (/ width x-offset)
-        cx-a (- x (/ width 4) cx-offset)
-        cx-b (+ x (/ width 4) cx-offset)
-        prx (/ rx (rand-nth (range 1.5 8)))
-        pry (/ ry (rand-nth (range 2 8)))
-        pcx-offset (rand-nth (range (- prx rx) (- rx prx)))
-        pcxa (+ cx-a pcx-offset)
-        pcxb (+ cx-b pcx-offset)
-        pcy (rand-nth (range (+ (- cy ry) pry) (- (+ cy ry) pry)))]
-    (merge  {:cx-a cx-a :cx-b cx-b :cy cy :rx rx :ry ry
-             :pcxa pcxa :pcxb pcxb :pcy pcy :prx prx :pry pry}
-            (if (< pcxa cx-a)
-              {:za 2 :zb 1}
-              {:za 1 :zb 2}))))
+  [{:keys [x y width height rx]}]
+  (let [cx-offset
+        (/ rx (+ (rand) 2))
+;;        (/ rx 2.5)
+;;        (/ rx 3)
+        
+        cxa (- x cx-offset)
+        cxb (+ x cx-offset)
+
+        cy-offset (/ height 20)
+        cy (rand-nth (range
+                      (- y cy-offset)
+                      (+ y cy-offset)))
+;;        y
+
+        rx-max (- x cxa)
+        rx-min (- rx-max (/ width 20))
+        rx  (rand-nth (range rx-min rx-max 0.1))
+;;        (+ rx-min (/ (- rx-max rx-min) 8))
+;;         (/ width 7)
+        ry (/ height (rand-nth (range 6 11 0.1)))
+
+        prx (/ rx 4)
+        pry (/ rx 4)
+
+        srx (/ prx 4)
+        sry srx
+        scxa (- (+ cxa prx) srx)
+        scxb (- (+ cxb prx) srx)
+        scy (+ (- cy pry) sry)]
+    
+    {:cxa cxa :cxb cxb :cy cy :rx rx :ry ry
+     :prx prx :pry pry
+     :scxa scxa :scxb scxb :scy scy
+     :srx srx :sry sry}))
 
 
 (defhtml draw-eyes
-  [{:keys [cy cx-a cx-b rx ry prx pry pcxa pcxb pcy za zb]}]
-  [:g.eyes {:stroke "black" :stroke-width 3}
-   [:defs
-    [:clippath#pupil-a
-     [:ellipse {:cx cx-a :cy cy
-                :rx rx :ry ry}]]
-    [:clippath#pupil-b
-     [:ellipse {:cx cx-b :cy cy
-                :rx rx :ry ry}]]]
-   [:ellipse {:cx cx-a :cy cy
-              :rx rx :ry ry :fill "white"
-              :style {:z-index za}}]
-   [:ellipse.pupil {:cx pcxa :cy pcy :rx prx :ry pry
-                    :fill "black"
-                    :clip-path "url(#pupil-a)"
-                    :style {:z-index za}}]
-   [:ellipse {:cx cx-b :cy cy
-              :rx rx :ry ry :fill "white"
-              :style {:z-index zb}}]
-   [:ellipse.pupil {:cx pcxb :cy pcy :rx prx :ry pry
-                    :fill "black"
-                    :clip-path "url(#pupil-b)"
-                    :style {:z-index zb}}]])
+  [{:keys [cxa cxb cy rx ry
+           prx pry
+           scxa scxb scy srx sry]}]
+  [:g.eyes
+   [:ellipse {:cx cxa :cy cy :rx rx :ry ry}]
+   [:ellipse.pupil {:cx cxa :cy cy :rx prx :ry pry
+              :fill "black"}]
+   [:ellipse.shine {:cx scxa :cy scy :rx srx :ry sry
+                    :stroke "white"}]
+   
+   [:ellipse {:cx cxb :cy cy :rx rx :ry ry}]
+   [:ellipse.pupil {:cx cxb :cy cy :rx prx :ry pry
+              :fill "black"}]
+   [:ellipse.shine {:cx scxb :cy scy :rx srx :ry sry
+                    :stroke "white"}]])
 
 (defhtml face
   []
@@ -102,8 +110,7 @@
                      :stroke-width 3
                      :fill "white"
                       :stroke "black"}]
-           (draw-eyes (eyes measurements
-                           #_{:x 400 :y 200 :width 150 :height 200}))])]])))
+           (draw-eyes (eyes measurements))])]])))
 
 
 
