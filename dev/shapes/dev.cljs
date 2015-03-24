@@ -38,52 +38,54 @@
 (defn pupils
   [{:keys [eye-cxa eye-cxb eye-cy eye-rx eye-ry eye-cy]}
    dev?]
-  (let [pr (if dev?
+  (let [pupil-r (if dev?
              (/ (/ (+ eye-rx eye-ry) 2) 3)
              (/ (/ (+ eye-rx eye-ry) 2) (rand-nth (range 2 5 0.1))))
 
-        pc-measures {:cx 0
+        pupil-c-measures {:cx 0
                      :cy 0
-                     :rx (- eye-rx pr)
-                     :ry (- eye-ry pr)}
+                     :rx (- eye-rx pupil-r)
+                     :ry (- eye-ry pupil-r)}
         
-        pcx-offset (rand-nth (range
-                               (- (- eye-rx pr))
-                               (+ (- eye-rx pr))
+        pupil-cx-offset (rand-nth (range
+                               (- (- eye-rx pupil-r))
+                               (+ (- eye-rx pupil-r))
                                0.1))
-        pcxa (if dev?
-               eye-cxa
-               (+ eye-cxa pcx-offset))
+        pupil-cxa (if dev?
+                    eye-cxa
+                    (+ eye-cxa pupil-cx-offset))
         
-        pcxb (if dev?
+        pupil-cxb (if dev?
                eye-cxb
-               (+ eye-cxb pcx-offset))
+               (+ eye-cxb pupil-cx-offset))
 
 
-        pcy-offset (rand-nth (range
-                               (- (- eye-ry pr))
-                               (+ (- eye-ry pr))
+        pupil-cy-offset (rand-nth (range
+                               (- (- eye-ry pupil-r))
+                               (+ (- eye-ry pupil-r))
                                0.1))
-        pcy-limits (ys-within-ellipse
-                     pcx-offset
-                     (:rx pc-measures)
-                     (:ry pc-measures)
-                     (:cx pc-measures)
-                     (:cy pc-measures))
-        pcy (if dev?
+        pupil-cy-limits (ys-within-ellipse
+                     pupil-cx-offset
+                     (:rx pupil-c-measures)
+                     (:ry pupil-c-measures)
+                     (:cx pupil-c-measures)
+                     (:cy pupil-c-measures))
+        pupil-cy (if dev?
               eye-cy
               (+ eye-cy (rand-nth
-                          (range (:min pcy-limits) (:max pcy-limits 0.1)))))
+                          (range
+                            (:min pupil-cy-limits)
+                            (:max pupil-cy-limits 0.1)))))
 
-        sr (if dev?
-             (/ pr 3.75)
-             (/ pr (rand-nth (range 3 5 0.1))))
-        scxa (- (+ pcxa pr) (* 2 sr))
-        scxb (- (+ pcxb pr) (* 2 sr))
-        scy (+ (- pcy pr) (* 2 sr))]
-    {:pr pr
-     :pcxa pcxa :pcxb pcxb :pcy pcy
-     :sr sr :scxa scxa :scxb scxb :scy scy}))
+        highlight-r (if dev?
+             (/ pupil-r 3.75)
+             (/ pupil-r (rand-nth (range 3 5 0.1))))
+        highlight-cxa (- (+ pupil-cxa pupil-r) (* 2 highlight-r))
+        highlight-cxb (- (+ pupil-cxb pupil-r) (* 2 highlight-r))
+        highlight-cy (+ (- pupil-cy pupil-r) (* 2 highlight-r))]
+    {:pupil-r pupil-r
+     :pupil-cxa pupil-cxa :pupil-cxb pupil-cxb :pupil-cy pupil-cy
+     :highlight-r highlight-r :highlight-cxa highlight-cxa :highlight-cxb highlight-cxb :highlight-cy highlight-cy}))
 
 
 (defn eyes
@@ -93,7 +95,6 @@
         (if dev?
           (/ head-rx 2.5)
           (/ head-rx (+ (rand) 2)))
-        ;;        (/ rx 3)
         
         eye-cxa (- head-cx eye-cx-offset)
         eye-cxb (+ head-cx eye-cx-offset)
@@ -125,16 +126,16 @@
 
 (defhtml draw-eyes
   [{:keys [eye-cxa eye-cxb eye-cy eye-rx eye-ry
-           pr pcxa pcxb pcy
-           scxa scxb scy sr]}]
+           pupil-r pupil-cxa pupil-cxb pupil-cy
+           highlight-cxa highlight-cxb highlight-cy highlight-r]}]
   [:g.eyes
    [:ellipse.eye {:cx eye-cxa :cy eye-cy
                   :rx eye-rx :ry eye-ry
                   :stroke-width 2}]
-   [:circle.pupil {:cx pcxa :cy pcy :r pr
+   [:circle.pupil {:cx pupil-cxa :cy pupil-cy :r pupil-r
                    :stroke "transparent"
                    :fill "black"}]
-   [:circle.shine {:cx scxa :cy scy :r sr
+   [:circle.shine {:cx highlight-cxa :cy highlight-cy :r highlight-r
                    :stroke "transparent"}]
 
    
@@ -142,10 +143,10 @@
    [:ellipse.eye {:cx eye-cxb :cy eye-cy
                   :rx eye-rx :ry eye-ry
                   :stroke-width 2}]
-   [:circle.pupil {:cx pcxb :cy pcy :r pr
+   [:circle.pupil {:cx pupil-cxb :cy pupil-cy :r pupil-r
                    :stroke "transparent"
                    :fill "black"}]
-   [:circle.shine {:cx scxb :cy scy :r sr
+   [:circle.shine {:cx highlight-cxb :cy highlight-cy :r highlight-r
                    :stroke "transparent"}]])
 
 
