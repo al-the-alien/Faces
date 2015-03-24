@@ -16,28 +16,47 @@
 (defonce app-state (atom {:text "Hello, development!"}))
 
 
+
+(defn pupils
+  [{:keys [x y width height cxa cxb cxy rx ry cy]}]
+  (let [pr #_(/ (/ (+ rx ry) 2) (rand-nth (range 2 8)))
+        (/ (/ (+ rx ry) 2) 3)
+        
+        pcxa cxa
+        pcxb cxb
+        pcy cy
+
+        sr (/ pr 4)
+        scxa (- (+ cxa pr) sr)
+        scxb (- (+ cxb pr) sr)
+        scy (+ (- cy pr) sr)]
+    {:pr pr
+     :pcxa pcxa :pcxb pcxb :pcy pcy
+     :sr sr :scxa scxa :scxb scxb :scy scy}))
+
+
 (defn eyes
   [{:keys [x y width height rx]}]
   (let [cx-offset
-        (/ rx (+ (rand) 2))
-;;        (/ rx 2.5)
-;;        (/ rx 3)
+;;        (/ rx (+ (rand) 2))
+        (/ rx 2.5)
+        ;;        (/ rx 3)
         
         cxa (- x cx-offset)
         cxb (+ x cx-offset)
 
         cy-offset (/ height 20)
-        cy (rand-nth (range
+        cy #_(rand-nth (range
                       (- y cy-offset)
                       (+ y cy-offset)))
-;;        y
+        y
 
         rx-max (- x cxa)
         rx-min (- rx-max (/ width 20))
-        rx  (rand-nth (range rx-min rx-max 0.1))
-;;        (+ rx-min (/ (- rx-max rx-min) 8))
-;;         (/ width 7)
-        ry (/ height (rand-nth (range 6 11 0.1)))
+        rx  ;; (rand-nth (range rx-min rx-max 0.1))
+                (+ rx-min (/ (- rx-max rx-min) 8))
+        ry ;;(/ height (rand-nth (range 6 11 0.1)))
+        (/ height 9)
 
         prx (/ rx 4)
         pry (/ rx 4)
@@ -46,32 +65,32 @@
         sry srx
         scxa (- (+ cxa prx) srx)
         scxb (- (+ cxb prx) srx)
-        scy (+ (- cy pry) sry)]
-    
-    {:cxa cxa :cxb cxb :cy cy :rx rx :ry ry
-     :prx prx :pry pry
-     :scxa scxa :scxb scxb :scy scy
-     :srx srx :sry sry}))
+        scy (+ (- cy pry) sry)
+
+        eye-map {:cxa cxa :cxb cxb :cy cy :rx rx :ry ry                 
+                 :scxa scxa :scxb scxb :scy scy
+                 :srx srx :sry sry}]
+    (merge eye-map (pupils eye-map))))
 
 
 (defhtml draw-eyes
   [{:keys [cxa cxb cy rx ry
-           prx pry
-           scxa scxb scy srx sry]}]
+           pr pcxa pcxb pcy
+           scxa scxb scy sr]}]
   [:g.eyes
    [:ellipse {:cx cxa :cy cy :rx rx :ry ry}]
-   [:ellipse.pupil {:cx cxa :cy cy :rx prx :ry pry
+   [:circle.pupil {:cx pcxa :cy pcy :r pr
               :fill "black"}]
-   [:ellipse.shine {:cx scxa :cy scy :rx srx :ry sry
+   [:circle.shine {:cx scxa :cy scy :r sr
                     :stroke "white"}]
    
    [:ellipse {:cx cxb :cy cy :rx rx :ry ry}]
-   [:ellipse.pupil {:cx cxb :cy cy :rx prx :ry pry
+   [:circle.pupil {:cx pcxb :cy pcy :r pr
               :fill "black"}]
-   [:ellipse.shine {:cx scxb :cy scy :rx srx :ry sry
+   [:circle.shine {:cx scxb :cy scy :r sr
                     :stroke "white"}]])
 
-(defhtml face
+(defn face
   []
   (let [cx 400
         cy 200
