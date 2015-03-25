@@ -10,7 +10,7 @@
 
 
 (def color-scale
-  ["white" "lightgrey" "darkgrey" "dimgrey" "black"])
+  ["white" "lightgrey" "darkgrey" "grey" "dimgrey" "black"])
 
 (defn println
   [& content]
@@ -247,13 +247,13 @@
                                  (str acc " " s))
                          ["C" nose-cx1 (+ nose-cy 3) nose-cx2
                            (+ nose-cy 3) nose-x2  (+ nose-y 0)]))
-                  :stroke "black"
+                  :stroke "dimgrey"
                   :fill "transparent"}]
    [:path {:d (str "M " nose-x1 " " nose-y " "
                 (reduce (fn [acc s]
                           (str acc " " s))
                   ["C" nose-cx1 nose-cy nose-cx2 nose-cy nose-x2 nose-y]))
-           :stroke "gray"
+           :stroke "darkgrey"
            :fill "transparent"}]])
 
 
@@ -262,16 +262,31 @@
   (let [x-offset (- head-cx eye-cxa)
         mouth-x1 (- head-cx x-offset)
         mouth-x2 (+ head-cx x-offset)
-        mouth-y (+ nose-cy (/ (- (+ head-cy head-ry) nose-cy) 4))]
+        mouth-y (+ nose-cy (/ (- (+ head-cy head-ry) nose-cy) 4))
+        mouth-cx1 (+ mouth-x1 10)
+        mouth-cx2 (- mouth-x2 10)
+        mouth-cy (+ mouth-y 10)]
+    (println {:mouth-x1 mouth-x1 
+       :mouth-x2 mouth-x2
+       :mouth-y mouth-y
+       :mouth-cx1 mouth-cx1
+       :mouth-cx2 mouth-cx2
+       :mouth-cy mouth-cy})
     (merge measures
       {:mouth-x1 mouth-x1 
        :mouth-x2 mouth-x2
-       :mouth-y mouth-y})))
+       :mouth-y mouth-y
+       :mouth-cx1 mouth-cx1
+       :mouth-cx2 mouth-cx2
+       :mouth-cy mouth-cy})))
 
 (defhtml draw-mouth
-  [{:keys [mouth-x1 mouth-x2 mouth-y]}]
-  [:line {:x1 mouth-x1 :y1 mouth-y :x2 mouth-x2 :y2 mouth-y
-          :stroke "light-gray"}])
+  [{:keys [mouth-x1 mouth-x2 mouth-y mouth-cx1 mouth-cx2 mouth-cy]}]
+  [:path {:d (reduce (fn [acc s]
+                       (str acc " " s))
+               ["M" mouth-x1 mouth-y
+                "C" mouth-cx1 mouth-cy mouth-cx2 mouth-cy mouth-x2 mouth-y])
+          :stroke "dimgrey"}])
 
 
 
@@ -427,9 +442,10 @@
         
         (let [{:keys [head-cx head-cy head-rx head-ry
                       head-width head-height]} (:measurements data)]
-          [:g.face {:fill "white" :stroke "gray" :stroke-width 3}
+          [:g.face {:fill "white" :stroke "grey" :stroke-width 3}
            [:ellipse {:cx head-cx :cy head-cy :rx head-rx :ry head-ry
                       :stroke-width 3
+                      :stroke "dimgrey"
                       :fill "white"}]
            (draw-eyes (:measurements data))
            (draw-nose (:measurements data))
