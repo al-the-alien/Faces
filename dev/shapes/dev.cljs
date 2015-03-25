@@ -22,6 +22,10 @@
   [x]
   (Math.sqrt x))
 
+(defn avg
+  [& xs]
+  (/ (reduce + xs) (count xs)))
+
 
 (defn ys-within-ellipse
   [x a b h k] ; a = rx ; b = ry ; h = cx ; k = cy
@@ -50,14 +54,10 @@
                           :ry (- eye-ry pupil-r)}
 
         
-
-        
         pupil-cx-offset (rand-nth (range
                                     (- (- eye-rx pupil-r))
                                     (+ (- eye-rx pupil-r))
                                     0.1))
-        
-        
         
         
         pupil-cxa (if dev?
@@ -80,14 +80,6 @@
 
 
         ;; FIXME: pupils occasionally extend past the edges of the eye.
-        
-        ;; FIXME: ys-within-ellipse occasionally returns {:min 0 :max 0}.
-        ;;        This may be a floating point error.
-        ;;        At the moment I'm just working the acception this causes
-        ;;        when (range 0 0) is called by just passing 0, but, as I'm
-        ;;        working with random values, this hack weights 0 much more than
-        ;;        I would like. Figure out a better way to work around the
-        ;;        floating point error.
         pupil-cy (cond
                    dev? eye-cy
                    
@@ -109,20 +101,22 @@
                                  0.1))))
 
 
-        highlight-r (if dev?
-             (/ pupil-r 3.75)
-             (/ pupil-r (rand-nth (range 3 5 0.1))))
-;;        _ (println "highlight-r" highlight-r)
+        highlight-r
+        (if dev?
+          (/ pupil-r 5)
+          ;;                      (/ pupil-r 3.75)
+          (/ pupil-r (rand-nth (range 3 5 0.1))))
         
-        highlight-cxa (- (+ pupil-cxa pupil-r) (* 2 highlight-r))
+        highlight-cxa (- (+ pupil-cxa pupil-r) highlight-r)
         
-;;        _ (println "highlight-cxa" highlight-cxa)
+;;        (- (+ pupil-cxa pupil-r) (* 2 highlight-r))
         
         highlight-cxb (- (+ pupil-cxb pupil-r) (* 2 highlight-r))
 
 ;;        _ (println "highlight-cxb" highlight-cxb)
         
-        highlight-cy (+ (- pupil-cy pupil-r) (* 2 highlight-r))
+        highlight-cy pupil-cy
+;;        (+ (- pupil-cy pupil-r) (* 2 highlight-r))
         
 ;;        _ (println "highlight-cy" highlight-cy)
         ]
@@ -160,8 +154,8 @@
         rx-max (- head-cx eye-cxa)
         rx-min (/ head-width 15)
         eye-rx (if dev?
-                 (+ rx-min (/ (- rx-max rx-min) 8))
-                 ;; (rand-nth (range rx-min rx-max 0.1))
+                 (avg rx-max rx-min)
+                 #_(+ rx-min (/ (- rx-max rx-min) 8))
                  (rand-nth (range rx-min rx-max 0.1)))
 
         eye-to-chin (- (+ head-cy head-ry) eye-cy)
@@ -169,10 +163,8 @@
         ry-max (- eye-to-chin (/ head-height 6))
         ry-min (/ head-height 20)
         eye-ry (if dev?
-                 ;; (/ head-height 9)
-                 (rand-nth (range ry-min ry-max 0.1))
-                 (rand-nth (range ry-min ry-max 0.1))
-                 )
+                 (avg ry-max ry-min)
+                 (rand-nth (range ry-min ry-max 0.1)))
         
 
         eye-map (merge measures
@@ -194,10 +186,10 @@
                    :r  pupil-r
                    :stroke "transparent"
                    :fill "black"}]
-   #_[:circle.shine {:cx highlight-cxa
-                   :cy highlight-cy
-                   :r highlight-r
-                   :stroke "transparent"}]
+   [:circle.highlight {:cx highlight-cxa
+                       :cy highlight-cy
+                       :r highlight-r
+                       :stroke "transparent"}]
 
    
    
@@ -210,10 +202,10 @@
                    :stroke "transparent"
                    :stroke-alpha "0.5"
                    :fill "black"}]
-   #_[:circle.shine {:cx highlight-cxb
-                   :cy highlight-cy
-                   :r highlight-r
-                   :stroke "transparent"}]])
+   [:circle.highlight {:cx highlight-cxb
+                       :cy highlight-cy
+                       :r highlight-r
+                       :stroke "transparent"}]])
 
 
 (defn nose
@@ -235,14 +227,30 @@
 
 (defn basic-measurements
   [dev?]
-  {:cx 400
-   :cy 150
-   :width (if dev?
-             150
-            (rand-nth (range 100 225 0.1)))
-   :height (if dev?
-             200
-             (rand-nth (range 150 250 0.1)))})
+  (let [w js/window.innerWidth
+        h (- js/window.innerHeight
+            (/ js/window.innerHeight 10))
+        m (min w h)
+        max-dimension (max 75 (- m (/ m 10)))
+        min-dimension (max 75 (/ m 2))]
+
+    ;; Adding 50 to account for the control buttons
+    {:cx (+ (/ w 2) 50)  ;; 400
+
+     ;; Subracting 15 to account for the chrome js console
+     :cy (- (/ h 2) 15) ;; 150
+     :width (if dev?
+              (avg min-dimension max-dimension)
+              (rand-nth (range
+                          min-dimension
+                          max-dimension
+                          0.1)))
+     :height (if dev?
+               (avg min-dimension max-dimension)
+               (rand-nth (range
+                           min-dimension
+                           max-dimension
+                           0.1)))}))
 
 (defn face
   [dev? & {:keys [proportional?]}]
@@ -282,7 +290,8 @@
                    (om/update! data :measurements
                          (face (:dev? @data) :proportional? false)))}]
     [:text {:x (+ 25 50) :y (+ 35 30)
-            :text-anchor "middle"}
+            :text-anchor "middle"
+            :style {:pointer-events "none"}}
      "On"]]
 
    [:g#dev-mode-off
@@ -291,7 +300,8 @@
       :on-click #(when-not (:paused? data)
                    (om/update! data :dev? false))}]
     [:text {:x (+ 25 50) :y (+ 95 30)
-            :text-anchor "middle"}
+            :text-anchor "middle"
+            :style {:pointer-events "none"}}
      "Off"]]])
 
 
@@ -310,7 +320,8 @@
      {:x 0 :y 210 :width 150 :height 50 :fill "green"
       :on-click #(om/update! data :paused? false)}]
     [:text {:x (+ 25 50) :y (+ 210 30)
-            :text-anchor "middle"}
+            :text-anchor "middle"
+            :style {:pointer-events "none"}}
      "Resume changes"]]
 
    [:g#dev-mode-off
@@ -318,7 +329,8 @@
      {:x 0 :y 270 :width 150 :height 50 :fill "red"
       :on-click #(om/update! data :paused? true)}]
     [:text {:x (+ 25 50) :y (+ 270 30)
-            :text-anchor "middle"}
+            :text-anchor "middle"
+            :style {:pointer-events "none"}}
      "Pause changes"]]])
 
 
@@ -331,7 +343,8 @@
              :style {:user-select "none"
                      :-ms-user-select "none"
                      :-moz-user-select "none"
-                     :-webkit-user-select "none"}}
+                     :-webkit-user-select "none"
+                     :max-height (/ js/window.innerHeight 8)}}
         (str
           (if (:dev? data)
             "Dev mode on"
@@ -341,7 +354,8 @@
        [:svg {:version 1.1
               :baseProfile "full"
               :width js/window.innerWidth
-              :height js/window.innerHeight
+              :height (-  js/window.innerHeight
+                        (/ js/window.innerHeight 10))
               :xmlns "http://www.w3.org/2000/svg"}
         [:rect#background
          {:x 0 :y 0
@@ -380,4 +394,8 @@
 
    {:measurements {:highlight-cxb 420.72907704042717, :eye-cxb 413.7105263157895, :head-ry 109, :eye-cy 160.5, :pupil-r 12.5, :head-cx 400, :pupil-cy 171.20768246309586, :highlight-cxa 393.3080244088482, :highlight-r 2.717391304347826, :head-cy 150, :head-height 218, :eye-cxa 386.2894736842105, :eye-rx 12.746666666666668, :pupil-cxb 413.6638596491228, :pupil-cxa 386.24280701754384, :highlight-cy 164.14246507179152, :head-width 104.2, :head-rx 52.1, :eye-ry 24}}
 
-   {:measurements {:highlight-cxb 434.470488006617, :eye-cxb 433.51612903225805, :head-ry 114.4, :eye-cy 132.32, :pupil-r 15, :head-cx 400, :pupil-cy 86.11881321592682, :highlight-cxa 367.4382299421009, :highlight-r 3.8461538461538463, :head-cy 150, :head-height 228.8, :eye-cxa 366.48387096774195, :eye-rx 25.153333333333336, :pupil-cxb 427.1627956989247, :pupil-cxa 360.1305376344086, :highlight-cy 78.81112090823451, :head-width 207.8, :head-rx 103.9, :eye-ry 75.64}, :dev? false}])
+   {:measurements {:highlight-cxb 434.470488006617, :eye-cxb 433.51612903225805, :head-ry 114.4, :eye-cy 132.32, :pupil-r 15, :head-cx 400, :pupil-cy 86.11881321592682, :highlight-cxa 367.4382299421009, :highlight-r 3.8461538461538463, :head-cy 150, :head-height 228.8, :eye-cxa 366.48387096774195, :eye-rx 25.153333333333336, :pupil-cxb 427.1627956989247, :pupil-cxa 360.1305376344086, :highlight-cy 78.81112090823451, :head-width 207.8, :head-rx 103.9, :eye-ry 75.64}, :dev? false}
+
+   {:measurements {:highlight-cxb 437.0368421052632, :eye-cxb 434.7368421052632, :head-ry 123.6, :eye-cy 147.18, :pupil-r 8.1, :head-cx 400, :pupil-cy 109.38395498118638, :highlight-cxa 367.56315789473683, :highlight-r 2.25, :head-cy 150, :head-height 247.2, :eye-cxa 365.2631578947368, :eye-rx 10.5, :pupil-cxb 433.43684210526317, :pupil-cxa 363.9631578947368, :highlight-cy 105.78395498118638, :head-width 132, :head-rx 66, :eye-ry 58.06}, :paused? false, :dev? false}
+
+   ])
