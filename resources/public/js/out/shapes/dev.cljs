@@ -32,7 +32,6 @@
 ;;       h=0 and k=0
 (defn ys-within-ellipse
   [x a b h k]                      ; a = rx ; b = ry ; h = cx ; k = cy
-  (println {:x x :a a :b b :h h :k k})
   (let [max-offset (+ k
                      (sqrt (* (square b)
                              (- 1 (/ (square (- x h)) (square a))))))]
@@ -62,7 +61,7 @@
                           :rx (- eye-rx pupil-r)
                           :ry (- eye-ry pupil-r)}
 
-        
+
         pupil-cx-offset (rand-nth (range
                                     (- (- eye-rx pupil-r))
                                     (+ (- eye-rx pupil-r))
@@ -222,11 +221,31 @@
                         :stroke "transparent"}]]])
 
 
+
 (defn nose
-  [{:keys [head-cx head-cy eye-cxa eye-cxb eye-cy] :as measures} dev?]
-  (let [nose-x head-cx]
+  [{:keys [head-cx head-cy head-ry eye-cxa eye-cxb eye-cy] :as measures} dev?]
+  (let [x-offset (/ (- head-cx eye-cxa) 2)
+        nose-x1 (- head-cx x-offset)
+        nose-x2 (+ head-cx x-offset)
+        nose-y (avg head-cy (+ head-cy head-ry))
+        nose-cx1 (- head-cx (/ x-offset 2))
+        nose-cy (+ nose-y 20)
+        nose-cx2 (+ head-cx (/ x-offset 2))]
     (merge measures
-      )))
+      {:nose-x1 nose-x1 :nose-x2 nose-x2 :nose-y nose-y
+       :nose-cx1 nose-cx1 :nose-cx2 nose-cx2 :nose-cy nose-cy})))
+
+
+(defhtml draw-nose
+  [{:keys [nose-x1 nose-x2 nose-y nose-cx1 nose-cx2 nose-cy]}]
+  [:path {:d (str "M " nose-x1 " " nose-y " "
+               (reduce (fn [acc s]
+                         (str acc " " s))
+                 ["C" nose-cx1 nose-cy nose-cx2 nose-cy nose-x2 nose-y]))}])
+
+
+
+
 
 
 (defn head
@@ -388,7 +407,8 @@
                       :stroke-width 3
                       :fill "white"
                       :stroke "black"}]
-           (draw-eyes (:measurements data))])]])))
+           (draw-eyes (:measurements data))
+           (draw-nose (:measurements data))])]])))
 
 
 (when-not (repl/alive?)
