@@ -349,8 +349,9 @@
           :height "100%"
           :fill "transparent"
           :on-click (fn [e]
-                      (om/update! data :measurements
-                        (face (:dev? @data))))}]
+                      (when-not (:paused? data)
+                        (om/update! data :measurements
+                        (face (:dev? @data)))))}]
         (dev-mode data)
         (pause-mode data)
         
