@@ -27,8 +27,11 @@
   (/ (reduce + xs) (count xs)))
 
 
+
+;; TODO: remove h and k, as pupil always calls ys-within-ellipse with
+;;       h=0 and k=0
 (defn ys-within-ellipse
-  [x a b h k] ; a = rx ; b = ry ; h = cx ; k = cy
+  [x a b h k]                      ; a = rx ; b = ry ; h = cx ; k = cy
   (println {:x x :a a :b b :h h :k k})
   (let [max-offset (+ k
                      (sqrt (* (square b)
