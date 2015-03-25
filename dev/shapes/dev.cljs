@@ -270,14 +270,21 @@
                                  (str acc " " s))
                          ["C" nose-cx1 (+ nose-cy 3) nose-cx2
                            (+ nose-cy 3) nose-x2  (+ nose-y 1)]))
-                  :stroke "dimgrey"
+                  :stroke "grey"
                   :fill "transparent"}]
    [:path {:d (str "M " nose-x1 " " nose-y " "
                 (reduce (fn [acc s]
                           (str acc " " s))
                   ["C" nose-cx1 nose-cy nose-cx2 nose-cy nose-x2 nose-y]))
            :stroke "darkgrey"
-           :fill "white"}]])
+           :fill "white"}]
+   [:path.highlight
+    {:d (str "M " (+ nose-x1 1) " " nose-y " "
+          (reduce (fn [acc s]
+                    (str acc " " s))
+            ["C" nose-cx1 (- nose-cy 3) nose-cx2 (- nose-cy 3) nose-x2 nose-y]))
+     :stroke "lightgrey"
+     :fill "white"}]])
 
 
 (defn mouth
