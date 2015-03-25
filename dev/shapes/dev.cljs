@@ -261,18 +261,83 @@
                                           :proportional? false)}))
 
 
+(defhtml dev-mode
+  [data]
+  [:g#dev-mode {:font-family "Verdana"
+                :style {:user-select "none"
+                        :-ms-user-select "none"
+                        :-moz-user-select "none"
+                        :-webkit-user-select "none"}
+                :fill-opacity (if (:paused? data)
+                                0.5
+                                1)}
+   [:text {:x 75 :y 20
+           :text-anchor "middle"}
+    "Dev Mode Controls"]
+   [:g#dev-mode-on
+    [:rect
+     {:x 25 :y 35 :width 100 :height 50 :fill "green"
+      :on-click #(when-not (:paused? data)
+                   (om/update! data :dev? true)
+                   (om/update! data :measurements
+                         (face (:dev? @data) :proportional? false)))}]
+    [:text {:x (+ 25 50) :y (+ 35 30)
+            :text-anchor "middle"}
+     "On"]]
+
+   [:g#dev-mode-off
+    [:rect
+     {:x 25 :y 95 :width 100 :height 50 :fill "red"
+      :on-click #(when-not (:paused? data)
+                   (om/update! data :dev? false))}]
+    [:text {:x (+ 25 50) :y (+ 95 30)
+            :text-anchor "middle"}
+     "Off"]]])
+
+
+(defhtml pause-mode
+  [data]
+  [:g#dev-mode {:font-family "Verdana"
+                :style {:user-select "none"
+                        :-ms-user-select "none"
+                        :-moz-user-select "none"
+                        :-webkit-user-select "none"}}
+   [:text {:x 75 :y 195
+           :text-anchor "middle"}
+    "Control Changes"]
+   [:g#dev-mode-on
+    [:rect
+     {:x 0 :y 210 :width 150 :height 50 :fill "green"
+      :on-click #(om/update! data :paused? false)}]
+    [:text {:x (+ 25 50) :y (+ 210 30)
+            :text-anchor "middle"}
+     "Resume changes"]]
+
+   [:g#dev-mode-off
+    [:rect
+     {:x 0 :y 270 :width 150 :height 50 :fill "red"
+      :on-click #(om/update! data :paused? true)}]
+    [:text {:x (+ 25 50) :y (+ 270 30)
+            :text-anchor "middle"}
+     "Pause changes"]]])
+
+
 (defcomponent app
   [data owner]
   (render [_]
     (html
       [:div.container
-       [:h1 {:style {:user-select "none"
+       [:h1 {:display "inline-block"
+             :style {:user-select "none"
                      :-ms-user-select "none"
                      :-moz-user-select "none"
                      :-webkit-user-select "none"}}
-        (if (:dev? data)
-          "Dev mode on"
-          "Dev mode off")]
+        (str
+          (if (:dev? data)
+            "Dev mode on"
+            "Dev mode off")
+          (when (:paused? data)
+            "\t:\tChanges Paused"))]
        [:svg {:version 1.1
               :baseProfile "full"
               :width js/window.innerWidth
@@ -286,15 +351,11 @@
           :on-click (fn [e]
                       (om/update! data :measurements
                         (face (:dev? @data))))}]
-        [:rect
-         {:x 10 :y 0 :width 100 :height 50 :fill "green"
-          :on-click #(do (om/update! data :dev? true)
-                         (om/update! data :measurements
-                           (face (:dev? @data) :proportional? false)))}]
+        (dev-mode data)
+        (pause-mode data)
         
-        [:rect.dev-mode-off
-         {:x 10 :y 60 :width 100 :height 50 :fill "red"
-          :on-click #(om/update! data :dev? false)}]
+        
+      
         
         (let [{:keys [head-cx head-cy head-rx head-ry
                       head-width head-height]} (:measurements data)]
@@ -318,4 +379,4 @@
 
    {:measurements {:highlight-cxb 420.72907704042717, :eye-cxb 413.7105263157895, :head-ry 109, :eye-cy 160.5, :pupil-r 12.5, :head-cx 400, :pupil-cy 171.20768246309586, :highlight-cxa 393.3080244088482, :highlight-r 2.717391304347826, :head-cy 150, :head-height 218, :eye-cxa 386.2894736842105, :eye-rx 12.746666666666668, :pupil-cxb 413.6638596491228, :pupil-cxa 386.24280701754384, :highlight-cy 164.14246507179152, :head-width 104.2, :head-rx 52.1, :eye-ry 24}}
 
-   ])
+   {:measurements {:highlight-cxb 434.470488006617, :eye-cxb 433.51612903225805, :head-ry 114.4, :eye-cy 132.32, :pupil-r 15, :head-cx 400, :pupil-cy 86.11881321592682, :highlight-cxa 367.4382299421009, :highlight-r 3.8461538461538463, :head-cy 150, :head-height 228.8, :eye-cxa 366.48387096774195, :eye-rx 25.153333333333336, :pupil-cxb 427.1627956989247, :pupil-cxa 360.1305376344086, :highlight-cy 78.81112090823451, :head-width 207.8, :head-rx 103.9, :eye-ry 75.64}, :dev? false}])
