@@ -236,8 +236,11 @@
         nose-x1 (- head-cx x-offset)
         nose-x2 (+ head-cx x-offset)
 
+        ;; FIXME: occasionally min-y is larger than max-y, which causes an error
+        ;;        when they are passed to range in nose-y.
         min-y (inc (+ eye-cy eye-ry))
         max-y (- mouth-y (/ head-height 15))
+        
         nose-y (if dev?
                  (avg min-y max-y)
                  (rand-nth (range min-y max-y 0.1)))
