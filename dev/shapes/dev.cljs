@@ -286,11 +286,12 @@
           :on-click (fn [e]
                       (om/update! data :measurements
                         (face (:dev? @data))))}]
-        [:rect.dev-mode-on
+        [:rect
          {:x 10 :y 0 :width 100 :height 50 :fill "green"
           :on-click #(do (om/update! data :dev? true)
                          (om/update! data :measurements
                            (face (:dev? @data) :proportional? false)))}]
+        
         [:rect.dev-mode-off
          {:x 10 :y 60 :width 100 :height 50 :fill "red"
           :on-click #(om/update! data :dev? false)}]
@@ -311,3 +312,10 @@
 (figwheel/start {:build-id "dev"})
 
 (om/root app app-state {:target (sel1 :#app)})
+
+(def log
+  [{:measurements {:highlight-cxb 427.9891397849463, :eye-cxb 422.2258064516129, :head-ry 77.95, :eye-cy 140.41, :pupil-r 11.3, :head-cx 400, :pupil-cy 176.70796311478782, :highlight-cxa 383.53752688172045, :highlight-r 2.825, :head-cy 150, :head-height 155.9, :eye-cxa 377.7741935483871, :eye-rx 12.886666666666667, :pupil-cxb 422.33913978494627, :pupil-cxa 377.8875268817204, :highlight-cy 171.0579631147878, :head-width 137.8, :head-rx 68.9, :eye-ry 47.69500000000001}}
+
+   {:measurements {:highlight-cxb 420.72907704042717, :eye-cxb 413.7105263157895, :head-ry 109, :eye-cy 160.5, :pupil-r 12.5, :head-cx 400, :pupil-cy 171.20768246309586, :highlight-cxa 393.3080244088482, :highlight-r 2.717391304347826, :head-cy 150, :head-height 218, :eye-cxa 386.2894736842105, :eye-rx 12.746666666666668, :pupil-cxb 413.6638596491228, :pupil-cxa 386.24280701754384, :highlight-cy 164.14246507179152, :head-width 104.2, :head-rx 52.1, :eye-ry 24}}
+
+   ])
