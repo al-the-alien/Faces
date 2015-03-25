@@ -37,6 +37,12 @@
      :max max-offset}))
 
 
+(defn xy-on-circle
+  [pupil-r]
+  (sqrt
+    (/ (square pupil-r) 2)))
+
+
 (defn pupils
   [{:keys [eye-cxa eye-cxb eye-cy eye-rx eye-ry eye-cy] :as measures}
    dev?]
@@ -103,23 +109,16 @@
 
         highlight-r
         (if dev?
-          (/ pupil-r 5)
-          ;;                      (/ pupil-r 3.75)
-          (/ pupil-r (rand-nth (range 3 5 0.1))))
-        
-        highlight-cxa (- (+ pupil-cxa pupil-r) highlight-r)
-        
-;;        (- (+ pupil-cxa pupil-r) (* 2 highlight-r))
-        
-        highlight-cxb (- (+ pupil-cxb pupil-r) (* 2 highlight-r))
+          (avg 2 5)
+          (/ pupil-r (rand-nth (range 2 5 0.1))))
 
-;;        _ (println "highlight-cxb" highlight-cxb)
+        highlight-offset (xy-on-circle (- pupil-r highlight-r))
         
-        highlight-cy pupil-cy
-;;        (+ (- pupil-cy pupil-r) (* 2 highlight-r))
+        highlight-cxa (+ pupil-cxa highlight-offset)
         
-;;        _ (println "highlight-cy" highlight-cy)
-        ]
+        highlight-cxb (+ pupil-cxb highlight-offset)
+
+        highlight-cy (- pupil-cy highlight-offset)]
     
     {:pupil-r pupil-r
      :pupil-cxa pupil-cxa :pupil-cxb pupil-cxb :pupil-cy pupil-cy
@@ -397,5 +396,11 @@
    {:measurements {:highlight-cxb 434.470488006617, :eye-cxb 433.51612903225805, :head-ry 114.4, :eye-cy 132.32, :pupil-r 15, :head-cx 400, :pupil-cy 86.11881321592682, :highlight-cxa 367.4382299421009, :highlight-r 3.8461538461538463, :head-cy 150, :head-height 228.8, :eye-cxa 366.48387096774195, :eye-rx 25.153333333333336, :pupil-cxb 427.1627956989247, :pupil-cxa 360.1305376344086, :highlight-cy 78.81112090823451, :head-width 207.8, :head-rx 103.9, :eye-ry 75.64}, :dev? false}
 
    {:measurements {:highlight-cxb 437.0368421052632, :eye-cxb 434.7368421052632, :head-ry 123.6, :eye-cy 147.18, :pupil-r 8.1, :head-cx 400, :pupil-cy 109.38395498118638, :highlight-cxa 367.56315789473683, :highlight-r 2.25, :head-cy 150, :head-height 247.2, :eye-cxa 365.2631578947368, :eye-rx 10.5, :pupil-cxb 433.43684210526317, :pupil-cxa 363.9631578947368, :highlight-cy 105.78395498118638, :head-width 132, :head-rx 66, :eye-ry 58.06}, :paused? false, :dev? false}
+
+   {:measurements {:highlight-cxb 541.488997284937, :eye-cxb 535.7820512820513, :head-ry 238.2, :eye-cy 239.26000000000002, :pupil-r 19.3, :head-cx 485, :pupil-cy 112.20185950713908, :highlight-cxa 439.92489472083446, :highlight-r 8.391304347826088, :head-cy 250.5, :head-height 476.4, :eye-cxa 434.21794871794873, :eye-rx 27.20666666666667, :pupil-cxb 533.7753846153846, :pupil-cxa 432.21128205128207, :highlight-cy 104.4882468375867, :head-width 396.1, :head-rx 198.05, :eye-ry 152.52}, :dev? false}
+
+   {:measurements {:highlight-cxb 555.488401878442, :eye-cxb 543.195652173913, :head-ry 191.6, :eye-cy 232.08, :pupil-r 20.8, :head-cx 485, :pupil-cy 253.77114386069417, :highlight-cxa 439.097097530616, :highlight-r 4.622222222222223, :head-cy 250.5, :head-height 383.2, :eye-cxa 426.80434782608694, :eye-rx 22.546666666666667, :pupil-cxb 544.0489855072464, :pupil-cxa 427.6576811594203, :highlight-cy 242.33172748949846, :head-width 267.7, :head-rx 133.85, :eye-ry 48.66}, :dev? false}
+
+   {:measurements {:highlight-cxb 568.8747792522709, :eye-cxb 559.4761904761905, :head-ry 183.45, :eye-cy 274.91, :pupil-r 21.5, :head-cx 485, :pupil-cy 341.4773586216767, :highlight-cxa 419.92239829988984, :highlight-r 6.71875, :head-cy 250.5, :head-height 366.9, :eye-cxa 410.5238095238095, :eye-rx 25.153333333333336, :pupil-cxb 558.4228571428572, :pupil-cxa 409.4704761904762, :highlight-cy 331.025436512263, :head-width 312.8, :head-rx 156.4, :eye-ry 97.14500000000001}, :dev? false}
 
    ])
