@@ -226,11 +226,15 @@
 
 
 (defn nose
-  [{:keys [head-cx head-cy head-ry eye-cxa eye-cxb eye-cy] :as measures} dev?]
-  (let [x-offset (/ (- head-cx eye-cxa) 2)
+  [{:keys [head-height head-cx head-cy head-ry
+           eye-cxa eye-cxb eye-cy
+           pupil-cy pupil-r] :as measures}
+   dev?]
+  (let [x-offset (/ (- head-cx eye-cxa) 3)
         nose-x1 (- head-cx x-offset)
         nose-x2 (+ head-cx x-offset)
-        nose-y (avg head-cy (+ head-cy head-ry))
+        nose-y (max (+ eye-cy (/ head-height 10)) (+ pupil-cy pupil-r))
+        ;; (avg head-cy (+ head-cy head-ry))
         nose-cx1 (- nose-x1 (/ x-offset 2))
         nose-cy (+ nose-y 20)
         nose-cx2 (+ nose-x2 (/ x-offset 2))]
@@ -262,16 +266,10 @@
   (let [x-offset (- head-cx eye-cxa)
         mouth-x1 (- head-cx x-offset)
         mouth-x2 (+ head-cx x-offset)
-        mouth-y (+ nose-cy (/ (- (+ head-cy head-ry) nose-cy) 4))
+        mouth-y (- (+ head-cy head-ry) (/ (- (+ head-cy head-ry) nose-cy) 2.5))
         mouth-cx1 (+ mouth-x1 10)
         mouth-cx2 (- mouth-x2 10)
         mouth-cy (+ mouth-y 10)]
-    (println {:mouth-x1 mouth-x1 
-       :mouth-x2 mouth-x2
-       :mouth-y mouth-y
-       :mouth-cx1 mouth-cx1
-       :mouth-cx2 mouth-cx2
-       :mouth-cy mouth-cy})
     (merge measures
       {:mouth-x1 mouth-x1 
        :mouth-x2 mouth-x2
@@ -341,8 +339,9 @@
       (mouth dev?))))
 
 
-(defonce app-state (atom {:measurements (face false ; sets dev?
-                                          :proportional? false)}))
+(defonce app-state (atom {:measurements (face true ; sets dev?
+                                          :proportional? false)
+                          :dev? true}))
 
 
 (defhtml dev-mode
@@ -433,10 +432,13 @@
               :height (-  js/window.innerHeight
                         (/ js/window.innerHeight 10))
               :xmlns "http://www.w3.org/2000/svg"
-              :on-click (fn [e]
-                      (when-not (:paused? data)
-                        (om/update! data :measurements
-                          (face (:dev? @data)))))}
+              }
+        [:rect#background {:x 0 :y 0 :width "100%" :height "100%"
+                           :fill "white"
+                           :on-click (fn [e]
+                                       (when-not (:paused? data)
+                                         (om/update! data :measurements
+                                           (face (:dev? @data)))))}]
         (dev-mode data)
         (pause-mode data)
         
