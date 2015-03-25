@@ -9,6 +9,9 @@
   (:refer-clojure :exclude [println]))
 
 
+(def color-scale
+  ["white" "lightgrey" "darkgrey" "dimgrey" "black"])
+
 (defn println
   [& content]
   (js/console.log (apply pr-str content)))
@@ -267,7 +270,8 @@
 
 (defhtml draw-mouth
   [{:keys [mouth-x1 mouth-x2 mouth-y]}]
-  [:line {:x1 mouth-x1 :y1 mouth-y :x2 mouth-x2 :y2 mouth-y}])
+  [:line {:x1 mouth-x1 :y1 mouth-y :x2 mouth-x2 :y2 mouth-y
+          :stroke "light-gray"}])
 
 
 
@@ -421,9 +425,6 @@
         (dev-mode data)
         (pause-mode data)
         
-        
-      
-        
         (let [{:keys [head-cx head-cy head-rx head-ry
                       head-width head-height]} (:measurements data)]
           [:g.face {:fill "white" :stroke "gray" :stroke-width 3}
@@ -432,7 +433,19 @@
                       :fill "white"}]
            (draw-eyes (:measurements data))
            (draw-nose (:measurements data))
-           (draw-mouth (:measurements data))])]])))
+           (draw-mouth (:measurements data))])
+
+        (for [[i color] (map-indexed vector color-scale)]
+          [:g.color
+           [:rect {:x (* i 50) :y 340
+                  :width 45 :height 30
+                  :stroke "black"
+                   :fill color}]
+           [:text {:x (* i 50) :y (+ 340 45)
+                   :stroke "black"
+                   :font-family "Verdana"
+                   :font-size 10}
+            color]])]])))
 
 
 (when-not (repl/alive?)
