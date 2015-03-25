@@ -177,34 +177,46 @@
            pupil-r pupil-cxa pupil-cxb pupil-cy
            highlight-cxa highlight-cxb highlight-cy highlight-r]}]
   [:g.eyes
+   [:defs
+    [:clippath#eye-a
+     [:ellipse {:cx eye-cxa :cy eye-cy
+                :rx eye-rx :ry eye-ry}]]
+    [:clippath#eye-b
+     [:ellipse {:cx eye-cxb :cy eye-cy
+                :rx eye-rx :ry eye-ry
+                :stroke-width 2}]]]
    [:ellipse.eye {:cx eye-cxa :cy eye-cy
                   :rx eye-rx :ry eye-ry
                   :stroke-width 2}]
-   [:circle.pupil {:cx  pupil-cxa
-                   :cy  pupil-cy
-                   :r  pupil-r
-                   :stroke "transparent"
-                   :fill "black"}]
-   [:circle.highlight {:cx highlight-cxa
+   [:g#inner-eye-a {:style {:clip-path "url(#eye-a)"}}
+    [:circle.pupil {:cx  pupil-cxa
+                    :cy  pupil-cy
+                    :r  pupil-r
+                    :stroke "transparent"
+                    :fill "black"}]
+    [:circle.highlight {:cx highlight-cxa
                        :cy highlight-cy
                        :r highlight-r
-                       :stroke "transparent"}]
+                       :stroke "transparent"}]]
+   
+   
 
    
    
    [:ellipse.eye {:cx eye-cxb :cy eye-cy
                   :rx eye-rx :ry eye-ry
                   :stroke-width 2}]
-   [:circle.pupil {:cx pupil-cxb
-                   :cy pupil-cy
-                   :r pupil-r
-                   :stroke "transparent"
-                   :stroke-alpha "0.5"
-                   :fill "black"}]
-   [:circle.highlight {:cx highlight-cxb
-                       :cy highlight-cy
-                       :r highlight-r
-                       :stroke "transparent"}]])
+   [:g#inner-eye-b {:style {:clip-path "url(#eye-b)"}}
+    [:circle.pupil {:cx pupil-cxb
+                    :cy pupil-cy
+                    :r pupil-r
+                    :stroke "transparent"
+                    :stroke-alpha "0.5"
+                    :fill "black"}]
+    [:circle.highlight {:cx highlight-cxb
+                        :cy highlight-cy
+                        :r highlight-r
+                        :stroke "transparent"}]]])
 
 
 (defn nose
@@ -398,4 +410,6 @@
 
    {:measurements {:highlight-cxb 568.8747792522709, :eye-cxb 559.4761904761905, :head-ry 183.45, :eye-cy 274.91, :pupil-r 21.5, :head-cx 485, :pupil-cy 341.4773586216767, :highlight-cxa 419.92239829988984, :highlight-r 6.71875, :head-cy 250.5, :head-height 366.9, :eye-cxa 410.5238095238095, :eye-rx 25.153333333333336, :pupil-cxb 558.4228571428572, :pupil-cxa 409.4704761904762, :highlight-cy 331.025436512263, :head-width 312.8, :head-rx 156.4, :eye-ry 97.14500000000001}, :dev? false}
 
-   {:measurements {:highlight-cxb 622.5849306357745, :eye-cxb 567.125, :head-ry 201.4, :eye-cy 244.12, :pupil-r 34.5, :head-cx 485, :pupil-cy 244.10291102514523, :highlight-cxa 458.33493063577447, :highlight-r 12.777777777777777, :head-cy 250.5, :head-height 402.8, :eye-cxa 402.875, :eye-rx 76.1, :pupil-cxb 607.225, :pupil-cxa 442.975, :highlight-cy 228.74298038937079, :head-width 328.5, :head-rx 164.25, :eye-ry 34.94}}])
+   {:measurements {:highlight-cxb 622.5849306357745, :eye-cxb 567.125, :head-ry 201.4, :eye-cy 244.12, :pupil-r 34.5, :head-cx 485, :pupil-cy 244.10291102514523, :highlight-cxa 458.33493063577447, :highlight-r 12.777777777777777, :head-cy 250.5, :head-height 402.8, :eye-cxa 402.875, :eye-rx 76.1, :pupil-cxb 607.225, :pupil-cxa 442.975, :highlight-cy 228.74298038937079, :head-width 328.5, :head-rx 164.25, :eye-ry 34.94}}
+
+   {:measurements {:highlight-cxb 575.7300341936431, :eye-cxb 557.984375, :head-ry 176.75, :eye-cy 253.15, :pupil-r 44.5, :head-cx 485, :pupil-cy 213.40163364971625, :highlight-cxa 429.7612841936431, :highlight-r 11.710526315789474, :head-cy 250.5, :head-height 353.5, :eye-cxa 412.015625, :eye-rx 51.64, :pupil-cxb 552.544375, :pupil-cxa 406.575625, :highlight-cy 190.21597445607313, :head-width 467.1, :head-rx 233.55, :eye-ry 109.575}}])
