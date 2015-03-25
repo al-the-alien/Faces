@@ -228,9 +228,9 @@
         nose-x1 (- head-cx x-offset)
         nose-x2 (+ head-cx x-offset)
         nose-y (avg head-cy (+ head-cy head-ry))
-        nose-cx1 (- head-cx (/ x-offset 2))
+        nose-cx1 (- nose-x1 (/ x-offset 2))
         nose-cy (+ nose-y 20)
-        nose-cx2 (+ head-cx (/ x-offset 2))]
+        nose-cx2 (+ nose-x2 (/ x-offset 2))]
     (merge measures
       {:nose-x1 nose-x1 :nose-x2 nose-x2 :nose-y nose-y
        :nose-cx1 nose-cx1 :nose-cx2 nose-cx2 :nose-cy nose-cy})))
@@ -238,13 +238,36 @@
 
 (defhtml draw-nose
   [{:keys [nose-x1 nose-x2 nose-y nose-cx1 nose-cx2 nose-cy]}]
-  [:path {:d (str "M " nose-x1 " " nose-y " "
-               (reduce (fn [acc s]
-                         (str acc " " s))
-                 ["C" nose-cx1 nose-cy nose-cx2 nose-cy nose-x2 nose-y]))}])
+  [:g.nose
+   [:path.shadow {:d (str "M " nose-x1 " " (+ nose-y 0) " "
+                       (reduce (fn [acc s]
+                                 (str acc " " s))
+                         ["C" nose-cx1 (+ nose-cy 3) nose-cx2
+                           (+ nose-cy 3) nose-x2  (+ nose-y 0)]))
+                  :stroke "black"
+                  :fill "transparent"}]
+   [:path {:d (str "M " nose-x1 " " nose-y " "
+                (reduce (fn [acc s]
+                          (str acc " " s))
+                  ["C" nose-cx1 nose-cy nose-cx2 nose-cy nose-x2 nose-y]))
+           :stroke "gray"
+           :fill "transparent"}]])
 
 
+(defn mouth
+  [{:keys [head-cx head-cy head-rx head-ry eye-cxa nose-cy] :as measures} dev?]
+  (let [x-offset (- head-cx eye-cxa)
+        mouth-x1 (- head-cx x-offset)
+        mouth-x2 (+ head-cx x-offset)
+        mouth-y (+ nose-cy (/ (- (+ head-cy head-ry) nose-cy) 4))]
+    (merge measures
+      {:mouth-x1 mouth-x1 
+       :mouth-x2 mouth-x2
+       :mouth-y mouth-y})))
 
+(defhtml draw-mouth
+  [{:keys [mouth-x1 mouth-x2 mouth-y]}]
+  [:line {:x1 mouth-x1 :y1 mouth-y :x2 mouth-x2 :y2 mouth-y}])
 
 
 
@@ -295,7 +318,8 @@
     (-> (basic-measurements dev?)
       (head dev?)
       (eyes dev?)
-      (nose dev?))))
+      (nose dev?)
+      (mouth dev?))))
 
 
 (defonce app-state (atom {:measurements (face false ; sets dev?
@@ -402,13 +426,13 @@
         
         (let [{:keys [head-cx head-cy head-rx head-ry
                       head-width head-height]} (:measurements data)]
-          [:g.face {:fill "white" :stroke "black" :stroke-width 3}
+          [:g.face {:fill "white" :stroke "gray" :stroke-width 3}
            [:ellipse {:cx head-cx :cy head-cy :rx head-rx :ry head-ry
                       :stroke-width 3
-                      :fill "white"
-                      :stroke "black"}]
+                      :fill "white"}]
            (draw-eyes (:measurements data))
-           (draw-nose (:measurements data))])]])))
+           (draw-nose (:measurements data))
+           (draw-mouth (:measurements data))])]])))
 
 
 (when-not (repl/alive?)
