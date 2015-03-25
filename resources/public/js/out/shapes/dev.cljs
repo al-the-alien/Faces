@@ -101,7 +101,8 @@
                    (do (println "Got 0 0: "
                          "original args:" measures
                          "passed to pupil-cy-limits: " pupil-cx-offset
-                         pupil-c-measures))
+                         pupil-c-measures)
+                       eye-cy)
                    
 
                    :else
@@ -303,7 +304,7 @@
                       :stroke-width 3
                       :fill "white"
                       :stroke "black"}]
-           (draw-eyes (eyes measurements (:dev? data)))])]])))
+           (draw-eyes measurements)])]])))
 
 
 (when-not (repl/alive?)
