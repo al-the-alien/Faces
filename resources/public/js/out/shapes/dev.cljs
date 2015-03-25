@@ -355,16 +355,11 @@
               :width js/window.innerWidth
               :height (-  js/window.innerHeight
                         (/ js/window.innerHeight 10))
-              :xmlns "http://www.w3.org/2000/svg"}
-        [:rect#background
-         {:x 0 :y 0
-          :width "100%"
-          :height "100%"
-          :fill "transparent"
-          :on-click (fn [e]
+              :xmlns "http://www.w3.org/2000/svg"
+              :on-click (fn [e]
                       (when-not (:paused? data)
                         (om/update! data :measurements
-                        (face (:dev? @data)))))}]
+                          (face (:dev? @data)))))}
         (dev-mode data)
         (pause-mode data)
         
@@ -403,4 +398,4 @@
 
    {:measurements {:highlight-cxb 568.8747792522709, :eye-cxb 559.4761904761905, :head-ry 183.45, :eye-cy 274.91, :pupil-r 21.5, :head-cx 485, :pupil-cy 341.4773586216767, :highlight-cxa 419.92239829988984, :highlight-r 6.71875, :head-cy 250.5, :head-height 366.9, :eye-cxa 410.5238095238095, :eye-rx 25.153333333333336, :pupil-cxb 558.4228571428572, :pupil-cxa 409.4704761904762, :highlight-cy 331.025436512263, :head-width 312.8, :head-rx 156.4, :eye-ry 97.14500000000001}, :dev? false}
 
-   ])
+   {:measurements {:highlight-cxb 622.5849306357745, :eye-cxb 567.125, :head-ry 201.4, :eye-cy 244.12, :pupil-r 34.5, :head-cx 485, :pupil-cy 244.10291102514523, :highlight-cxa 458.33493063577447, :highlight-r 12.777777777777777, :head-cy 250.5, :head-height 402.8, :eye-cxa 402.875, :eye-rx 76.1, :pupil-cxb 607.225, :pupil-cxa 442.975, :highlight-cy 228.74298038937079, :head-width 328.5, :head-rx 164.25, :eye-ry 34.94}}])
