@@ -33,10 +33,6 @@
      :max max-offset}))
 
 
-(defonce app-state (atom {:text "Hello, development!"}))
-
-
-
 (defn pupils
   [{:keys [eye-cxa eye-cxb eye-cy eye-rx eye-ry eye-cy] :as measures}
    dev?]
@@ -261,11 +257,13 @@
       (nose dev?))))
 
 
+(defonce app-state (atom {:measurements (face false ; sets dev?
+                                          :proportional? false)}))
+
+
 (defcomponent app
   [data owner]
-  (init-state [_]
-    {:measurements (face (:dev? data)) :proportional? false})
-  (render-state [_ {:keys [measurements]}]
+  (render [_]
     (html
       [:div.container
        [:h1 {:style {:user-select "none"
@@ -286,25 +284,25 @@
           :height "100%"
           :fill "transparent"
           :on-click (fn [e]
-                      (om/set-state! owner :measurements
+                      (om/update! data :measurements
                         (face (:dev? @data))))}]
         [:rect.dev-mode-on
          {:x 10 :y 0 :width 100 :height 50 :fill "green"
           :on-click #(do (om/update! data :dev? true)
-                         (om/set-state! owner :measurements
+                         (om/update! data :measurements
                            (face (:dev? @data) :proportional? false)))}]
         [:rect.dev-mode-off
          {:x 10 :y 60 :width 100 :height 50 :fill "red"
           :on-click #(om/update! data :dev? false)}]
         
         (let [{:keys [head-cx head-cy head-rx head-ry
-                      head-width head-height]} measurements]
+                      head-width head-height]} (:measurements data)]
           [:g.face {:fill "white" :stroke "black" :stroke-width 3}
            [:ellipse {:cx head-cx :cy head-cy :rx head-rx :ry head-ry
                       :stroke-width 3
                       :fill "white"
                       :stroke "black"}]
-           (draw-eyes measurements)])]])))
+           (draw-eyes (:measurements data))])]])))
 
 
 (when-not (repl/alive?)
