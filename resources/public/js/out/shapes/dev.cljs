@@ -114,8 +114,8 @@
 
         highlight-r
         (if dev?
-          (avg 2 5)
-          (/ pupil-r (rand-nth (range 2 5 0.1))))
+          (/ pupil-r (avg 2 6))
+          (/ pupil-r (rand-nth (range 2 6 0.1))))
 
         highlight-offset (xy-on-circle (- pupil-r highlight-r))
         
@@ -203,10 +203,7 @@
                        :cy highlight-cy
                        :r highlight-r
                        :stroke "transparent"}]]
-   
-   
-
-   
+      
    
    [:ellipse.eye {:cx eye-cxb :cy eye-cy
                   :rx eye-rx :ry eye-ry
@@ -226,18 +223,40 @@
 
 
 (defn nose
-  [{:keys [head-height head-cx head-cy head-ry
-           eye-cxa eye-cxb eye-cy
-           pupil-cy pupil-r] :as measures}
+  [{:keys [head-height head-width head-cx head-cy head-rx head-ry
+           eye-cxa eye-cxb eye-cy eye-rx eye-ry
+           pupil-cy pupil-r
+           mouth-y] :as measures}
    dev?]
-  (let [x-offset (/ (- head-cx eye-cxa) 3)
+  (let [x-max-off (/ head-rx 4) ;; nose-width is 1/4 of the head-width
+        x-min-off (/ head-rx 20)
+        x-offset (if dev?
+                   (avg x-max-off x-min-off)
+                   (rand-nth (range x-min-off x-max-off 0.1)))
         nose-x1 (- head-cx x-offset)
         nose-x2 (+ head-cx x-offset)
-        nose-y (max (+ eye-cy (/ head-height 10)) (+ pupil-cy pupil-r))
-        ;; (avg head-cy (+ head-cy head-ry))
-        nose-cx1 (- nose-x1 (/ x-offset 2))
-        nose-cy (+ nose-y 20)
-        nose-cx2 (+ nose-x2 (/ x-offset 2))]
+
+        min-y (inc (+ eye-cy eye-ry))
+        max-y (- mouth-y (/ head-height 15))
+        nose-y (if dev?
+                 (avg min-y max-y)
+                 (rand-nth (range min-y max-y 0.1)))
+
+        xc-max (* x-offset 2)
+        xc-min x-offset
+        xc-offset (if dev?
+                    (avg xc-min xc-max)
+;;                    xc-min
+                    (rand-nth (range xc-min xc-max 0.1))
+                    )
+        nose-cx1 (- nose-x1 xc-offset)
+        nose-cx2 (+ nose-x2 xc-offset)
+
+        min-cy (/ head-height 20)
+        max-cy (/ head-height 10)
+        nose-cy (+ nose-y (if dev?
+                            (avg min-cy max-cy)
+                            (rand-nth (range min-cy max-cy 0.1))))]
     (merge measures
       {:nose-x1 nose-x1 :nose-x2 nose-x2 :nose-y nose-y
        :nose-cx1 nose-cx1 :nose-cx2 nose-cx2 :nose-cy nose-cy})))
@@ -246,11 +265,11 @@
 (defhtml draw-nose
   [{:keys [nose-x1 nose-x2 nose-y nose-cx1 nose-cx2 nose-cy]}]
   [:g.nose
-   [:path.shadow {:d (str "M " nose-x1 " " (+ nose-y 0) " "
+   [:path.shadow {:d (str "M " nose-x1 " " (+ nose-y 1) " "
                        (reduce (fn [acc s]
                                  (str acc " " s))
                          ["C" nose-cx1 (+ nose-cy 3) nose-cx2
-                           (+ nose-cy 3) nose-x2  (+ nose-y 0)]))
+                           (+ nose-cy 3) nose-x2  (+ nose-y 1)]))
                   :stroke "dimgrey"
                   :fill "transparent"}]
    [:path {:d (str "M " nose-x1 " " nose-y " "
@@ -258,15 +277,19 @@
                           (str acc " " s))
                   ["C" nose-cx1 nose-cy nose-cx2 nose-cy nose-x2 nose-y]))
            :stroke "darkgrey"
-           :fill "transparent"}]])
+           :fill "white"}]])
 
 
 (defn mouth
-  [{:keys [head-cx head-cy head-rx head-ry eye-cxa nose-cy] :as measures} dev?]
-  (let [x-offset (- head-cx eye-cxa)
+  [{:keys [head-height head-cx head-cy head-rx head-ry
+           eye-cxa nose-cy] :as measures}
+   dev?]
+  (let [x-offset (/ (- head-cx eye-cxa) 1.5)
         mouth-x1 (- head-cx x-offset)
         mouth-x2 (+ head-cx x-offset)
-        mouth-y (- (+ head-cy head-ry) (/ (- (+ head-cy head-ry) nose-cy) 2.5))
+        max-y (- (+ head-cy head-ry) (/ head-height 20))
+        
+        mouth-y (- (+ head-cy head-ry) (/ head-height 10))
         mouth-cx1 (+ mouth-x1 10)
         mouth-cx2 (- mouth-x2 10)
         mouth-cy (+ mouth-y 10)]
@@ -284,7 +307,8 @@
                        (str acc " " s))
                ["M" mouth-x1 mouth-y
                 "C" mouth-cx1 mouth-cy mouth-cx2 mouth-cy mouth-x2 mouth-y])
-          :stroke "dimgrey"}])
+          :stroke "dimgrey"
+          :fill "transparent"}])
 
 
 
@@ -335,8 +359,8 @@
     (-> (basic-measurements dev?)
       (head dev?)
       (eyes dev?)
-      (nose dev?)
-      (mouth dev?))))
+      (mouth dev?)
+      (nose dev?))))
 
 
 (defonce app-state (atom {:measurements (face false ; sets dev?
