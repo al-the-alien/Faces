@@ -228,7 +228,7 @@
            pupil-cy pupil-r
            mouth-y] :as measures}
    dev?]
-  (let [x-max-off (/ head-rx 4) ;; nose-width is 1/4 of the head-width
+  (let [x-max-off (/ head-rx 8) ;; nose-width is 1/4 of the head-width
         x-min-off (/ head-rx 20)
         x-offset (if dev?
                    (avg x-max-off x-min-off)
