@@ -434,9 +434,7 @@
         [:rect#background {:x 0 :y 0 :width "100%" :height "100%"
                            :fill "white"
                            :on-click (fn [e]
-                                       (when-not (or
-                                                   (:dev? @data)
-                                                   (:paused? data))
+                                       (when-not (:paused? data)
                                          (om/update! data :measurements
                                            (face (:dev? @data)))))}]
         (dev-mode data)
