@@ -339,9 +339,8 @@
       (mouth dev?))))
 
 
-(defonce app-state (atom {:measurements (face true ; sets dev?
-                                          :proportional? false)
-                          :dev? true}))
+(defonce app-state (atom {:measurements (face false ; sets dev?
+                                          :proportional? false)}))
 
 
 (defhtml dev-mode
@@ -431,12 +430,13 @@
               :width js/window.innerWidth
               :height (-  js/window.innerHeight
                         (/ js/window.innerHeight 10))
-              :xmlns "http://www.w3.org/2000/svg"
-              }
+              :xmlns "http://www.w3.org/2000/svg"}
         [:rect#background {:x 0 :y 0 :width "100%" :height "100%"
                            :fill "white"
                            :on-click (fn [e]
-                                       (when-not (:paused? data)
+                                       (when-not (or
+                                                   (:dev? @data)
+                                                   (:paused? data))
                                          (om/update! data :measurements
                                            (face (:dev? @data)))))}]
         (dev-mode data)
