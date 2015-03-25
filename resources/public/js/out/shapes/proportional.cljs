@@ -103,7 +103,8 @@
           head-cy
           (rand-nth (range
                       (- head-cy eye-cy-offset)
-                      (+ head-cy eye-cy-offset))))
+                      (+ head-cy eye-cy-offset)
+                      0.1)))
 
         rx-max (- head-cx eye-cxa (/ head-width 40))
         rx-min (- rx-max (/ head-width 20))

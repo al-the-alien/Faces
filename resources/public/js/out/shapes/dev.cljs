@@ -25,6 +25,7 @@
 
 (defn ys-within-ellipse
   [x a b h k] ; a = rx ; b = ry ; h = cx ; k = cy
+  (println {:x x :a a :b b :h h :k k})
   (let [max-offset (+ k
                      (sqrt (* (square b)
                              (- 1 (/ (square (- x h)) (square a))))))]
@@ -37,86 +38,144 @@
 
 
 (defn pupils
-  [{:keys [eye-cxa eye-cxb eye-cy eye-rx eye-ry eye-cy]}
+  [{:keys [eye-cxa eye-cxb eye-cy eye-rx eye-ry eye-cy] :as measures}
    dev?]
-  (let [pupil-r (if dev?
-             (/ (/ (+ eye-rx eye-ry) 2) 3)
-             (/ (/ (+ eye-rx eye-ry) 2) (rand-nth (range 2 5 0.1))))
+  (let [r-max (min
+                (min eye-rx eye-ry)
+                (- (max eye-rx eye-ry) (/ (max eye-rx eye-ry) 3)))
+        r-min 5
+        pupil-r (if dev?
+                  (/ (+ r-min r-max) 2)
+                  (rand-nth (range r-min r-max 0.1)))
 
         pupil-c-measures {:cx 0
-                     :cy 0
-                     :rx (- eye-rx pupil-r)
-                     :ry (- eye-ry pupil-r)}
+                          :cy 0
+                          :rx (- eye-rx pupil-r)
+                          :ry (- eye-ry pupil-r)}
+
+        
+
         
         pupil-cx-offset (rand-nth (range
-                               (- (- eye-rx pupil-r))
-                               (+ (- eye-rx pupil-r))
-                               0.1))
+                                    (- (- eye-rx pupil-r))
+                                    (+ (- eye-rx pupil-r))
+                                    0.1))
+        
+        
+        
+        
         pupil-cxa (if dev?
-                    eye-cxa
-                    (+ eye-cxa pupil-cx-offset))
+            eye-cxa
+            (+ eye-cxa pupil-cx-offset))
+
         
         pupil-cxb (if dev?
-               eye-cxb
-               (+ eye-cxb pupil-cx-offset))
+                    eye-cxb
+                    (+ eye-cxb pupil-cx-offset))
 
 
-        pupil-cy-offset (rand-nth (range
-                               (- (- eye-ry pupil-r))
-                               (+ (- eye-ry pupil-r))
-                               0.1))
+
         pupil-cy-limits (ys-within-ellipse
-                     pupil-cx-offset
-                     (:rx pupil-c-measures)
-                     (:ry pupil-c-measures)
-                     (:cx pupil-c-measures)
-                     (:cy pupil-c-measures))
-        pupil-cy (if dev?
-              eye-cy
-              (+ eye-cy (rand-nth
-                          (range
-                            (:min pupil-cy-limits)
-                            (:max pupil-cy-limits 0.1)))))
+                          pupil-cx-offset
+                          (:rx pupil-c-measures)
+                          (:ry pupil-c-measures)
+                          (:cx pupil-c-measures)
+                          (:cy pupil-c-measures))
+
+
+        ;; FIXME: pupils occasionally extend past the edges of the eye.
+        
+        ;; FIXME: ys-within-ellipse occasionally returns {:min 0 :max 0}.
+        ;;        This may be a floating point error.
+        ;;        At the moment I'm just working the acception this causes
+        ;;        when (range 0 0) is called by just passing 0, but, as I'm
+        ;;        working with random values, this hack weights 0 much more than
+        ;;        I would like. Figure out a better way to work around the
+        ;;        floating point error.
+        pupil-cy (cond
+                   dev? eye-cy
+                   
+                   (and
+                     (zero? (:min pupil-cy-limits))
+                     (zero? (:min pupil-cy-limits)))
+                   (do (println "Got 0 0: "
+                         "original args:" measures
+                         "passed to pupil-cy-limits: " pupil-cx-offset
+                         pupil-c-measures))
+                   
+
+                   :else
+                   (+ eye-cy (rand-nth
+                               (range
+                                 (:min pupil-cy-limits)
+                                 (:max pupil-cy-limits)
+                                 0.1))))
+
 
         highlight-r (if dev?
              (/ pupil-r 3.75)
              (/ pupil-r (rand-nth (range 3 5 0.1))))
+;;        _ (println "highlight-r" highlight-r)
+        
         highlight-cxa (- (+ pupil-cxa pupil-r) (* 2 highlight-r))
+        
+;;        _ (println "highlight-cxa" highlight-cxa)
+        
         highlight-cxb (- (+ pupil-cxb pupil-r) (* 2 highlight-r))
-        highlight-cy (+ (- pupil-cy pupil-r) (* 2 highlight-r))]
+
+;;        _ (println "highlight-cxb" highlight-cxb)
+        
+        highlight-cy (+ (- pupil-cy pupil-r) (* 2 highlight-r))
+        
+;;        _ (println "highlight-cy" highlight-cy)
+        ]
+    
     {:pupil-r pupil-r
      :pupil-cxa pupil-cxa :pupil-cxb pupil-cxb :pupil-cy pupil-cy
      :highlight-r highlight-r :highlight-cxa highlight-cxa :highlight-cxb highlight-cxb :highlight-cy highlight-cy}))
 
 
 (defn eyes
-  [{:keys [head-cx head-cy head-width head-height head-rx] :as measures}
+  [{:keys [head-cx head-cy head-width head-height head-rx head-ry] :as measures}
    dev?]
   (let [eye-cx-offset
         (if dev?
           (/ head-rx 2.5)
-          (/ head-rx (+ (rand) 2)))
+;;          (/ head-rx (rand-nth (range 1.8 4 0.1)))  
+          (/ head-rx (rand-nth (range 1.8 4 0.1))))
         
         eye-cxa (- head-cx eye-cx-offset)
         eye-cxb (+ head-cx eye-cx-offset)
 
-        eye-cy-offset (/ head-height 20)
+        eye-cy-offset (/ head-height 10)
         eye-cy
         (if dev?
-          head-cy
+          head-cy          
+          #_(rand-nth (range
+                      (- head-cy eye-cy-offset)
+                      (+ head-cy eye-cy-offset)
+                      0.1))
           (rand-nth (range
                       (- head-cy eye-cy-offset)
-                      (+ head-cy eye-cy-offset))))
+                      (+ head-cy eye-cy-offset)
+                      0.1)))
 
-        rx-max (- head-cx eye-cxa (/ head-width 40))
-        rx-min (- rx-max (/ head-width 20))
+        rx-max (- head-cx eye-cxa)
+        rx-min (/ head-width 15)
         eye-rx (if dev?
                  (+ rx-min (/ (- rx-max rx-min) 8))
+                 ;; (rand-nth (range rx-min rx-max 0.1))
                  (rand-nth (range rx-min rx-max 0.1)))
-        
+
+        eye-to-chin (- (+ head-cy head-ry) eye-cy)
+
+        ry-max (- eye-to-chin (/ head-height 6))
+        ry-min (/ head-height 20)
         eye-ry (if dev?
-                 (/ head-height 9)
-                 (/ head-height (rand-nth (range 6 11 0.1))))
+                 ;; (/ head-height 9)
+                 (rand-nth (range ry-min ry-max 0.1))
+                 (rand-nth (range ry-min ry-max 0.1))
+                 )
         
 
         eye-map (merge measures
@@ -133,10 +192,14 @@
    [:ellipse.eye {:cx eye-cxa :cy eye-cy
                   :rx eye-rx :ry eye-ry
                   :stroke-width 2}]
-   [:circle.pupil {:cx pupil-cxa :cy pupil-cy :r pupil-r
+   [:circle.pupil {:cx  pupil-cxa
+                   :cy  pupil-cy
+                   :r  pupil-r
                    :stroke "transparent"
                    :fill "black"}]
-   [:circle.shine {:cx highlight-cxa :cy highlight-cy :r highlight-r
+   #_[:circle.shine {:cx highlight-cxa
+                   :cy highlight-cy
+                   :r highlight-r
                    :stroke "transparent"}]
 
    
@@ -144,10 +207,15 @@
    [:ellipse.eye {:cx eye-cxb :cy eye-cy
                   :rx eye-rx :ry eye-ry
                   :stroke-width 2}]
-   [:circle.pupil {:cx pupil-cxb :cy pupil-cy :r pupil-r
+   [:circle.pupil {:cx pupil-cxb
+                   :cy pupil-cy
+                   :r pupil-r
                    :stroke "transparent"
+                   :stroke-alpha "0.5"
                    :fill "black"}]
-   [:circle.shine {:cx highlight-cxb :cy highlight-cy :r highlight-r
+   #_[:circle.shine {:cx highlight-cxb
+                   :cy highlight-cy
+                   :r highlight-r
                    :stroke "transparent"}]])
 
 
@@ -173,11 +241,11 @@
   {:cx 400
    :cy 150
    :width (if dev?
-            150
-            (rand-nth (range 100 200 0.1)))
+             150
+            (rand-nth (range 100 225 0.1)))
    :height (if dev?
              200
-             (rand-nth (range 150 200 0.1)))})
+             (rand-nth (range 150 250 0.1)))})
 
 (defn face
   [dev? & {:keys [proportional?]}]
