@@ -143,21 +143,25 @@
         min-cy (- head-cy (* 0.4 head-ry))
         
         max-cy (+ head-cy (/ head-height 6))
-        eye-cy max-cy #_(if dev?
+        eye-cy (if dev?
                  (avg min-cy max-cy)
                  (rand-nth (range min-cy max-cy 0.1)))
-        
 
         rx-max (- head-cx eye-cxa)
         rx-min (/ head-width 15)
         eye-rx (if dev?
-          (avg rx-max rx-min)
-          (rand-nth (range rx-min rx-max 0.1)))
+                 (avg rx-max rx-min)
+                 (rand-nth (range rx-min rx-max 0.1)))
         
 
-        eye-to-chin (- (+ head-cy head-ry) eye-cy)
+        horizontal-a eye-cy
+        head-top (- head-cy head-ry)
+        head-bottom (+ head-cy head-ry)
+        above-a (- eye-cy head-top)
+        below-a (- head-bottom eye-cy)
+        y-max (+ horizontal-a (/ below-a 2))
 
-        ry-max (- eye-to-chin (/ head-height 6))
+        ry-max (- y-max eye-cy) ;; (- head-bottom (/ head-height 5))
         ry-min (/ head-height 20)
         eye-ry ry-max
         #_(if dev?
@@ -168,7 +172,7 @@
         eye-map (merge measures
                   {:eye-cxa eye-cxa :eye-cxb eye-cxb :eye-cy eye-cy
                    :eye-rx eye-rx :eye-ry eye-ry
-                   :horizontal-a eye-cy
+                   :horizontal-a horizontal-a
                    :horizontal-b (+ eye-cy eye-ry)
                    :vertical-a eye-cxa :vertical-b eye-cxb})]
     (merge eye-map (pupils eye-map dev?))))
