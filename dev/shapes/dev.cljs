@@ -228,54 +228,77 @@
            pupil-cy pupil-r
            mouth-y] :as measures}
    dev?]
-  (let [x-max-off (/ head-rx 8) ;; nose-width is 1/4 of the head-width
-        x-min-off (/ head-rx 20)
-        x-offset (if dev?
-                   (avg x-max-off x-min-off)
-                   (rand-nth (range x-min-off x-max-off 0.1)))
-        nose-x1 (- head-cx x-offset)
-        nose-x2 (+ head-cx x-offset)
+  (let [max-rx (/ head-rx 6)
+        min-rx (/ head-rx 20)
+        nose-rx (if dev?
+                  (avg max-rx min-rx)
+                  (rand-nth (range min-rx max-rx 0.1)))
+        
+        
+        nose-cx head-cx
+
+        max-ry nose-rx
+        min-ry (/ head-ry 20)
+
+        nose-ry max-ry
+        nose-cy (+ head-cy (/ head-ry 2))
+        #_(if dev?
+            (avg min-y max-y)
+            (rand-nth (range min-y max-y 0.1))
+            )
+
+        nose-clip-x (- nose-cx (* 2 nose-rx))
+        nose-clip-width (* 4 nose-rx)
+
+        nose-clip-y (+ (- nose-cy nose-ry) (/ nose-ry 2))
+        nose-clip-height (+ nose-clip-y (* 3 nose-ry))
         
         ;; FIXME: occasionally min-y is larger than max-y, which causes an error
         ;;        when they are passed to range in nose-y.
-        min-y (inc (+ eye-cy eye-ry))
-        max-y (- mouth-y (/ head-height 15))
+;;         min-y (inc (+ eye-cy eye-ry))
+;;        max-y (- mouth-y (/ head-height 15))
 
-        _ (println {:min-nose-y min-y :max-nose-y max-y})
-        
-        nose-y (if dev?
-                 (avg min-y max-y)
-                 (rand-nth (range min-y max-y 0.1)))
 
-        xc-max (* x-offset 2)
-        xc-min x-offset
-        xc-offset (if dev?
-                    (avg xc-min xc-max)
-                    (rand-nth (range xc-min xc-max 0.1)))
-        nose-cx1 (- nose-x1 xc-offset)
-        nose-cx2 (+ nose-x2 xc-offset)
 
-        min-cy (/ head-height 20)
-        max-cy (/ head-height 10)
-        nose-cy (+ nose-y (if dev?
-                            (avg min-cy max-cy)
-                            (rand-nth (range min-cy max-cy 0.1))))]
+;;        xc-max (* x-offset 2)
+;;        xc-min x-offset
+;;        xc-offset
+        #_(if dev?
+            (avg xc-min xc-max)
+            (rand-nth (range xc-min xc-max 0.1)))
+;;        nose-cx1 (- nose-x1 xc-offset)
+;;        nose-cx2 (+ nose-x2 xc-offset)
+
+;;        min-cy (/ head-height 20)
+;;        max-cy (/ head-height 10)
+;;        nose-cy
+        #_(+ nose-y (if dev?
+                    (avg min-cy max-cy)
+                    (rand-nth (range min-cy max-cy 0.1))))]
     (merge measures
-      {:nose-x1 nose-x1 :nose-x2 nose-x2 :nose-y nose-y
-       :nose-cx1 nose-cx1 :nose-cx2 nose-cx2 :nose-cy nose-cy})))
+      {:nose-cx nose-cx :nose-cy nose-cy :nose-rx nose-rx :nose-ry nose-ry
+       :nose-clip-x nose-clip-x :nose-clip-y nose-clip-y
+       :nose-clip-width nose-clip-width :nose-clip-height nose-clip-height})))
 
 
 (defhtml draw-nose
-  [{:keys [nose-x1 nose-x2 nose-y nose-cx1 nose-cx2 nose-cy]}]
+  [{:keys [nose-cx nose-cy nose-rx nose-ry
+           nose-clip-x nose-clip-y nose-clip-width nose-clip-height]}]
   [:g.nose
-   [:path.shadow {:d (reduce (fn [acc s]
+   [:defs
+    [:clippath#nose-bridge
+     [:rect {:x nose-clip-x :y nose-clip-y
+             :width nose-clip-x :height nose-clip-y}]]]
+   [:ellipse {:cx nose-cx :cy nose-cy :rx nose-rx :ry nose-ry
+              :style {:clip-path "url(#nose-bridge)"}}]
+   #_[:path.shadow {:d (reduce (fn [acc s]
                                (str acc " " s))
                        ["M" nose-x1 (+ nose-y 1)
                         "C" nose-cx1 (+ nose-cy 3) nose-cx2
                         (+ nose-cy 3) nose-x2  (+ nose-y 1)])
                   :stroke "grey"
                   :fill "transparent"}]
-   [:path.highlight
+   #_[:path.highlight
     {:d (reduce (fn [acc s]
                   (str acc " " s))
           ["M" (+ nose-x1 1) (+ nose-y 2)
@@ -283,7 +306,7 @@
            (- nose-x2 1) (+ nose-y 2)])
      :stroke "lightgrey"
      :fill "white"}]
-   [:path {:d (reduce (fn [acc s]
+   #_[:path {:d (reduce (fn [acc s]
                         (str acc " " s))
                 ["M" nose-x1 nose-y
                  "C" nose-cx1 nose-cy nose-cx2 nose-cy nose-x2 nose-y])
