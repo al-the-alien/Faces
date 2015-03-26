@@ -154,7 +154,9 @@
         min-cy (- head-cy (* 0.4 head-ry))
         
         max-cy (+ head-cy (/ head-height 6))
-        eye-cy (if dev?
+        
+        ;; HERE
+        eye-cy max-cy #_(if dev?
                  (avg min-cy max-cy)
                  (rand-nth (range min-cy max-cy 0.1)))
 
@@ -180,7 +182,9 @@
 
         ry-max (- y-max eye-cy)
         ry-min (/ head-height 20)
-        eye-ry (if dev?
+        ;; HERE
+        eye-ry ry-max
+        #_(if dev?
             (avg ry-max ry-min)
             (rand-nth (range ry-min ry-max 0.1)))
         
@@ -243,15 +247,21 @@
   [{:keys [head-height head-width head-cx head-cy head-rx head-ry
            eye-cxa eye-cxb eye-cy eye-rx eye-ry
            pupil-cy pupil-r
-           mouth-y] :as measures}
+           mouth-y
+           horizontal-a horizontal-b
+           vertical-a vertical-b] :as measures}
    dev?]
   (let [nose-cx head-cx
+
+        a-to-b (- vertical-b vertical-a)
+        max-rx (/ a-to-b 4)
+        min-rx (/ a-to-b 12)
         
-        max-rx (/ head-rx 6)
-        min-rx (/ head-rx 20)
-        nose-rx (if dev?
-                  (avg max-rx min-rx)
-                  (rand-nth (range min-rx max-rx 0.1)))
+        ;; HERE
+        nose-rx min-rx
+        #_(if dev?
+            (avg max-rx min-rx)
+            (rand-nth (range min-rx max-rx 0.1)))
         
         max-ry nose-rx
         min-ry (/ head-ry 20)
@@ -262,21 +272,20 @@
                   :else (rand-nth (range min-ry max-ry 0.1)))
         
 
-        min-cy (inc (+ eye-cy eye-ry nose-ry))
-
-        ;; TODO: Must finish mouth gen before writing the max-cy calculation,
-        ;;       as nose-cy should be guaranteed to be above the mouth.
-        max-cy (max (inc min-cy)
-                 (- (+ head-cy head-ry) (+ (/ head-height 10) nose-ry)))
+        min-cy (+ horizontal-b (* 1.5 nose-ry))
+        below-b (- (+ head-cy head-ry) horizontal-b)
+        max-cy (- (+ head-cy head-ry) (/ below-b 3) nose-ry)
         
-        nose-cy (if dev?
-                  (avg min-cy max-cy)
-                  (rand-nth (range min-cy max-cy 0.1)))
+        nose-cy (cond
+                  dev? (avg min-cy max-cy)
+                  (< max-cy min-cy) min-cy
+                  :else (rand-nth (range min-cy max-cy 0.1)))
 
         nose-clip-x (- nose-cx (* 2 nose-rx))
         nose-clip-width (* 4 nose-rx)
 
-        nose-clip-y (+ (- nose-cy nose-ry) (/ nose-ry 2))
+        min-clip-y (- nose-cy (/ nose-ry 1.5))
+        nose-clip-y min-clip-y ;; (+ (- nose-cy nose-ry) (/ nose-ry 2))
         nose-clip-height (+ nose-clip-y (* 3 nose-ry))]
     (merge measures
       {:nose-cx nose-cx :nose-cy nose-cy :nose-rx nose-rx :nose-ry nose-ry
@@ -402,12 +411,14 @@
                           min-dimension
                           max-dimension
                           0.1)))
-     :height (if dev?
-               (avg min-dimension max-dimension)
-               (rand-nth (range
-                           min-dimension
-                           max-dimension
-                           0.1)))}))
+     ;; HERE
+     :height min-dimension
+     #_(if dev?
+         (avg min-dimension max-dimension)
+         (rand-nth (range
+                     min-dimension
+                     max-dimension
+                     0.1)))}))
 
 (defn face
   [dev? & {:keys [proportional?]}]
