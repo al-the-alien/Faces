@@ -25,6 +25,10 @@
   [x]
   (Math.sqrt x))
 
+(defn abs
+  [x]
+  (Math.abs x))
+
 (defn avg
   [& xs]
   (/ (reduce + xs) (count xs)))
@@ -34,12 +38,22 @@
 ;; TODO: remove h and k, as pupil always calls ys-within-ellipse with
 ;;       h=0 and k=0
 (defn ys-within-ellipse
-  [x a b h k]                      ; a = rx ; b = ry ; h = cx ; k = cy
+  [x a b h k] ;; a = rx ; b = ry ; h = cx ; k = cy
   (let [max-offset (+ k
                      (sqrt (* (square b)
                              (- 1 (/ (square (- x h)) (square a))))))]
     {:min (- max-offset)
      :max max-offset}))
+
+(defn x-on-ellipse
+  [y a b] ;; a = rx ; b = ry
+  (* a (sqrt (-> (- 1 (square (/ y b)))
+               abs))))
+
+(defn y-on-ellipse
+  [x a b] ;; a = rx ; b = ry
+  (* b (sqrt (-> (- 1 (square (/ x a)))
+               abs))))
 
 
 (defn xy-on-circle
@@ -131,13 +145,22 @@
    dev?]
   (let [max-cx-off (* (/ head-rx 3) 2)
         min-cx-off (/ head-rx 6)
-        eye-cx-offset 
-        (if dev?
+        eye-cx-offset max-cx-off #_(if dev?
           (avg max-cx-off min-cx-off)
           (rand-nth (range min-cx-off max-cx-off 0.1)))
+        
         eye-cxa (- head-cx eye-cx-offset)
         eye-cxb (+ head-cx eye-cx-offset)
 
+        vertical-a eye-cxa
+        left-of-a (- vertical-a (- head-cx head-rx))
+
+        rx-max (min (- head-cx eye-cxa) (+ head-rx (/ left-of-a 4)))
+        rx-min (/ head-width 15)
+        eye-rx rx-max #_(if dev?
+                 (avg rx-max rx-min)
+                 (rand-nth (range rx-min rx-max 0.1)))
+        
         ;; After looking through many faces, (* 0.4 head-ry) seemed to be the
         ;; best min-cy.
         min-cy (- head-cy (* 0.4 head-ry))
@@ -146,12 +169,6 @@
         eye-cy (if dev?
                  (avg min-cy max-cy)
                  (rand-nth (range min-cy max-cy 0.1)))
-
-        rx-max (- head-cx eye-cxa)
-        rx-min (/ head-width 15)
-        eye-rx (if dev?
-                 (avg rx-max rx-min)
-                 (rand-nth (range rx-min rx-max 0.1)))
         
 
         horizontal-a eye-cy
@@ -163,10 +180,10 @@
 
         ry-max (- y-max eye-cy) ;; (- head-bottom (/ head-height 5))
         ry-min (/ head-height 20)
-        eye-ry ry-max
-        #_(if dev?
-            (avg ry-max ry-min)
-            (rand-nth (range ry-min ry-max 0.1)))
+        eye-ry (if dev?
+                 (avg ry-max ry-min)
+                 (rand-nth (range ry-min ry-max 0.1)))
+
         
 
         eye-map (merge measures
@@ -174,7 +191,8 @@
                    :eye-rx eye-rx :eye-ry eye-ry
                    :horizontal-a horizontal-a
                    :horizontal-b (+ eye-cy eye-ry)
-                   :vertical-a eye-cxa :vertical-b eye-cxb})]
+                   :vertical-a vertical-a :vertical-b eye-cxb
+                   :left-of-a left-of-a})]
     (merge eye-map (pupils eye-map dev?))))
 
 
@@ -378,9 +396,7 @@
 
     ;; Adding 50 to account for the control buttons
     {:cx (+ (/ w 2) 50)  ;; 400
-
-     ;; Subracting 15 to account for the chrome js console
-     :cy (/ h 2) ;; (- (/ h 2) 15) ;; 150
+     :cy (/ h 2)
      :width (case 
                 dev? (avg min-dimension max-dimension)
                 (= min-dimension max-dimension) min-dimention
@@ -552,8 +568,21 @@
                     :font-family "Verdana"
                     :font-size 10}
              color]])
+
          (when (:sections? data)
-           (section-face (:measurements data)))]]])))
+           (section-face (:measurements data)))
+
+         #_(let [{:keys [head-rx head-ry head-cx head-cy eye-cx eye-cy]}
+               (:measurements data)
+               x-offset (x-on-ellipse eye-cy head-rx head-ry)
+               y-offset (y-on-ellipse eye-cx head-rx head-ry)]
+           [:g#points
+            [:circle {:cx (- head-cx x-offset)
+                     :cy eye-cy
+                      :r 5 :fill "red"}]
+            [:circle {:cx eye-cx
+                     :cy (- head-cy y-offset)
+                     :r 5 :fill "orange"}]])]]])))
 
 
 
