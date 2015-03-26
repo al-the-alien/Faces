@@ -169,7 +169,9 @@
 
         eye-map (merge measures
                   {:eye-cxa eye-cxa :eye-cxb eye-cxb :eye-cy eye-cy
-                   :eye-rx eye-rx :eye-ry eye-ry})]
+                   :eye-rx eye-rx :eye-ry eye-ry
+                   :horizontal-a eye-cy
+                   :vertical-a eye-cxa :vertical-b eye-cxb})]
     (merge eye-map (pupils eye-map dev?))))
 
 
@@ -260,7 +262,8 @@
     (merge measures
       {:nose-cx nose-cx :nose-cy nose-cy :nose-rx nose-rx :nose-ry nose-ry
        :nose-clip-x nose-clip-x :nose-clip-y nose-clip-y
-       :nose-clip-width nose-clip-width :nose-clip-height nose-clip-height})))
+       :nose-clip-width nose-clip-width :nose-clip-height nose-clip-height
+       :horizontal-b (+ nose-cy nose-ry)})))
 
 
 (defhtml draw-nose
@@ -403,6 +406,20 @@
       (nose dev?))))
 
 
+(defhtml section-face
+  [{:keys [horizontal-a horizontal-b vertical-a vertical-b
+           head-cx head-cy head-rx head-ry]}]
+  [:g#sections {:stroke "lightgrey"}
+   [:line {:x1 (- head-cx head-rx 5) :y1 horizontal-a
+           :x2 (+ head-cx head-rx 5) :y2 horizontal-a}]
+   [:line {:x1 (- head-cx head-rx 5) :y1 horizontal-b
+           :x2 (+ head-cx head-rx 5) :y2 horizontal-b}]
+   [:line {:x1 vertical-a :y1 (- head-cy head-ry 5)
+           :x2 vertical-a :y2 (+ head-cy head-ry 5)}]
+   [:line {:x1 vertical-b :y1 (- head-cy head-ry 5)
+           :x2 vertical-b :y2 (+ head-cy head-ry 5)}]])
+
+
 (defonce app-state (atom {:measurements (face false ; sets dev?
                                           :proportional? false)}))
 
@@ -472,6 +489,23 @@
      "Pause changes"]]])
 
 
+(defhtml section-controls
+  [data]
+  [:g#sections-control {:font-family "Verdana"
+                        :style {:user-select "none"
+                                :-ms-user-select "none"
+                                :-moz-user-select "none"
+                                :-webkit-user-select "none"}}   
+   [:g#sections-toggle
+    [:rect
+     {:x 0 :y 400 :width 150 :height 50 :fill "blue"
+      :on-click #(om/transact! data :sections? not)}]
+    [:text {:x (+ 25 50) :y (+ 30 400)
+            :text-anchor "middle"
+            :style {:pointer-events "none"}}
+     "Toggle sections"]]])
+
+
 (defcomponent app
   [data owner]
   (render [_]
@@ -503,6 +537,8 @@
                                            (face (:dev? @data)))))}]
         (dev-mode data)
         (pause-mode data)
+        (section-controls data)
+        
         
         (let [{:keys [head-cx head-cy head-rx head-ry
                       head-width head-height]} (:measurements data)]
@@ -525,7 +561,9 @@
                    :stroke "black"
                    :font-family "Verdana"
                    :font-size 10}
-            color]])]])))
+            color]])
+        (when (:sections? data)
+          (section-face (:measurements data)))]])))
 
 
 (when-not (repl/alive?)
