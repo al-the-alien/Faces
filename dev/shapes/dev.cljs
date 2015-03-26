@@ -235,11 +235,13 @@
                    (rand-nth (range x-min-off x-max-off 0.1)))
         nose-x1 (- head-cx x-offset)
         nose-x2 (+ head-cx x-offset)
-
+        
         ;; FIXME: occasionally min-y is larger than max-y, which causes an error
         ;;        when they are passed to range in nose-y.
         min-y (inc (+ eye-cy eye-ry))
         max-y (- mouth-y (/ head-height 15))
+
+        _ (println {:min-nose-y min-y :max-nose-y max-y})
         
         nose-y (if dev?
                  (avg min-y max-y)
@@ -249,9 +251,7 @@
         xc-min x-offset
         xc-offset (if dev?
                     (avg xc-min xc-max)
-;;                    xc-min
-                    (rand-nth (range xc-min xc-max 0.1))
-                    )
+                    (rand-nth (range xc-min xc-max 0.1)))
         nose-cx1 (- nose-x1 xc-offset)
         nose-cx2 (+ nose-x2 xc-offset)
 
@@ -268,24 +268,25 @@
 (defhtml draw-nose
   [{:keys [nose-x1 nose-x2 nose-y nose-cx1 nose-cx2 nose-cy]}]
   [:g.nose
-   [:path.shadow {:d (str "M " nose-x1 " " (+ nose-y 1) " "
-                       (reduce (fn [acc s]
-                                 (str acc " " s))
-                         ["C" nose-cx1 (+ nose-cy 3) nose-cx2
-                           (+ nose-cy 3) nose-x2  (+ nose-y 1)]))
+   [:path.shadow {:d (reduce (fn [acc s]
+                               (str acc " " s))
+                       ["M" nose-x1 (+ nose-y 1)
+                        "C" nose-cx1 (+ nose-cy 3) nose-cx2
+                        (+ nose-cy 3) nose-x2  (+ nose-y 1)])
                   :stroke "grey"
                   :fill "transparent"}]
-   [:path {:d (str "M " nose-x1 " " nose-y " "
-                (reduce (fn [acc s]
-                          (str acc " " s))
-                  ["C" nose-cx1 nose-cy nose-cx2 nose-cy nose-x2 nose-y]))
+   [:path {:d (reduce (fn [acc s]
+                        (str acc " " s))
+                ["M" nose-x1 nose-y
+                 "C" nose-cx1 nose-cy nose-cx2 nose-cy nose-x2 nose-y])
            :stroke "darkgrey"
            :fill "white"}]
    [:path.highlight
-    {:d (str "M " (+ nose-x1 1) " " nose-y " "
-          (reduce (fn [acc s]
+    {:d (reduce (fn [acc s]
                     (str acc " " s))
-            ["C" nose-cx1 (- nose-cy 3) nose-cx2 (- nose-cy 3) nose-x2 nose-y]))
+            ["M" (+ nose-x1 1) nose-y
+             "C" nose-cx1 (- nose-cy 3) nose-cx2 (- nose-cy 3)
+             (- nose-x2 1) nose-y])
      :stroke "lightgrey"
      :fill "white"}]])
 
@@ -297,9 +298,10 @@
   (let [x-offset (/ (- head-cx eye-cxa) 1.5)
         mouth-x1 (- head-cx x-offset)
         mouth-x2 (+ head-cx x-offset)
-        max-y (- (+ head-cy head-ry) (/ head-height 20))
         
-        mouth-y (- (+ head-cy head-ry) (/ head-height 10))
+        max-y (- (+ head-cy head-ry) (/ head-height 10))
+        
+        mouth-y max-y
         mouth-cx1 (+ mouth-x1 10)
         mouth-cx2 (- mouth-x2 10)
         mouth-cy (+ mouth-y 10)]
@@ -479,7 +481,7 @@
           [:g.face {:fill "white" :stroke "grey" :stroke-width 3}
            [:ellipse {:cx head-cx :cy head-cy :rx head-rx :ry head-ry
                       :stroke-width 3
-                      :stroke "dimgrey"
+                      :stroke "grey"
                       :fill "white"}]
            (draw-eyes (:measurements data))
            (draw-nose (:measurements data))
