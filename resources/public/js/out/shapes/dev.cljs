@@ -155,8 +155,7 @@
         
         max-cy (+ head-cy (/ head-height 6))
         
-        ;; HERE
-        eye-cy max-cy #_(if dev?
+        eye-cy (if dev?
                  (avg min-cy max-cy)
                  (rand-nth (range min-cy max-cy 0.1)))
 
@@ -182,11 +181,10 @@
 
         ry-max (- y-max eye-cy)
         ry-min (/ head-height 20)
-        ;; HERE
-        eye-ry ry-max
-        #_(if dev?
-            (avg ry-max ry-min)
-            (rand-nth (range ry-min ry-max 0.1)))
+        
+        eye-ry (if dev?
+                 (avg ry-max ry-min)
+                 (rand-nth (range ry-min ry-max 0.1)))
         
 
         eye-map (merge measures
@@ -257,51 +255,70 @@
         max-rx (/ a-to-b 4)
         min-rx (/ a-to-b 12)
         
-        ;; HERE
-        nose-rx min-rx
-        #_(if dev?
-            (avg max-rx min-rx)
-            (rand-nth (range min-rx max-rx 0.1)))
+        nose-rx (if dev?
+                  (avg max-rx min-rx)
+                  (rand-nth (range min-rx max-rx 0.1)))
         
         max-ry nose-rx
         min-ry (/ head-ry 20)
 
         nose-ry (cond
                   :dev? (avg min-ry max-ry)
-                  (< max-ry min-ry) min-ry
+                  (< max-ry min-ry) max-ry
                   :else (rand-nth (range min-ry max-ry 0.1)))
         
 
         min-cy (+ horizontal-b (* 1.5 nose-ry))
         below-b (- (+ head-cy head-ry) horizontal-b)
-        max-cy (- (+ head-cy head-ry) (/ below-b 3) nose-ry)
+        max-cy (- (+ head-cy head-ry) (/ below-b 2) nose-ry
+                 )
         
         nose-cy (cond
                   dev? (avg min-cy max-cy)
                   (< max-cy min-cy) min-cy
                   :else (rand-nth (range min-cy max-cy 0.1)))
 
-        nose-clip-x (- nose-cx (* 2 nose-rx))
-        nose-clip-width (* 4 nose-rx)
+        
+        min-bridge nose-rx
+        max-bridge (+ nose-rx (/ nose-rx 1.5))
 
-        min-clip-y (- nose-cy (/ nose-ry 1.5))
-        nose-clip-y min-clip-y ;; (+ (- nose-cy nose-ry) (/ nose-ry 2))
-        nose-clip-height (+ nose-clip-y (* 3 nose-ry))]
+        clip-bridge (if dev?
+                      (avg min-bridge max-bridge)
+                      (rand-nth (range min-bridge max-bridge 0.05)))
+
+        clip-width (* 4 nose-rx)
+        clip-height (* 4 nose-ry)
+
+        clip-x-a (-
+                   (- head-cx (/ clip-bridge 2))
+                   clip-width)
+        clip-x-b (+ head-cx (/ clip-bridge 2))
+        clip-y-ab (- nose-cy (/ clip-height 2))
+        
+        clip-x-c (- nose-cx (* 2 nose-rx))
+        clip-y-c nose-cy]
     (merge measures
       {:nose-cx nose-cx :nose-cy nose-cy :nose-rx nose-rx :nose-ry nose-ry
-       :nose-clip-x nose-clip-x :nose-clip-y nose-clip-y
-       :nose-clip-width nose-clip-width :nose-clip-height nose-clip-height
+       :nose-clip-xa clip-x-a :nose-clip-xb clip-x-b :nose-clip-yab clip-y-ab
+       :nose-clip-xc clip-x-c :nose-clip-yc clip-y-c
+       :nose-clip-width clip-width :nose-clip-height clip-height
        :horizontal-c (+ nose-cy nose-ry)})))
 
 
 (defhtml draw-nose
   [{:keys [nose-cx nose-cy nose-rx nose-ry
-           nose-clip-x nose-clip-y nose-clip-width nose-clip-height]}]
+           nose-clip-xa nose-clip-xb nose-clip-yab
+           nose-clip-xc nose-clip-yc
+           nose-clip-width nose-clip-height]}]
   [:g.nose
    [:defs
     [:clippath#nose-bridge
-     [:rect {:x nose-clip-x :y nose-clip-y
-             :width nose-clip-x :height nose-clip-y}]]]
+     [:rect {:x nose-clip-xa :y nose-clip-yab
+             :width nose-clip-width :height nose-clip-height}]
+     [:rect {:x nose-clip-xb :y nose-clip-yab
+             :width nose-clip-width :height nose-clip-height}]
+     [:rect {:x nose-clip-xc :y nose-clip-yc
+             :width nose-clip-width :height nose-clip-height}]]]
    [:ellipse {:cx nose-cx :cy nose-cy :rx nose-rx :ry nose-ry
               :style {:clip-path "url(#nose-bridge)"}}]
    #_[:path.shadow {:d (reduce (fn [acc s]
@@ -411,14 +428,12 @@
                           min-dimension
                           max-dimension
                           0.1)))
-     ;; HERE
-     :height min-dimension
-     #_(if dev?
-         (avg min-dimension max-dimension)
-         (rand-nth (range
-                     min-dimension
-                     max-dimension
-                     0.1)))}))
+     :height (if dev?
+               (avg min-dimension max-dimension)
+               (rand-nth (range
+                           min-dimension
+                           max-dimension
+                           0.1)))}))
 
 (defn face
   [dev? & {:keys [proportional?]}]
