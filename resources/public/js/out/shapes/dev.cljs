@@ -241,6 +241,10 @@
 
 
 
+
+;; TODO: Nose may occasionally be too big and overlap the eyes or not leave
+;;       enough room for the mouth. If this happes, refactor the nose function
+;;       so nose-cy is calculated BEFORE nose-ry.
 (defn nose
   [{:keys [head-height head-width head-cx head-cy head-rx head-ry
            eye-cxa eye-cxb eye-cy eye-rx eye-ry
@@ -258,6 +262,8 @@
         nose-rx (if dev?
                   (avg max-rx min-rx)
                   (rand-nth (range min-rx max-rx 0.1)))
+
+        
         
         max-ry nose-rx
         min-ry (/ head-ry 20)
@@ -274,7 +280,7 @@
         
         nose-cy (cond
                   dev? (avg min-cy max-cy)
-                  (< max-cy min-cy) min-cy
+                  (< max-cy min-cy) max-cy
                   :else (rand-nth (range min-cy max-cy 0.1)))
 
         
