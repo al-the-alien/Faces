@@ -143,31 +143,33 @@
         min-cy (- head-cy (* 0.4 head-ry))
         
         max-cy (+ head-cy (/ head-height 6))
-        eye-cy (if dev?
+        eye-cy max-cy #_(if dev?
                  (avg min-cy max-cy)
                  (rand-nth (range min-cy max-cy 0.1)))
         
 
         rx-max (- head-cx eye-cxa)
         rx-min (/ head-width 15)
-        eye-rx rx-max
-        #_(if dev?
+        eye-rx (if dev?
           (avg rx-max rx-min)
           (rand-nth (range rx-min rx-max 0.1)))
+        
 
         eye-to-chin (- (+ head-cy head-ry) eye-cy)
 
         ry-max (- eye-to-chin (/ head-height 6))
         ry-min (/ head-height 20)
-        eye-ry (if dev?
-                 (avg ry-max ry-min)
-                 (rand-nth (range ry-min ry-max 0.1)))
+        eye-ry ry-max
+        #_(if dev?
+            (avg ry-max ry-min)
+            (rand-nth (range ry-min ry-max 0.1)))
         
 
         eye-map (merge measures
                   {:eye-cxa eye-cxa :eye-cxb eye-cxb :eye-cy eye-cy
                    :eye-rx eye-rx :eye-ry eye-ry
                    :horizontal-a eye-cy
+                   :horizontal-b (+ eye-cy eye-ry)
                    :vertical-a eye-cxa :vertical-b eye-cxb})]
     (merge eye-map (pupils eye-map dev?))))
 
@@ -260,7 +262,7 @@
       {:nose-cx nose-cx :nose-cy nose-cy :nose-rx nose-rx :nose-ry nose-ry
        :nose-clip-x nose-clip-x :nose-clip-y nose-clip-y
        :nose-clip-width nose-clip-width :nose-clip-height nose-clip-height
-       :horizontal-b (+ nose-cy nose-ry)})))
+       :horizontal-c (+ nose-cy nose-ry)})))
 
 
 (defhtml draw-nose
@@ -404,13 +406,15 @@
 
 
 (defhtml section-face
-  [{:keys [horizontal-a horizontal-b vertical-a vertical-b
+  [{:keys [horizontal-a horizontal-b horizontal-c vertical-a vertical-b
            head-cx head-cy head-rx head-ry]}]
   [:g#sections {:stroke "lightgrey"}
    [:line {:x1 (- head-cx head-rx 5) :y1 horizontal-a
            :x2 (+ head-cx head-rx 5) :y2 horizontal-a}]
    [:line {:x1 (- head-cx head-rx 5) :y1 horizontal-b
            :x2 (+ head-cx head-rx 5) :y2 horizontal-b}]
+   [:line {:x1 (- head-cx head-rx 5) :y1 horizontal-c
+           :x2 (+ head-cx head-rx 5) :y2 horizontal-c}]
    [:line {:x1 vertical-a :y1 (- head-cy head-ry 5)
            :x2 vertical-a :y2 (+ head-cy head-ry 5)}]
    [:line {:x1 vertical-b :y1 (- head-cy head-ry 5)
