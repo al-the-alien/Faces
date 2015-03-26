@@ -270,8 +270,7 @@
 
         min-cy (+ horizontal-b (* 1.5 nose-ry))
         below-b (- (+ head-cy head-ry) horizontal-b)
-        max-cy (- (+ head-cy head-ry) (/ below-b 2) nose-ry
-                 )
+        max-cy (- (+ head-cy head-ry) (/ below-b 2) nose-ry)
         
         nose-cy (cond
                   dev? (avg min-cy max-cy)
@@ -347,16 +346,20 @@
 (defn mouth
   [{:keys [head-height head-cx head-cy head-rx head-ry
            eye-cxa eye-cxb eye-cy eye-ry
-           nose-cy] :as measures}
+           nose-cy
+           horizontal-c] :as measures}
    dev?]
   (let [mouth-cx head-cx ;; TODO: have other cxs for off-center mouths
 
-        mouth-ry (/ head-height 20)
+        below-c (- (+ head-cy head-ry) horizontal-c)
 
-        
-        min-cy (- (+ head-cy head-ry) (/ head-height 20) mouth-ry)
-        max-cy (- head-cy head-ry)
-        mouth-cy min-cy
+        max-ry (- head-ry (/ below-c 4))
+        min-ry (/ head-ry 10)
+        mouth-ry max-ry
+
+        min-cy head-cy
+        max-cy (- (+ head-cy head-ry) mouth-ry (/ below-c 4))
+        mouth-cy max-cy
 
         
         mouth-rx (- head-rx (/ head-rx 20))
@@ -383,11 +386,14 @@
        :mouth-clip-x mouth-clip-x
        :mouth-clip-y mouth-clip-y
        :mouth-clip-width mouth-clip-width
-       :mouth-clip-height mouth-clip-height})))
+       :mouth-clip-height mouth-clip-height
+       :below-c below-c})))
 
 (defhtml draw-mouth
-  [{:keys [mouth-cx mouth-cy mouth-rx mouth-ry
-           mouth-clip-x mouth-clip-y mouth-clip-width mouth-clip-height]}]
+  [{:keys [head-cx head-cy head-ry
+           mouth-cx mouth-cy mouth-rx mouth-ry
+           mouth-clip-x mouth-clip-y mouth-clip-width mouth-clip-height
+           horizontal-c test-height below-c] :as measures}]
   [:g.mouth
    [:defs
     [:clippath#mouth-clip
@@ -395,8 +401,7 @@
              :width mouth-clip-width :height mouth-clip-height}]]]
    [:ellipse.mouth {:cx mouth-cx :cy mouth-cy :rx mouth-rx :ry mouth-ry
                     :fill "transparent"
-                    :style {:clip-path "url(#mouth-clip)"}
-                    }]])
+                    :style {:clip-path "url(#mouth-clip)"}}]])
 
 
 
@@ -445,8 +450,8 @@
     (-> (basic-measurements dev?)
       (head dev?)
       (eyes dev?)
-      (mouth dev?)
-      (nose dev?))))
+      (nose dev?)
+      (mouth dev?))))
 
 
 (defhtml section-face
