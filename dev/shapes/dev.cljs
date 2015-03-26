@@ -371,8 +371,7 @@
 (defn basic-measurements
   [dev?]
   (let [w js/window.innerWidth
-        h (- js/window.innerHeight
-            (/ js/window.innerHeight 10))
+        h js/window.innerHeight
         m (min w h)
         max-dimension (max 75 (- m (/ m 10)))
         min-dimension (max 75 (/ m 2))]
@@ -498,8 +497,7 @@
        [:svg {:version 1.1
               :baseProfile "full"
               :width js/window.innerWidth
-              :height (-  js/window.innerHeight
-                        (/ js/window.innerHeight 10))
+              :height js/window.innerHeight
               :xmlns "http://www.w3.org/2000/svg"}
         [:g#canvas {:font-family "Verdana"                          
                     :style {:user-select "none"
