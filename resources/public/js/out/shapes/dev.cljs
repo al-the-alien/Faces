@@ -228,53 +228,43 @@
            pupil-cy pupil-r
            mouth-y] :as measures}
    dev?]
-  (let [max-rx (/ head-rx 6)
+  (let [nose-cx head-cx
+        
+        max-rx (/ head-rx 6)
         min-rx (/ head-rx 20)
         nose-rx (if dev?
                   (avg max-rx min-rx)
                   (rand-nth (range min-rx max-rx 0.1)))
         
-        
-        nose-cx head-cx
-
         max-ry nose-rx
         min-ry (/ head-ry 20)
 
-        nose-ry max-ry
-        nose-cy (+ head-cy (/ head-ry 2))
-        #_(if dev?
-            (avg min-y max-y)
-            (rand-nth (range min-y max-y 0.1))
-            )
+        _ (println {:min-ry min-ry :max-ry max-ry})
+
+        nose-ry (cond
+                  :dev? (avg min-ry max-ry)
+                  (< max-ry min-ry) min-ry
+                  :else (rand-nth (range min-ry max-ry 0.1)))
+        
+
+        _ (println "passed")
+
+        min-cy (inc (+ eye-cy eye-ry nose-ry))
+
+        ;; TODO: Must finish mouth gen before writing the max-cy calculation,
+        ;;       as nose-cy should be guaranteed to be above the mouth.
+        max-cy (max (inc min-cy)
+                 (- (+ head-cy head-ry) (+ (/ head-height 10) nose-ry)))
+        
+        nose-cy (if dev?
+            (avg min-cy max-cy)
+            (rand-nth (range min-cy max-cy 0.1)))
 
         nose-clip-x (- nose-cx (* 2 nose-rx))
         nose-clip-width (* 4 nose-rx)
 
         nose-clip-y (+ (- nose-cy nose-ry) (/ nose-ry 2))
-        nose-clip-height (+ nose-clip-y (* 3 nose-ry))
-        
-        ;; FIXME: occasionally min-y is larger than max-y, which causes an error
-        ;;        when they are passed to range in nose-y.
-;;         min-y (inc (+ eye-cy eye-ry))
-;;        max-y (- mouth-y (/ head-height 15))
-
-
-
-;;        xc-max (* x-offset 2)
-;;        xc-min x-offset
-;;        xc-offset
-        #_(if dev?
-            (avg xc-min xc-max)
-            (rand-nth (range xc-min xc-max 0.1)))
-;;        nose-cx1 (- nose-x1 xc-offset)
-;;        nose-cx2 (+ nose-x2 xc-offset)
-
-;;        min-cy (/ head-height 20)
-;;        max-cy (/ head-height 10)
-;;        nose-cy
-        #_(+ nose-y (if dev?
-                    (avg min-cy max-cy)
-                    (rand-nth (range min-cy max-cy 0.1))))]
+        nose-clip-height (+ nose-clip-y (* 3 nose-ry))]
     (merge measures
       {:nose-cx nose-cx :nose-cy nose-cy :nose-rx nose-rx :nose-ry nose-ry
        :nose-clip-x nose-clip-x :nose-clip-y nose-clip-y
