@@ -72,8 +72,8 @@
         
         
         pupil-cxa (if dev?
-            eye-cxa
-            (+ eye-cxa pupil-cx-offset))
+                    eye-cxa
+                    (+ eye-cxa pupil-cx-offset))
 
         
         pupil-cxb (if dev?
@@ -201,10 +201,10 @@
                     :stroke "transparent"
                     :fill "black"}]
     [:circle.highlight {:cx highlight-cxa
-                       :cy highlight-cy
-                       :r highlight-r
-                       :stroke "transparent"}]]
-      
+                        :cy highlight-cy
+                        :r highlight-r
+                        :stroke "transparent"}]]
+   
    
    [:ellipse.eye {:cx eye-cxb :cy eye-cy
                   :rx eye-rx :ry eye-ry
@@ -254,8 +254,8 @@
                  (- (+ head-cy head-ry) (+ (/ head-height 10) nose-ry)))
         
         nose-cy (if dev?
-            (avg min-cy max-cy)
-            (rand-nth (range min-cy max-cy 0.1)))
+                  (avg min-cy max-cy)
+                  (rand-nth (range min-cy max-cy 0.1)))
 
         nose-clip-x (- nose-cx (* 2 nose-rx))
         nose-clip-width (* 4 nose-rx)
@@ -280,26 +280,26 @@
    [:ellipse {:cx nose-cx :cy nose-cy :rx nose-rx :ry nose-ry
               :style {:clip-path "url(#nose-bridge)"}}]
    #_[:path.shadow {:d (reduce (fn [acc s]
-                               (str acc " " s))
-                       ["M" nose-x1 (+ nose-y 1)
-                        "C" nose-cx1 (+ nose-cy 3) nose-cx2
-                        (+ nose-cy 3) nose-x2  (+ nose-y 1)])
-                  :stroke "grey"
-                  :fill "transparent"}]
+                                 (str acc " " s))
+                         ["M" nose-x1 (+ nose-y 1)
+                          "C" nose-cx1 (+ nose-cy 3) nose-cx2
+                          (+ nose-cy 3) nose-x2  (+ nose-y 1)])
+                    :stroke "grey"
+                    :fill "transparent"}]
    #_[:path.highlight
-    {:d (reduce (fn [acc s]
-                  (str acc " " s))
-          ["M" (+ nose-x1 1) (+ nose-y 2)
-           "C" (+ nose-cx1 4) (- nose-cy 3) (- nose-cx2 4) (- nose-cy 3)
-           (- nose-x2 1) (+ nose-y 2)])
-     :stroke "lightgrey"
-     :fill "white"}]
+      {:d (reduce (fn [acc s]
+                    (str acc " " s))
+            ["M" (+ nose-x1 1) (+ nose-y 2)
+             "C" (+ nose-cx1 4) (- nose-cy 3) (- nose-cx2 4) (- nose-cy 3)
+             (- nose-x2 1) (+ nose-y 2)])
+       :stroke "lightgrey"
+       :fill "white"}]
    #_[:path {:d (reduce (fn [acc s]
-                        (str acc " " s))
-                ["M" nose-x1 nose-y
-                 "C" nose-cx1 nose-cy nose-cx2 nose-cy nose-x2 nose-y])
-           :stroke "darkgrey"
-           :fill "transparent"}]])
+                          (str acc " " s))
+                  ["M" nose-x1 nose-y
+                   "C" nose-cx1 nose-cy nose-cx2 nose-cy nose-x2 nose-y])
+             :stroke "darkgrey"
+             :fill "transparent"}]])
 
 
 (defn mouth
@@ -431,84 +431,63 @@
 
 (defhtml dev-mode
   [data]
-  [:g#dev-mode {:font-family "Verdana"
-                :style {:user-select "none"
-                        :-ms-user-select "none"
-                        :-moz-user-select "none"
-                        :-webkit-user-select "none"}
-                :fill-opacity (if (:paused? data)
+  [:g#dev-mode {:fill-opacity (if (:paused? data)
                                 0.5
                                 1)}
-   [:text {:x 75 :y 20
-           :text-anchor "middle"}
+   [:text {:x 75 :y 50}
     "Dev Mode Controls"]
    [:g#dev-mode-on
     [:rect.on-button
-     {:x 25 :y 35 :width 100 :height 50 :fill "darkseagreen"
+     {:x 25 :y 60 :width 100 :height 50 :fill "darkseagreen"
       :on-click #(when-not (:paused? data)
                    (om/update! data :dev? true)
                    (om/update! data :measurements
-                         (face (:dev? @data) :proportional? false)))}]
-    [:text {:x (+ 25 50) :y (+ 35 30)
-            :text-anchor "middle"
+                     (face (:dev? @data) :proportional? false)))}]
+    [:text {:x (+ 25 50) :y (+ 60 30)
             :style {:pointer-events "none"}}
      "On"]]
 
    [:g#dev-mode-off
     [:rect.off-button
-     {:x 25 :y 95 :width 100 :height 50 :fill "indianred"
+     {:x 25 :y 115 :width 100 :height 50 :fill "indianred"
       :on-click #(when-not (:paused? data)
                    (om/update! data :dev? false))}]
-    [:text {:x (+ 25 50) :y (+ 95 30)
-            :text-anchor "middle"
+    [:text {:x (+ 25 50) :y (+ 115 30)
             :style {:pointer-events "none"}}
      "Off"]]])
 
 
 (defhtml pause-mode
   [data]
-  [:g#dev-mode {:font-family "Verdana"
-                :style {:user-select "none"
-                        :-ms-user-select "none"
-                        :-moz-user-select "none"
-                        :-webkit-user-select "none"}}
-   [:text {:x 75 :y 195
-           :text-anchor "middle"}
+  [:g#dev-mode
+   [:text {:x 75 :y 200}
     "Control Changes"]
    [:g#dev-mode-on
     [:rect.on-button
      {:x 0 :y 210 :width 150 :height 50 :fill "darkseagreen"
       :on-click #(om/update! data :paused? false)}]
     [:text {:x (+ 25 50) :y (+ 210 30)
-            :text-anchor "middle"
             :style {:pointer-events "none"}}
      "Resume changes"]]
 
    [:g#dev-mode-off
     [:rect.off-button
-     {:x 0 :y 270 :width 150 :height 50 :fill "indianred"
+     {:x 0 :y 265 :width 150 :height 50 :fill "indianred"
       :on-click #(om/update! data :paused? true)}]
-    [:text {:x (+ 25 50) :y (+ 270 30)
-            :text-anchor "middle"
+    [:text {:x (+ 25 50) :y (+ 265 30)
             :style {:pointer-events "none"}}
      "Pause changes"]]])
 
 
 (defhtml section-controls
   [data]
-  [:g#sections-control {:font-family "Verdana"
-                        :style {:user-select "none"
-                                :-ms-user-select "none"
-                                :-moz-user-select "none"
-                                :-webkit-user-select "none"}}   
-   [:g#sections-toggle
-    [:rect.toggle-button
-     {:x 0 :y 400 :width 150 :height 50 :fill "steelblue"
-      :on-click #(om/transact! data :sections? not)}]
-    [:text {:x (+ 25 50) :y (+ 30 400)
-            :text-anchor "middle"
-            :style {:pointer-events "none"}}
-     "Toggle sections"]]])
+  [:g#sections-toggle
+   [:rect.toggle-button
+    {:x 0 :y 400 :width 150 :height 50 :fill "steelblue"
+     :on-click #(om/transact! data :sections? not)}]
+   [:text {:x (+ 25 50) :y (+ 30 400)
+           :style {:pointer-events "none"}}
+    "Toggle sections"]])
 
 
 (defcomponent app
@@ -516,59 +495,66 @@
   (render [_]
     (html
       [:div.container
-       [:h1 {:display "inline-block"
-             :style {:user-select "none"
-                     :-ms-user-select "none"
-                     :-moz-user-select "none"
-                     :-webkit-user-select "none"
-                     :max-height (/ js/window.innerHeight 8)}}
-        (str
-          (if (:dev? data)
-            "Dev mode on"
-            "Dev mode off")
-          (when (:paused? data)
-            "\t:\tChanges Paused"))]
        [:svg {:version 1.1
               :baseProfile "full"
               :width js/window.innerWidth
               :height (-  js/window.innerHeight
                         (/ js/window.innerHeight 10))
               :xmlns "http://www.w3.org/2000/svg"}
-        [:rect#background {:x 0 :y 0 :width "100%" :height "100%"
-                           :fill "white"
-                           :on-click (fn [e]
-                                       (when-not (:paused? data)
-                                         (om/update! data :measurements
-                                           (face (:dev? @data)))))}]
-        (dev-mode data)
-        (pause-mode data)
-        (section-controls data)
-        
-        
-        (let [{:keys [head-cx head-cy head-rx head-ry
-                      head-width head-height]} (:measurements data)]
-          [:g.face {:fill "white" :stroke "grey" :stroke-width 3}
-           [:ellipse {:cx head-cx :cy head-cy :rx head-rx :ry head-ry
-                      :stroke-width 3
-                      :stroke "grey"
-                      :fill "white"}]
-           (draw-eyes (:measurements data))
-           (draw-nose (:measurements data))
-           (draw-mouth (:measurements data))])
+        [:g#canvas {:font-family "Verdana"                          
+                    :style {:user-select "none"
+                            :-ms-user-select "none"
+                            :-moz-user-select "none"
+                            :-webkit-user-select "none"}}
+         [:rect#background {:x 0 :y 0 :width "100%" :height "100%"
+                            :fill "white"
+                            :on-click (fn [e]
+                                        (when-not (:paused? data)
+                                          (om/update! data :measurements
+                                            (face (:dev? @data)))))}]
 
-        (for [[i color] (map-indexed vector color-scale)]
-          [:g.color
-           [:rect {:x (* i 50) :y 340
-                  :width 45 :height 30
-                  :stroke "black"
-                   :fill color}]
-           [:text {:x (* i 50) :y (+ 340 45)
-                   :stroke "black"
-                   :font-family "Verdana"
-                   :font-size 10}
-            color]])
-        (when (:sections? data)
-          (section-face (:measurements data)))]])))
+         [:text#dev-info {:x 0 :y 25
+                          :stroke "black"
+                          :font-size 20}
+          (str
+            (if (:dev? data)
+              "Dev mode on"
+              "Dev mode off")
+            (when (:paused? data)
+              "\t:\tChanges Paused"))]
+
+         [:g#controls {:text-anchor "middle"}
+          (dev-mode data)
+          (pause-mode data)
+          (section-controls data)]
+        
+         
+         
+         (let [{:keys [head-cx head-cy head-rx head-ry
+                       head-width head-height]} (:measurements data)]
+           [:g.face {:fill "white" :stroke "grey" :stroke-width 3}
+            [:ellipse {:cx head-cx :cy head-cy :rx head-rx :ry head-ry
+                       :stroke-width 3
+                       :stroke "grey"
+                       :fill "white"}]
+            (draw-eyes (:measurements data))
+            (draw-nose (:measurements data))
+            (draw-mouth (:measurements data))])
+
+         (for [[i color] (map-indexed vector color-scale)]
+           [:g.color {:text-anchor "middle"}
+            [:rect {:x (* i 50) :y 335
+                    :width 45 :height 30
+                    :stroke "black"
+                    :fill color}]
+            [:text {:x (+ 25 (* i 50)) :y (+ 335 45)
+                    :stroke "black"
+                    :font-family "Verdana"
+                    :font-size 10}
+             color]])
+         (when (:sections? data)
+           (section-face (:measurements data)))]]])))
+
 
 
 (when-not (repl/alive?)
