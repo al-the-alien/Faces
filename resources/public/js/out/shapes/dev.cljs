@@ -25,6 +25,10 @@
   [x]
   (Math.sqrt x))
 
+(defn abs
+  [x]
+  (Math.abs x))
+
 (defn avg
   [& xs]
   (/ (reduce + xs) (count xs)))
@@ -34,12 +38,24 @@
 ;; TODO: remove h and k, as pupil always calls ys-within-ellipse with
 ;;       h=0 and k=0
 (defn ys-within-ellipse
-  [x a b h k]                      ; a = rx ; b = ry ; h = cx ; k = cy
+  [x a b h k] ;; a = rx ; b = ry ; h = cx ; k = cy
   (let [max-offset (+ k
                      (sqrt (* (square b)
                              (- 1 (/ (square (- x h)) (square a))))))]
     {:min (- max-offset)
      :max max-offset}))
+
+(defn x-on-ellipse
+  [y cy a b] ;; a = rx ; b = ry
+  ;; The function acts on a normalized ellipse, but is passed a non-normalized
+  ;; y. To account for that, y is subtracted from cy.
+  (* a (sqrt (abs (- 1 (square (/ (- cy y) b)))))))
+
+(defn y-on-ellipse
+  [x cx a b] ;; a = rx ; b = ry
+  ;; The function acts on a normalized ellipse, but is passed a non-normalized
+  ;; x. To account for that, x is subtracted from cx.
+  (* b (sqrt (abs (- 1 (square (/ (- cx x) a)))))))
 
 
 (defn xy-on-circle
@@ -550,7 +566,23 @@
                     :font-size 10}
              color]])
          (when (:sections? data)
-           (section-face (:measurements data)))]]])))
+           (section-face (:measurements data)))
+
+         (let [{:keys [head-rx head-ry head-cy head-cx eye-cy eye-cxa eye-cxb]}
+               (:measurements data)
+               x-offset (x-on-ellipse eye-cy head-cy head-rx head-ry)
+               y-offset-a (y-on-ellipse eye-cxa head-cx head-rx head-ry)
+               y-offset-b (y-on-ellipse eye-cxb head-cx head-rx head-ry)]
+           [:g#points
+            [:circle {:cx (+ head-cx x-offset)
+                     :cy eye-cy
+                      :r 5 :fill "red"}]
+            [:circle {:cx eye-cxa
+                     :cy (- head-cy y-offset-a)
+                      :r 5 :fill "blue"}]
+            [:circle {:cx eye-cxb
+                     :cy (- head-cy y-offset-b)
+                     :r 5 :fill "purple"}]])]]])))
 
 
 
