@@ -129,34 +129,31 @@
 (defn eyes
   [{:keys [head-cx head-cy head-width head-height head-rx head-ry] :as measures}
    dev?]
-  (let [eye-cx-offset
+  (let [max-cx-off (* (/ head-rx 3) 2)
+        min-cx-off (/ head-rx 6)
+        eye-cx-offset 
         (if dev?
-          (/ head-rx 2.5)
-;;          (/ head-rx (rand-nth (range 1.8 4 0.1)))  
-          (/ head-rx (rand-nth (range 1.8 4 0.1))))
-        
+          (avg max-cx-off min-cx-off)
+          (rand-nth (range min-cx-off max-cx-off 0.1)))
         eye-cxa (- head-cx eye-cx-offset)
         eye-cxb (+ head-cx eye-cx-offset)
 
-        eye-cy-offset (/ head-height 10)
-        eye-cy
-        (if dev?
-          head-cy          
-          #_(rand-nth (range
-                      (- head-cy eye-cy-offset)
-                      (+ head-cy eye-cy-offset)
-                      0.1))
-          (rand-nth (range
-                      (- head-cy eye-cy-offset)
-                      (+ head-cy eye-cy-offset)
-                      0.1)))
+        ;; After looking through many faces, (* 0.4 head-ry) seemed to be the
+        ;; best min-cy.
+        min-cy (- head-cy (* 0.4 head-ry))
+        
+        max-cy (+ head-cy (/ head-height 6))
+        eye-cy (if dev?
+                 (avg min-cy max-cy)
+                 (rand-nth (range min-cy max-cy 0.1)))
+        
 
         rx-max (- head-cx eye-cxa)
         rx-min (/ head-width 15)
-        eye-rx (if dev?
-                 (avg rx-max rx-min)
-                 #_(+ rx-min (/ (- rx-max rx-min) 8))
-                 (rand-nth (range rx-min rx-max 0.1)))
+        eye-rx rx-max
+        #_(if dev?
+          (avg rx-max rx-min)
+          (rand-nth (range rx-min rx-max 0.1)))
 
         eye-to-chin (- (+ head-cy head-ry) eye-cy)
 
@@ -438,8 +435,8 @@
            :text-anchor "middle"}
     "Dev Mode Controls"]
    [:g#dev-mode-on
-    [:rect
-     {:x 25 :y 35 :width 100 :height 50 :fill "green"
+    [:rect.on-button
+     {:x 25 :y 35 :width 100 :height 50 :fill "darkseagreen"
       :on-click #(when-not (:paused? data)
                    (om/update! data :dev? true)
                    (om/update! data :measurements
@@ -450,8 +447,8 @@
      "On"]]
 
    [:g#dev-mode-off
-    [:rect
-     {:x 25 :y 95 :width 100 :height 50 :fill "red"
+    [:rect.off-button
+     {:x 25 :y 95 :width 100 :height 50 :fill "indianred"
       :on-click #(when-not (:paused? data)
                    (om/update! data :dev? false))}]
     [:text {:x (+ 25 50) :y (+ 95 30)
@@ -471,8 +468,8 @@
            :text-anchor "middle"}
     "Control Changes"]
    [:g#dev-mode-on
-    [:rect
-     {:x 0 :y 210 :width 150 :height 50 :fill "green"
+    [:rect.on-button
+     {:x 0 :y 210 :width 150 :height 50 :fill "darkseagreen"
       :on-click #(om/update! data :paused? false)}]
     [:text {:x (+ 25 50) :y (+ 210 30)
             :text-anchor "middle"
@@ -480,8 +477,8 @@
      "Resume changes"]]
 
    [:g#dev-mode-off
-    [:rect
-     {:x 0 :y 270 :width 150 :height 50 :fill "red"
+    [:rect.off-button
+     {:x 0 :y 270 :width 150 :height 50 :fill "indianred"
       :on-click #(om/update! data :paused? true)}]
     [:text {:x (+ 25 50) :y (+ 270 30)
             :text-anchor "middle"
@@ -497,8 +494,8 @@
                                 :-moz-user-select "none"
                                 :-webkit-user-select "none"}}   
    [:g#sections-toggle
-    [:rect
-     {:x 0 :y 400 :width 150 :height 50 :fill "blue"
+    [:rect.toggle-button
+     {:x 0 :y 400 :width 150 :height 50 :fill "steelblue"
       :on-click #(om/transact! data :sections? not)}]
     [:text {:x (+ 25 50) :y (+ 30 400)
             :text-anchor "middle"
