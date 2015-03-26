@@ -306,34 +306,37 @@
 
 (defn mouth
   [{:keys [head-height head-cx head-cy head-rx head-ry
-           eye-cxa nose-cy] :as measures}
+           eye-cxa eye-cxb nose-cy] :as measures}
    dev?]
-  (let [x-offset (/ (- head-cx eye-cxa) 1.5)
-        mouth-x1 (- head-cx x-offset)
-        mouth-x2 (+ head-cx x-offset)
-        
-        max-y (- (+ head-cy head-ry) (/ head-height 10))
-        
-        mouth-y max-y
-        mouth-cx1 (+ mouth-x1 10)
-        mouth-cx2 (- mouth-x2 10)
-        mouth-cy (+ mouth-y 10)]
+  (let [mouth-cx head-cx ;; TODO: have other cxs for off-center mouths
+        mouth-cy head-cy
+        mouth-rx (- head-rx (/ head-rx 20))
+        mouth-ry (- head-ry (/ head-ry 20))
+        mouth-clip-x eye-cxa
+        mouth-clip-width (- eye-cxb eye-cxa)
+        mouth-clip-y (+ mouth-cy (/ mouth-ry 2))
+        mouth-clip-height head-height]
     (merge measures
-      {:mouth-x1 mouth-x1 
-       :mouth-x2 mouth-x2
-       :mouth-y mouth-y
-       :mouth-cx1 mouth-cx1
-       :mouth-cx2 mouth-cx2
-       :mouth-cy mouth-cy})))
+      {:mouth-cx mouth-cx
+       :mouth-cy mouth-cy
+       :mouth-rx mouth-rx
+       :mouth-ry mouth-ry
+       :mouth-clip-x mouth-clip-x
+       :mouth-clip-y mouth-clip-y
+       :mouth-clip-width mouth-clip-width
+       :mouth-clip-height mouth-clip-height})))
 
 (defhtml draw-mouth
-  [{:keys [mouth-x1 mouth-x2 mouth-y mouth-cx1 mouth-cx2 mouth-cy]}]
-  [:path {:d (reduce (fn [acc s]
-                       (str acc " " s))
-               ["M" mouth-x1 mouth-y
-                "C" mouth-cx1 mouth-cy mouth-cx2 mouth-cy mouth-x2 mouth-y])
-          :stroke "dimgrey"
-          :fill "transparent"}])
+  [{:keys [mouth-cx mouth-cy mouth-rx mouth-ry
+           mouth-clip-x mouth-clip-y mouth-clip-width mouth-clip-height]}]
+  [:g.mouth
+   [:defs
+    [:clippath#mouth-clip
+     [:rect {:x mouth-clip-x :y mouth-clip-y
+             :width mouth-clip-width :height mouth-clip-height}]]]
+   [:ellipse.mouth {:cx mouth-cx :cy mouth-cy :rx mouth-rx :ry mouth-ry
+                    :fill "transparent"
+                    :style {:clip-path "url(#mouth-clip)"}}]])
 
 
 
