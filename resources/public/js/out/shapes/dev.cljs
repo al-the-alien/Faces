@@ -373,26 +373,28 @@
   (let [w js/window.innerWidth
         h js/window.innerHeight
         m (min w h)
-        max-dimension (max 75 (- m (/ m 10)))
+        max-dimension (max 75 (- m (/ m 5)))
         min-dimension (max 75 (/ m 2))]
 
     ;; Adding 50 to account for the control buttons
     {:cx (+ (/ w 2) 50)  ;; 400
 
      ;; Subracting 15 to account for the chrome js console
-     :cy (- (/ h 2) 15) ;; 150
-     :width (if dev?
-              (avg min-dimension max-dimension)
-              (rand-nth (range
-                          min-dimension
-                          max-dimension
-                          0.1)))
-     :height (if dev?
-               (avg min-dimension max-dimension)
-               (rand-nth (range
-                           min-dimension
-                           max-dimension
-                           0.1)))}))
+     :cy (/ h 2) ;; (- (/ h 2) 15) ;; 150
+     :width (case 
+                dev? (avg min-dimension max-dimension)
+                (= min-dimension max-dimension) min-dimention
+                :else (rand-nth (range
+                                  min-dimension
+                                  max-dimension
+                                  0.1)))
+     :height (case 
+                 dev? (avg min-dimension max-dimension)
+                 (= min-dimension max-dimension) min-dimention
+                 :else (rand-nth (range
+                                   min-dimension
+                                   max-dimension
+                                   0.1)))}))
 
 (defn face
   [dev? & {:keys [proportional?]}]
