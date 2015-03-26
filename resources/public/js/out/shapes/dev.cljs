@@ -34,17 +34,6 @@
   (/ (reduce + xs) (count xs)))
 
 
-
-;; TODO: remove h and k, as pupil always calls ys-within-ellipse with
-;;       h=0 and k=0
-(defn ys-within-ellipse
-  [x a b h k] ;; a = rx ; b = ry ; h = cx ; k = cy
-  (let [max-offset (+ k
-                     (sqrt (* (square b)
-                             (- 1 (/ (square (- x h)) (square a))))))]
-    {:min (- max-offset)
-     :max max-offset}))
-
 (defn x-on-ellipse
   [y cy a b] ;; a = rx ; b = ry
   ;; The function acts on a normalized ellipse, but is passed a non-normalized
@@ -56,6 +45,12 @@
   ;; The function acts on a normalized ellipse, but is passed a non-normalized
   ;; x. To account for that, x is subtracted from cx.
   (* b (sqrt (abs (- 1 (square (/ (- cx x) a)))))))
+
+(defn ys-within-ellipse
+  [x cx a b] ;; a = rx ; b = ry
+  (let [max-y (y-on-ellipse x cx a b)]
+    {:min (- max-y)
+     :max max-y}))
 
 
 (defn xy-on-circle
@@ -100,10 +95,9 @@
 
         pupil-cy-limits (ys-within-ellipse
                           pupil-cx-offset
+                          0
                           (:rx pupil-c-measures)
-                          (:ry pupil-c-measures)
-                          (:cx pupil-c-measures)
-                          (:cy pupil-c-measures))
+                          (:ry pupil-c-measures))
 
 
         ;; FIXME: pupils occasionally extend past the edges of the eye.
