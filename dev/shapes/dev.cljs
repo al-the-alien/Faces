@@ -97,11 +97,7 @@
                    (and
                      (zero? (:min pupil-cy-limits))
                      (zero? (:min pupil-cy-limits)))
-                   (do (println "Got 0 0: "
-                         "original args:" measures
-                         "passed to pupil-cy-limits: " pupil-cx-offset
-                         pupil-c-measures)
-                       eye-cy)
+                   eye-cy
                    
 
                    :else
@@ -239,15 +235,11 @@
         max-ry nose-rx
         min-ry (/ head-ry 20)
 
-        _ (println {:min-ry min-ry :max-ry max-ry})
-
         nose-ry (cond
                   :dev? (avg min-ry max-ry)
                   (< max-ry min-ry) min-ry
                   :else (rand-nth (range min-ry max-ry 0.1)))
         
-
-        _ (println "passed")
 
         min-cy (inc (+ eye-cy eye-ry nose-ry))
 
@@ -306,12 +298,31 @@
 
 (defn mouth
   [{:keys [head-height head-cx head-cy head-rx head-ry
-           eye-cxa eye-cxb nose-cy] :as measures}
+           eye-cxa eye-cxb eye-cy eye-ry
+           nose-cy] :as measures}
    dev?]
   (let [mouth-cx head-cx ;; TODO: have other cxs for off-center mouths
-        mouth-cy head-cy
+
+        mouth-ry (/ head-height 20)
+
+        
+        min-cy (- (+ head-cy head-ry) (/ head-height 20) mouth-ry)
+        max-cy (- head-cy head-ry)
+        mouth-cy min-cy
+
+        
         mouth-rx (- head-rx (/ head-rx 20))
-        mouth-ry (- head-ry (/ head-ry 20))
+
+        lower-face-top (+ eye-cy eye-ry)
+        lower-face-bottom (+ head-cy head-ry)
+        lower-face (- lower-face-top lower-face-bottom)
+        
+        min-ry (- head-ry mouth-cy)
+        ;; (- head-ry (/ head-ry 20))
+        max-ry (- head-ry (/ head-ry 4))
+        
+        ;;        mouth-ry min-ry
+        
         mouth-clip-x eye-cxa
         mouth-clip-width (- eye-cxb eye-cxa)
         mouth-clip-y (+ mouth-cy (/ mouth-ry 2))
@@ -336,7 +347,8 @@
              :width mouth-clip-width :height mouth-clip-height}]]]
    [:ellipse.mouth {:cx mouth-cx :cy mouth-cy :rx mouth-rx :ry mouth-ry
                     :fill "transparent"
-                    :style {:clip-path "url(#mouth-clip)"}}]])
+                    :style {:clip-path "url(#mouth-clip)"}
+                    }]])
 
 
 
