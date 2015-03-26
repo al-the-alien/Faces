@@ -275,20 +275,20 @@
                         (+ nose-cy 3) nose-x2  (+ nose-y 1)])
                   :stroke "grey"
                   :fill "transparent"}]
+   [:path.highlight
+    {:d (reduce (fn [acc s]
+                  (str acc " " s))
+          ["M" (+ nose-x1 1) (+ nose-y 2)
+           "C" (+ nose-cx1 4) (- nose-cy 3) (- nose-cx2 4) (- nose-cy 3)
+           (- nose-x2 1) (+ nose-y 2)])
+     :stroke "lightgrey"
+     :fill "white"}]
    [:path {:d (reduce (fn [acc s]
                         (str acc " " s))
                 ["M" nose-x1 nose-y
                  "C" nose-cx1 nose-cy nose-cx2 nose-cy nose-x2 nose-y])
            :stroke "darkgrey"
-           :fill "white"}]
-   [:path.highlight
-    {:d (reduce (fn [acc s]
-                    (str acc " " s))
-            ["M" (+ nose-x1 1) nose-y
-             "C" nose-cx1 (- nose-cy 3) nose-cx2 (- nose-cy 3)
-             (- nose-x2 1) nose-y])
-     :stroke "lightgrey"
-     :fill "white"}]])
+           :fill "transparent"}]])
 
 
 (defn mouth
