@@ -141,12 +141,13 @@
    dev?]
   (let [max-cx-off (* (/ head-rx 3) 2)
         min-cx-off (/ head-rx 6)
-        eye-cx-offset 
-        (if dev?
-          (avg max-cx-off min-cx-off)
-          (rand-nth (range min-cx-off max-cx-off 0.1)))
+        eye-cx-offset (if dev?
+                        (avg max-cx-off min-cx-off)
+                        (rand-nth (range min-cx-off max-cx-off 0.1)))
+        
         eye-cxa (- head-cx eye-cx-offset)
         eye-cxb (+ head-cx eye-cx-offset)
+
 
         ;; After looking through many faces, (* 0.4 head-ry) seemed to be the
         ;; best min-cy.
@@ -157,11 +158,17 @@
                  (avg min-cy max-cy)
                  (rand-nth (range min-cy max-cy 0.1)))
 
-        rx-max (- head-cx eye-cxa)
+        x-intersect (- head-cx (x-on-ellipse eye-cy head-cy head-rx head-ry))
+        x-intersect-off (- eye-cxa x-intersect)
+
+        rx-max (min
+                 (- head-cx eye-cxa)
+                 (+ x-intersect-off (/ x-intersect-off 4)))
         rx-min (/ head-width 15)
         eye-rx (if dev?
-                 (avg rx-max rx-min)
-                 (rand-nth (range rx-min rx-max 0.1)))
+            (avg rx-max rx-min)
+            (rand-nth (range rx-min rx-max 0.1)))
+        
         
 
         horizontal-a eye-cy
@@ -171,10 +178,9 @@
         below-a (- head-bottom eye-cy)
         y-max (+ horizontal-a (/ below-a 2))
 
-        ry-max (- y-max eye-cy) ;; (- head-bottom (/ head-height 5))
+        ry-max (- y-max eye-cy)
         ry-min (/ head-height 20)
-        eye-ry ry-max
-        #_(if dev?
+        eye-ry (if dev?
             (avg ry-max ry-min)
             (rand-nth (range ry-min ry-max 0.1)))
         
@@ -561,8 +567,9 @@
              color]])
          (when (:sections? data)
            (section-face (:measurements data)))
+         
 
-         (let [{:keys [head-rx head-ry head-cy head-cx eye-cy eye-cxa eye-cxb]}
+         #_(let [{:keys [head-rx head-ry head-cy head-cx eye-cy eye-cxa eye-cxb]}
                (:measurements data)
                x-offset (x-on-ellipse eye-cy head-cy head-rx head-ry)
                y-offset-a (y-on-ellipse eye-cxa head-cx head-rx head-ry)
