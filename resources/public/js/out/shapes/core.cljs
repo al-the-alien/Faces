@@ -417,12 +417,7 @@
              :width mouth-clip-width :height mouth-clip-height}]]]
    [:ellipse.mouth {:cx mouth-cx :cy mouth-cy :rx mouth-rx :ry mouth-ry
                     :fill "transparent"
-                    :style {:clip-path "url(#mouth-clip)"}}]
-   #_(let [x-offset (x-on-ellipse (+ mouth-cy mouth-ry) head-cy head-rx head-ry)]
-           [:g#points
-            [:circle {:cx mouth-cx
-                      :cy (+ mouth-cy mouth-ry)
-                      :r 5 :fill "red"}]])])
+                    :style {:clip-path "url(#mouth-clip)"}}]])
 
 
 
