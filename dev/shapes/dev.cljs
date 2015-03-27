@@ -10,7 +10,9 @@
 
 
 (def color-scale
-  ["white" "lightgrey" "darkgrey" "grey" "dimgrey" "black"])
+  ["white"  ;; "whitesmoke"
+   "lightgrey" ;; "silver"
+   "darkgrey" "grey" "dimgrey" "black"])
 
 (defn println
   [& content]
@@ -334,37 +336,20 @@
      [:rect {:x nose-clip-xc :y nose-shadow-clip-y
              :width nose-clip-width :height (* 3 nose-clip-height)}]]]
    [:ellipse.shadow {:cx nose-cx :cy (+ nose-cy 6) :rx nose-rx :ry nose-ry
+                     :fill "grey"
+                     :stroke "transparent"
+                     :style {:clip-path "url(#nose-shadow)"}}]
+   [:ellipse.shadow {:cx nose-cx :cy (+ nose-cy 4) :rx nose-rx :ry nose-ry
                      :fill "darkgrey"
                      :stroke "transparent"
                      :style {:clip-path "url(#nose-shadow)"}}]
-   [:ellipse.shadow {:cx nose-cx :cy (+ nose-cy 3) :rx nose-rx :ry nose-ry
+   [:ellipse.shadow {:cx nose-cx :cy (+ nose-cy 2) :rx nose-rx :ry nose-ry
                      :fill "lightgrey"
                      :stroke "transparent"
                      :style {:clip-path "url(#nose-shadow)"}}]
    [:ellipse {:cx nose-cx :cy nose-cy :rx nose-rx :ry nose-ry
               :fill "white" :stroke "transparent"
-              :style {:clip-path "url(#nose-bridge)"}}]
-   #_[:path.shadow {:d (reduce (fn [acc s]
-                                 (str acc " " s))
-                         ["M" nose-x1 (+ nose-y 1)
-                          "C" nose-cx1 (+ nose-cy 3) nose-cx2
-                          (+ nose-cy 3) nose-x2  (+ nose-y 1)])
-                    :stroke "grey"
-                    :fill "transparent"}]
-   #_[:path.highlight
-      {:d (reduce (fn [acc s]
-                    (str acc " " s))
-            ["M" (+ nose-x1 1) (+ nose-y 2)
-             "C" (+ nose-cx1 4) (- nose-cy 3) (- nose-cx2 4) (- nose-cy 3)
-             (- nose-x2 1) (+ nose-y 2)])
-       :stroke "lightgrey"
-       :fill "white"}]
-   #_[:path {:d (reduce (fn [acc s]
-                          (str acc " " s))
-                  ["M" nose-x1 nose-y
-                   "C" nose-cx1 nose-cy nose-cx2 nose-cy nose-x2 nose-y])
-             :stroke "darkgrey"
-             :fill "transparent"}]])
+              :style {:clip-path "url(#nose-bridge)"}}]])
 
 
 (defn mouth
