@@ -187,7 +187,7 @@
 
 (defhtml draw-eyes
   [{:keys [eye-cxa eye-cxb eye-cy eye-rx eye-ry
-           pupil-r pupil-cxa pupil-cxb pupil-cy
+           pupil-cxa pupil-cxb pupil-cy pupil-r
            highlight-cxa highlight-cxb highlight-cy highlight-r]}]
   [:g.eyes
    [:defs
@@ -402,10 +402,9 @@
        :below-c below-c})))
 
 (defhtml draw-mouth
-  [{:keys [head-cx head-cy head-ry head-rx
-           mouth-cx mouth-cy mouth-rx mouth-ry
-           mouth-clip-x mouth-clip-y mouth-clip-width mouth-clip-height
-           horizontal-c test-height below-c] :as measures}]
+  [{:keys [mouth-cx mouth-cy mouth-rx mouth-ry
+           mouth-clip-x mouth-clip-y
+           mouth-clip-width mouth-clip-height] :as measures}]
   [:g.mouth
    [:defs
     [:clippath#mouth-clip

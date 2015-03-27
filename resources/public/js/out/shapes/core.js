@@ -24,14 +24,14 @@ return (cljs.core.reduce.call(null,cljs.core._PLUS_,xs) / cljs.core.count.call(n
 var avg = function (var_args){
 var xs = null;
 if (arguments.length > 0) {
-var G__182266__i = 0, G__182266__a = new Array(arguments.length -  0);
-while (G__182266__i < G__182266__a.length) {G__182266__a[G__182266__i] = arguments[G__182266__i + 0]; ++G__182266__i;}
-  xs = new cljs.core.IndexedSeq(G__182266__a,0);
+var G__185050__i = 0, G__185050__a = new Array(arguments.length -  0);
+while (G__185050__i < G__185050__a.length) {G__185050__a[G__185050__i] = arguments[G__185050__i + 0]; ++G__185050__i;}
+  xs = new cljs.core.IndexedSeq(G__185050__a,0);
 } 
 return avg__delegate.call(this,xs);};
 avg.cljs$lang$maxFixedArity = 0;
-avg.cljs$lang$applyTo = (function (arglist__182267){
-var xs = cljs.core.seq(arglist__182267);
+avg.cljs$lang$applyTo = (function (arglist__185051){
+var xs = cljs.core.seq(arglist__185051);
 return avg__delegate(xs);
 });
 avg.cljs$core$IFn$_invoke$arity$variadic = avg__delegate;
@@ -77,15 +77,15 @@ return new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"mi
 shapes.core.xy_on_pupil = (function xy_on_pupil(pupil_r){
 return shapes.core.sqrt.call(null,(shapes.core.square.call(null,pupil_r) / (2)));
 });
-shapes.core.pupils = (function pupils(p__182268,avg_QMARK_){
-var map__182270 = p__182268;
-var map__182270__$1 = ((cljs.core.seq_QMARK_.call(null,map__182270))?cljs.core.apply.call(null,cljs.core.hash_map,map__182270):map__182270);
-var measures = map__182270__$1;
-var eye_ry = cljs.core.get.call(null,map__182270__$1,new cljs.core.Keyword(null,"eye-ry","eye-ry",933465119));
-var eye_rx = cljs.core.get.call(null,map__182270__$1,new cljs.core.Keyword(null,"eye-rx","eye-rx",67315923));
-var eye_cy = cljs.core.get.call(null,map__182270__$1,new cljs.core.Keyword(null,"eye-cy","eye-cy",650254757));
-var eye_cxb = cljs.core.get.call(null,map__182270__$1,new cljs.core.Keyword(null,"eye-cxb","eye-cxb",1053942691));
-var eye_cxa = cljs.core.get.call(null,map__182270__$1,new cljs.core.Keyword(null,"eye-cxa","eye-cxa",-1029825486));
+shapes.core.pupils = (function pupils(p__185052,avg_QMARK_){
+var map__185054 = p__185052;
+var map__185054__$1 = ((cljs.core.seq_QMARK_.call(null,map__185054))?cljs.core.apply.call(null,cljs.core.hash_map,map__185054):map__185054);
+var measures = map__185054__$1;
+var eye_ry = cljs.core.get.call(null,map__185054__$1,new cljs.core.Keyword(null,"eye-ry","eye-ry",933465119));
+var eye_rx = cljs.core.get.call(null,map__185054__$1,new cljs.core.Keyword(null,"eye-rx","eye-rx",67315923));
+var eye_cy = cljs.core.get.call(null,map__185054__$1,new cljs.core.Keyword(null,"eye-cy","eye-cy",650254757));
+var eye_cxb = cljs.core.get.call(null,map__185054__$1,new cljs.core.Keyword(null,"eye-cxb","eye-cxb",1053942691));
+var eye_cxa = cljs.core.get.call(null,map__185054__$1,new cljs.core.Keyword(null,"eye-cxa","eye-cxa",-1029825486));
 var r_max = (function (){var x__14768__auto__ = (function (){var x__14768__auto__ = eye_rx;
 var y__14769__auto__ = eye_ry;
 return ((x__14768__auto__ < y__14769__auto__) ? x__14768__auto__ : y__14769__auto__);
@@ -115,16 +115,16 @@ var highlight_cxb = (pupil_cxb + highlight_offset);
 var highlight_cy = (pupil_cy - highlight_offset);
 return new cljs.core.PersistentArrayMap(null, 8, [new cljs.core.Keyword(null,"pupil-r","pupil-r",1531003590),pupil_r,new cljs.core.Keyword(null,"pupil-cxa","pupil-cxa",264217686),pupil_cxa,new cljs.core.Keyword(null,"pupil-cxb","pupil-cxb",1095720403),pupil_cxb,new cljs.core.Keyword(null,"pupil-cy","pupil-cy",1572369865),pupil_cy,new cljs.core.Keyword(null,"highlight-r","highlight-r",-332764851),highlight_r,new cljs.core.Keyword(null,"highlight-cxa","highlight-cxa",-206081206),highlight_cxa,new cljs.core.Keyword(null,"highlight-cxb","highlight-cxb",-700161662),highlight_cxb,new cljs.core.Keyword(null,"highlight-cy","highlight-cy",-186448681),highlight_cy], null);
 });
-shapes.core.eyes = (function eyes(p__182271,avg_QMARK_){
-var map__182273 = p__182271;
-var map__182273__$1 = ((cljs.core.seq_QMARK_.call(null,map__182273))?cljs.core.apply.call(null,cljs.core.hash_map,map__182273):map__182273);
-var measures = map__182273__$1;
-var head_ry = cljs.core.get.call(null,map__182273__$1,new cljs.core.Keyword(null,"head-ry","head-ry",-2093507644));
-var head_rx = cljs.core.get.call(null,map__182273__$1,new cljs.core.Keyword(null,"head-rx","head-rx",-1157911938));
-var head_height = cljs.core.get.call(null,map__182273__$1,new cljs.core.Keyword(null,"head-height","head-height",1646756657));
-var head_width = cljs.core.get.call(null,map__182273__$1,new cljs.core.Keyword(null,"head-width","head-width",-652130664));
-var head_cy = cljs.core.get.call(null,map__182273__$1,new cljs.core.Keyword(null,"head-cy","head-cy",-1378313232));
-var head_cx = cljs.core.get.call(null,map__182273__$1,new cljs.core.Keyword(null,"head-cx","head-cx",-1674502265));
+shapes.core.eyes = (function eyes(p__185055,avg_QMARK_){
+var map__185057 = p__185055;
+var map__185057__$1 = ((cljs.core.seq_QMARK_.call(null,map__185057))?cljs.core.apply.call(null,cljs.core.hash_map,map__185057):map__185057);
+var measures = map__185057__$1;
+var head_ry = cljs.core.get.call(null,map__185057__$1,new cljs.core.Keyword(null,"head-ry","head-ry",-2093507644));
+var head_rx = cljs.core.get.call(null,map__185057__$1,new cljs.core.Keyword(null,"head-rx","head-rx",-1157911938));
+var head_height = cljs.core.get.call(null,map__185057__$1,new cljs.core.Keyword(null,"head-height","head-height",1646756657));
+var head_width = cljs.core.get.call(null,map__185057__$1,new cljs.core.Keyword(null,"head-width","head-width",-652130664));
+var head_cy = cljs.core.get.call(null,map__185057__$1,new cljs.core.Keyword(null,"head-cy","head-cy",-1378313232));
+var head_cx = cljs.core.get.call(null,map__185057__$1,new cljs.core.Keyword(null,"head-cx","head-cx",-1674502265));
 var max_cx_off = ((head_rx / (3)) * (2));
 var min_cx_off = (head_rx / (6));
 var eye_cx_offset = (cljs.core.truth_(avg_QMARK_)?shapes.core.avg.call(null,max_cx_off,min_cx_off):shapes.core.rand_float.call(null,min_cx_off,max_cx_off));
@@ -153,34 +153,34 @@ var eye_ry = (cljs.core.truth_(avg_QMARK_)?shapes.core.avg.call(null,ry_max,ry_m
 var eye_map = cljs.core.merge.call(null,measures,cljs.core.PersistentHashMap.fromArrays([new cljs.core.Keyword(null,"eye-cxb","eye-cxb",1053942691),new cljs.core.Keyword(null,"eye-cy","eye-cy",650254757),new cljs.core.Keyword(null,"vertical-a","vertical-a",464885929),new cljs.core.Keyword(null,"horizontal-a","horizontal-a",398345994),new cljs.core.Keyword(null,"eye-cxa","eye-cxa",-1029825486),new cljs.core.Keyword(null,"eye-rx","eye-rx",67315923),new cljs.core.Keyword(null,"horizontal-b","horizontal-b",602159673),new cljs.core.Keyword(null,"vertical-b","vertical-b",-117595011),new cljs.core.Keyword(null,"eye-ry","eye-ry",933465119)],[eye_cxb,eye_cy,eye_cxa,horizontal_a,eye_cxa,eye_rx,(eye_cy + eye_ry),eye_cxb,eye_ry]));
 return cljs.core.merge.call(null,eye_map,shapes.core.pupils.call(null,eye_map,avg_QMARK_));
 });
-shapes.core.draw_eyes = (function draw_eyes(p__182274){
-var map__182276 = p__182274;
-var map__182276__$1 = ((cljs.core.seq_QMARK_.call(null,map__182276))?cljs.core.apply.call(null,cljs.core.hash_map,map__182276):map__182276);
-var eye_ry = cljs.core.get.call(null,map__182276__$1,new cljs.core.Keyword(null,"eye-ry","eye-ry",933465119));
-var highlight_cxb = cljs.core.get.call(null,map__182276__$1,new cljs.core.Keyword(null,"highlight-cxb","highlight-cxb",-700161662));
-var eye_cxb = cljs.core.get.call(null,map__182276__$1,new cljs.core.Keyword(null,"eye-cxb","eye-cxb",1053942691));
-var eye_cy = cljs.core.get.call(null,map__182276__$1,new cljs.core.Keyword(null,"eye-cy","eye-cy",650254757));
-var pupil_r = cljs.core.get.call(null,map__182276__$1,new cljs.core.Keyword(null,"pupil-r","pupil-r",1531003590));
-var pupil_cy = cljs.core.get.call(null,map__182276__$1,new cljs.core.Keyword(null,"pupil-cy","pupil-cy",1572369865));
-var highlight_cxa = cljs.core.get.call(null,map__182276__$1,new cljs.core.Keyword(null,"highlight-cxa","highlight-cxa",-206081206));
-var highlight_r = cljs.core.get.call(null,map__182276__$1,new cljs.core.Keyword(null,"highlight-r","highlight-r",-332764851));
-var eye_cxa = cljs.core.get.call(null,map__182276__$1,new cljs.core.Keyword(null,"eye-cxa","eye-cxa",-1029825486));
-var pupil_cxb = cljs.core.get.call(null,map__182276__$1,new cljs.core.Keyword(null,"pupil-cxb","pupil-cxb",1095720403));
-var eye_rx = cljs.core.get.call(null,map__182276__$1,new cljs.core.Keyword(null,"eye-rx","eye-rx",67315923));
-var pupil_cxa = cljs.core.get.call(null,map__182276__$1,new cljs.core.Keyword(null,"pupil-cxa","pupil-cxa",264217686));
-var highlight_cy = cljs.core.get.call(null,map__182276__$1,new cljs.core.Keyword(null,"highlight-cy","highlight-cy",-186448681));
+shapes.core.draw_eyes = (function draw_eyes(p__185058){
+var map__185060 = p__185058;
+var map__185060__$1 = ((cljs.core.seq_QMARK_.call(null,map__185060))?cljs.core.apply.call(null,cljs.core.hash_map,map__185060):map__185060);
+var eye_ry = cljs.core.get.call(null,map__185060__$1,new cljs.core.Keyword(null,"eye-ry","eye-ry",933465119));
+var highlight_cxb = cljs.core.get.call(null,map__185060__$1,new cljs.core.Keyword(null,"highlight-cxb","highlight-cxb",-700161662));
+var eye_cxb = cljs.core.get.call(null,map__185060__$1,new cljs.core.Keyword(null,"eye-cxb","eye-cxb",1053942691));
+var eye_cy = cljs.core.get.call(null,map__185060__$1,new cljs.core.Keyword(null,"eye-cy","eye-cy",650254757));
+var pupil_r = cljs.core.get.call(null,map__185060__$1,new cljs.core.Keyword(null,"pupil-r","pupil-r",1531003590));
+var pupil_cy = cljs.core.get.call(null,map__185060__$1,new cljs.core.Keyword(null,"pupil-cy","pupil-cy",1572369865));
+var highlight_cxa = cljs.core.get.call(null,map__185060__$1,new cljs.core.Keyword(null,"highlight-cxa","highlight-cxa",-206081206));
+var highlight_r = cljs.core.get.call(null,map__185060__$1,new cljs.core.Keyword(null,"highlight-r","highlight-r",-332764851));
+var eye_cxa = cljs.core.get.call(null,map__185060__$1,new cljs.core.Keyword(null,"eye-cxa","eye-cxa",-1029825486));
+var pupil_cxb = cljs.core.get.call(null,map__185060__$1,new cljs.core.Keyword(null,"pupil-cxb","pupil-cxb",1095720403));
+var eye_rx = cljs.core.get.call(null,map__185060__$1,new cljs.core.Keyword(null,"eye-rx","eye-rx",67315923));
+var pupil_cxa = cljs.core.get.call(null,map__185060__$1,new cljs.core.Keyword(null,"pupil-cxa","pupil-cxa",264217686));
+var highlight_cy = cljs.core.get.call(null,map__185060__$1,new cljs.core.Keyword(null,"highlight-cy","highlight-cy",-186448681));
 return React.createElement("g",{"className": "eyes"},React.createElement("defs",null,React.createElement("clippath",{"id": "eye-a"},React.createElement("ellipse",{"cx": eye_cxa, "cy": eye_cy, "rx": eye_rx, "ry": eye_ry})),React.createElement("clippath",{"id": "eye-b"},React.createElement("ellipse",{"cx": eye_cxb, "cy": eye_cy, "rx": eye_rx, "ry": eye_ry, "strokeWidth": (2)}))),React.createElement("ellipse",{"className": "eye", "cx": eye_cxa, "cy": eye_cy, "rx": eye_rx, "ry": eye_ry, "strokeWidth": (2)}),React.createElement("g",{"id": "inner-eye-a", "style": {"clipPath": "url(#eye-a)"}},React.createElement("circle",{"className": "pupil", "cx": pupil_cxa, "cy": pupil_cy, "r": pupil_r, "stroke": "transparent", "fill": "black"}),React.createElement("circle",{"className": "highlight", "cx": highlight_cxa, "cy": highlight_cy, "r": highlight_r, "stroke": "transparent"})),React.createElement("ellipse",{"className": "eye", "cx": eye_cxb, "cy": eye_cy, "rx": eye_rx, "ry": eye_ry, "strokeWidth": (2)}),React.createElement("g",{"id": "inner-eye-b", "style": {"clipPath": "url(#eye-b)"}},React.createElement("circle",{"className": "pupil", "cx": pupil_cxb, "cy": pupil_cy, "r": pupil_r, "stroke": "transparent", "strokeAlpha": "0.5", "fill": "black"}),React.createElement("circle",{"className": "highlight", "cx": highlight_cxb, "cy": highlight_cy, "r": highlight_r, "stroke": "transparent"})));
 });
-shapes.core.nose = (function nose(p__182277,avg_QMARK_){
-var map__182279 = p__182277;
-var map__182279__$1 = ((cljs.core.seq_QMARK_.call(null,map__182279))?cljs.core.apply.call(null,cljs.core.hash_map,map__182279):map__182279);
-var measures = map__182279__$1;
-var vertical_b = cljs.core.get.call(null,map__182279__$1,new cljs.core.Keyword(null,"vertical-b","vertical-b",-117595011));
-var vertical_a = cljs.core.get.call(null,map__182279__$1,new cljs.core.Keyword(null,"vertical-a","vertical-a",464885929));
-var horizontal_b = cljs.core.get.call(null,map__182279__$1,new cljs.core.Keyword(null,"horizontal-b","horizontal-b",602159673));
-var head_ry = cljs.core.get.call(null,map__182279__$1,new cljs.core.Keyword(null,"head-ry","head-ry",-2093507644));
-var head_cy = cljs.core.get.call(null,map__182279__$1,new cljs.core.Keyword(null,"head-cy","head-cy",-1378313232));
-var head_cx = cljs.core.get.call(null,map__182279__$1,new cljs.core.Keyword(null,"head-cx","head-cx",-1674502265));
+shapes.core.nose = (function nose(p__185061,avg_QMARK_){
+var map__185063 = p__185061;
+var map__185063__$1 = ((cljs.core.seq_QMARK_.call(null,map__185063))?cljs.core.apply.call(null,cljs.core.hash_map,map__185063):map__185063);
+var measures = map__185063__$1;
+var vertical_b = cljs.core.get.call(null,map__185063__$1,new cljs.core.Keyword(null,"vertical-b","vertical-b",-117595011));
+var vertical_a = cljs.core.get.call(null,map__185063__$1,new cljs.core.Keyword(null,"vertical-a","vertical-a",464885929));
+var horizontal_b = cljs.core.get.call(null,map__185063__$1,new cljs.core.Keyword(null,"horizontal-b","horizontal-b",602159673));
+var head_ry = cljs.core.get.call(null,map__185063__$1,new cljs.core.Keyword(null,"head-ry","head-ry",-2093507644));
+var head_cy = cljs.core.get.call(null,map__185063__$1,new cljs.core.Keyword(null,"head-cy","head-cy",-1378313232));
+var head_cx = cljs.core.get.call(null,map__185063__$1,new cljs.core.Keyword(null,"head-cx","head-cx",-1674502265));
 var nose_cx = head_cx;
 var a_to_b = (vertical_b - vertical_a);
 var max_rx = (a_to_b / (4));
@@ -208,33 +208,33 @@ var clip_y_c = ((nose_cy + (1)) - shapes.core.y_on_ellipse.call(null,(nose_cx + 
 var shadow_clip_y = (clip_y_c + (1));
 return cljs.core.merge.call(null,measures,cljs.core.PersistentHashMap.fromArrays([new cljs.core.Keyword(null,"nose-cx","nose-cx",-829610592),new cljs.core.Keyword(null,"nose-rx","nose-rx",-663834303),new cljs.core.Keyword(null,"nose-cy","nose-cy",1639299138),new cljs.core.Keyword(null,"nose-shadow-clip-y","nose-shadow-clip-y",-1293866494),new cljs.core.Keyword(null,"nose-clip-width","nose-clip-width",1579765635),new cljs.core.Keyword(null,"nose-ry","nose-ry",-556167034),new cljs.core.Keyword(null,"horizontal-c","horizontal-c",-427119703),new cljs.core.Keyword(null,"a-to-b","a-to-b",504354032),new cljs.core.Keyword(null,"nose-clip-yab","nose-clip-yab",1476607987),new cljs.core.Keyword(null,"nose-clip-height","nose-clip-height",-1703773324),new cljs.core.Keyword(null,"nose-clip-xc","nose-clip-xc",-1863115051),new cljs.core.Keyword(null,"nose-clip-xb","nose-clip-xb",434604823),new cljs.core.Keyword(null,"nose-clip-yc","nose-clip-yc",-340569830),new cljs.core.Keyword(null,"nose-clip-xa","nose-clip-xa",-1415311041)],[nose_cx,nose_rx,nose_cy,shadow_clip_y,clip_width,nose_ry,((nose_cy + nose_ry) + (6)),a_to_b,clip_y_ab,clip_height,clip_x_c,clip_x_b,clip_y_c,clip_x_a]));
 });
-shapes.core.draw_nose = (function draw_nose(p__182280){
-var map__182282 = p__182280;
-var map__182282__$1 = ((cljs.core.seq_QMARK_.call(null,map__182282))?cljs.core.apply.call(null,cljs.core.hash_map,map__182282):map__182282);
-var nose_clip_yc = cljs.core.get.call(null,map__182282__$1,new cljs.core.Keyword(null,"nose-clip-yc","nose-clip-yc",-340569830));
-var nose_clip_xa = cljs.core.get.call(null,map__182282__$1,new cljs.core.Keyword(null,"nose-clip-xa","nose-clip-xa",-1415311041));
-var nose_cx = cljs.core.get.call(null,map__182282__$1,new cljs.core.Keyword(null,"nose-cx","nose-cx",-829610592));
-var nose_rx = cljs.core.get.call(null,map__182282__$1,new cljs.core.Keyword(null,"nose-rx","nose-rx",-663834303));
-var nose_shadow_clip_y = cljs.core.get.call(null,map__182282__$1,new cljs.core.Keyword(null,"nose-shadow-clip-y","nose-shadow-clip-y",-1293866494));
-var nose_cy = cljs.core.get.call(null,map__182282__$1,new cljs.core.Keyword(null,"nose-cy","nose-cy",1639299138));
-var nose_clip_width = cljs.core.get.call(null,map__182282__$1,new cljs.core.Keyword(null,"nose-clip-width","nose-clip-width",1579765635));
-var nose_ry = cljs.core.get.call(null,map__182282__$1,new cljs.core.Keyword(null,"nose-ry","nose-ry",-556167034));
-var nose_clip_yab = cljs.core.get.call(null,map__182282__$1,new cljs.core.Keyword(null,"nose-clip-yab","nose-clip-yab",1476607987));
-var nose_clip_height = cljs.core.get.call(null,map__182282__$1,new cljs.core.Keyword(null,"nose-clip-height","nose-clip-height",-1703773324));
-var nose_clip_xc = cljs.core.get.call(null,map__182282__$1,new cljs.core.Keyword(null,"nose-clip-xc","nose-clip-xc",-1863115051));
-var nose_clip_xb = cljs.core.get.call(null,map__182282__$1,new cljs.core.Keyword(null,"nose-clip-xb","nose-clip-xb",434604823));
+shapes.core.draw_nose = (function draw_nose(p__185064){
+var map__185066 = p__185064;
+var map__185066__$1 = ((cljs.core.seq_QMARK_.call(null,map__185066))?cljs.core.apply.call(null,cljs.core.hash_map,map__185066):map__185066);
+var nose_clip_yc = cljs.core.get.call(null,map__185066__$1,new cljs.core.Keyword(null,"nose-clip-yc","nose-clip-yc",-340569830));
+var nose_clip_xa = cljs.core.get.call(null,map__185066__$1,new cljs.core.Keyword(null,"nose-clip-xa","nose-clip-xa",-1415311041));
+var nose_cx = cljs.core.get.call(null,map__185066__$1,new cljs.core.Keyword(null,"nose-cx","nose-cx",-829610592));
+var nose_rx = cljs.core.get.call(null,map__185066__$1,new cljs.core.Keyword(null,"nose-rx","nose-rx",-663834303));
+var nose_shadow_clip_y = cljs.core.get.call(null,map__185066__$1,new cljs.core.Keyword(null,"nose-shadow-clip-y","nose-shadow-clip-y",-1293866494));
+var nose_cy = cljs.core.get.call(null,map__185066__$1,new cljs.core.Keyword(null,"nose-cy","nose-cy",1639299138));
+var nose_clip_width = cljs.core.get.call(null,map__185066__$1,new cljs.core.Keyword(null,"nose-clip-width","nose-clip-width",1579765635));
+var nose_ry = cljs.core.get.call(null,map__185066__$1,new cljs.core.Keyword(null,"nose-ry","nose-ry",-556167034));
+var nose_clip_yab = cljs.core.get.call(null,map__185066__$1,new cljs.core.Keyword(null,"nose-clip-yab","nose-clip-yab",1476607987));
+var nose_clip_height = cljs.core.get.call(null,map__185066__$1,new cljs.core.Keyword(null,"nose-clip-height","nose-clip-height",-1703773324));
+var nose_clip_xc = cljs.core.get.call(null,map__185066__$1,new cljs.core.Keyword(null,"nose-clip-xc","nose-clip-xc",-1863115051));
+var nose_clip_xb = cljs.core.get.call(null,map__185066__$1,new cljs.core.Keyword(null,"nose-clip-xb","nose-clip-xb",434604823));
 return React.createElement("g",{"className": "nose"},React.createElement("defs",null,React.createElement("clippath",{"id": "nose-bridge"},React.createElement("rect",{"x": nose_clip_xa, "y": nose_clip_yab, "width": nose_clip_width, "height": nose_clip_height}),React.createElement("rect",{"x": nose_clip_xb, "y": nose_clip_yab, "width": nose_clip_width, "height": nose_clip_height}),React.createElement("rect",{"x": nose_clip_xc, "y": nose_clip_yc, "width": nose_clip_width, "height": nose_clip_height})),React.createElement("clippath",{"id": "nose-shadow"},React.createElement("rect",{"x": nose_clip_xc, "y": nose_shadow_clip_y, "width": nose_clip_width, "height": ((3) * nose_clip_height)}))),React.createElement("ellipse",{"className": "shadow", "cx": nose_cx, "cy": (nose_cy + (6)), "rx": nose_rx, "ry": nose_ry, "fill": "grey", "stroke": "transparent", "style": {"clipPath": "url(#nose-shadow)"}}),React.createElement("ellipse",{"className": "shadow", "cx": nose_cx, "cy": (nose_cy + (4)), "rx": nose_rx, "ry": nose_ry, "fill": "darkgrey", "stroke": "transparent", "style": {"clipPath": "url(#nose-shadow)"}}),React.createElement("ellipse",{"className": "shadow", "cx": nose_cx, "cy": (nose_cy + (2)), "rx": nose_rx, "ry": nose_ry, "fill": "lightgrey", "stroke": "transparent", "style": {"clipPath": "url(#nose-shadow)"}}),React.createElement("ellipse",{"cx": nose_cx, "cy": nose_cy, "rx": nose_rx, "ry": nose_ry, "fill": "white", "stroke": "transparent", "style": {"clipPath": "url(#nose-bridge)"}}));
 });
-shapes.core.mouth = (function mouth(p__182283,avg_QMARK_){
-var map__182285 = p__182283;
-var map__182285__$1 = ((cljs.core.seq_QMARK_.call(null,map__182285))?cljs.core.apply.call(null,cljs.core.hash_map,map__182285):map__182285);
-var measures = map__182285__$1;
-var a_to_b = cljs.core.get.call(null,map__182285__$1,new cljs.core.Keyword(null,"a-to-b","a-to-b",504354032));
-var horizontal_c = cljs.core.get.call(null,map__182285__$1,new cljs.core.Keyword(null,"horizontal-c","horizontal-c",-427119703));
-var head_ry = cljs.core.get.call(null,map__182285__$1,new cljs.core.Keyword(null,"head-ry","head-ry",-2093507644));
-var head_rx = cljs.core.get.call(null,map__182285__$1,new cljs.core.Keyword(null,"head-rx","head-rx",-1157911938));
-var head_cy = cljs.core.get.call(null,map__182285__$1,new cljs.core.Keyword(null,"head-cy","head-cy",-1378313232));
-var head_cx = cljs.core.get.call(null,map__182285__$1,new cljs.core.Keyword(null,"head-cx","head-cx",-1674502265));
+shapes.core.mouth = (function mouth(p__185067,avg_QMARK_){
+var map__185069 = p__185067;
+var map__185069__$1 = ((cljs.core.seq_QMARK_.call(null,map__185069))?cljs.core.apply.call(null,cljs.core.hash_map,map__185069):map__185069);
+var measures = map__185069__$1;
+var a_to_b = cljs.core.get.call(null,map__185069__$1,new cljs.core.Keyword(null,"a-to-b","a-to-b",504354032));
+var horizontal_c = cljs.core.get.call(null,map__185069__$1,new cljs.core.Keyword(null,"horizontal-c","horizontal-c",-427119703));
+var head_ry = cljs.core.get.call(null,map__185069__$1,new cljs.core.Keyword(null,"head-ry","head-ry",-2093507644));
+var head_rx = cljs.core.get.call(null,map__185069__$1,new cljs.core.Keyword(null,"head-rx","head-rx",-1157911938));
+var head_cy = cljs.core.get.call(null,map__185069__$1,new cljs.core.Keyword(null,"head-cy","head-cy",-1378313232));
+var head_cx = cljs.core.get.call(null,map__185069__$1,new cljs.core.Keyword(null,"head-cx","head-cx",-1674502265));
 var mouth_cx = head_cx;
 var below_c = ((head_cy + head_ry) - horizontal_c);
 var min_ry = (head_ry - ((5) * (below_c / (6))));
@@ -265,34 +265,27 @@ var mouth_clip_width = ((2) * clip_x_off);
 var mouth_clip_height = head_ry;
 return cljs.core.merge.call(null,measures,cljs.core.PersistentHashMap.fromArrays([new cljs.core.Keyword(null,"mouth-cy","mouth-cy",2005931686),new cljs.core.Keyword(null,"below-c","below-c",-1689698386),new cljs.core.Keyword(null,"mouth-clip-x","mouth-clip-x",-1176852240),new cljs.core.Keyword(null,"mouth-clip-height","mouth-clip-height",1513269617),new cljs.core.Keyword(null,"mouth-clip-y","mouth-clip-y",-1725633516),new cljs.core.Keyword(null,"mouth-ry","mouth-ry",-1000769801),new cljs.core.Keyword(null,"mouth-clip-width","mouth-clip-width",1861991800),new cljs.core.Keyword(null,"mouth-rx","mouth-rx",-1864884005),new cljs.core.Keyword(null,"mouth-cx","mouth-cx",-1408973953)],[mouth_cy,below_c,mouth_clip_x,mouth_clip_height,mouth_clip_y,mouth_ry,mouth_clip_width,mouth_rx,mouth_cx]));
 });
-shapes.core.draw_mouth = (function draw_mouth(p__182286){
-var map__182288 = p__182286;
-var map__182288__$1 = ((cljs.core.seq_QMARK_.call(null,map__182288))?cljs.core.apply.call(null,cljs.core.hash_map,map__182288):map__182288);
-var measures = map__182288__$1;
-var mouth_rx = cljs.core.get.call(null,map__182288__$1,new cljs.core.Keyword(null,"mouth-rx","mouth-rx",-1864884005));
-var head_rx = cljs.core.get.call(null,map__182288__$1,new cljs.core.Keyword(null,"head-rx","head-rx",-1157911938));
-var mouth_cx = cljs.core.get.call(null,map__182288__$1,new cljs.core.Keyword(null,"mouth-cx","mouth-cx",-1408973953));
-var test_height = cljs.core.get.call(null,map__182288__$1,new cljs.core.Keyword(null,"test-height","test-height",-1286786848));
-var head_ry = cljs.core.get.call(null,map__182288__$1,new cljs.core.Keyword(null,"head-ry","head-ry",-2093507644));
-var mouth_cy = cljs.core.get.call(null,map__182288__$1,new cljs.core.Keyword(null,"mouth-cy","mouth-cy",2005931686));
-var head_cx = cljs.core.get.call(null,map__182288__$1,new cljs.core.Keyword(null,"head-cx","head-cx",-1674502265));
-var horizontal_c = cljs.core.get.call(null,map__182288__$1,new cljs.core.Keyword(null,"horizontal-c","horizontal-c",-427119703));
-var below_c = cljs.core.get.call(null,map__182288__$1,new cljs.core.Keyword(null,"below-c","below-c",-1689698386));
-var head_cy = cljs.core.get.call(null,map__182288__$1,new cljs.core.Keyword(null,"head-cy","head-cy",-1378313232));
-var mouth_clip_x = cljs.core.get.call(null,map__182288__$1,new cljs.core.Keyword(null,"mouth-clip-x","mouth-clip-x",-1176852240));
-var mouth_clip_height = cljs.core.get.call(null,map__182288__$1,new cljs.core.Keyword(null,"mouth-clip-height","mouth-clip-height",1513269617));
-var mouth_clip_y = cljs.core.get.call(null,map__182288__$1,new cljs.core.Keyword(null,"mouth-clip-y","mouth-clip-y",-1725633516));
-var mouth_ry = cljs.core.get.call(null,map__182288__$1,new cljs.core.Keyword(null,"mouth-ry","mouth-ry",-1000769801));
-var mouth_clip_width = cljs.core.get.call(null,map__182288__$1,new cljs.core.Keyword(null,"mouth-clip-width","mouth-clip-width",1861991800));
+shapes.core.draw_mouth = (function draw_mouth(p__185070){
+var map__185072 = p__185070;
+var map__185072__$1 = ((cljs.core.seq_QMARK_.call(null,map__185072))?cljs.core.apply.call(null,cljs.core.hash_map,map__185072):map__185072);
+var measures = map__185072__$1;
+var mouth_clip_height = cljs.core.get.call(null,map__185072__$1,new cljs.core.Keyword(null,"mouth-clip-height","mouth-clip-height",1513269617));
+var mouth_clip_width = cljs.core.get.call(null,map__185072__$1,new cljs.core.Keyword(null,"mouth-clip-width","mouth-clip-width",1861991800));
+var mouth_clip_y = cljs.core.get.call(null,map__185072__$1,new cljs.core.Keyword(null,"mouth-clip-y","mouth-clip-y",-1725633516));
+var mouth_clip_x = cljs.core.get.call(null,map__185072__$1,new cljs.core.Keyword(null,"mouth-clip-x","mouth-clip-x",-1176852240));
+var mouth_ry = cljs.core.get.call(null,map__185072__$1,new cljs.core.Keyword(null,"mouth-ry","mouth-ry",-1000769801));
+var mouth_rx = cljs.core.get.call(null,map__185072__$1,new cljs.core.Keyword(null,"mouth-rx","mouth-rx",-1864884005));
+var mouth_cy = cljs.core.get.call(null,map__185072__$1,new cljs.core.Keyword(null,"mouth-cy","mouth-cy",2005931686));
+var mouth_cx = cljs.core.get.call(null,map__185072__$1,new cljs.core.Keyword(null,"mouth-cx","mouth-cx",-1408973953));
 return React.createElement("g",{"className": "mouth"},React.createElement("defs",null,React.createElement("clippath",{"id": "mouth-clip"},React.createElement("rect",{"x": mouth_clip_x, "y": mouth_clip_y, "width": mouth_clip_width, "height": mouth_clip_height}))),React.createElement("ellipse",{"className": "mouth", "cx": mouth_cx, "cy": mouth_cy, "rx": mouth_rx, "ry": mouth_ry, "fill": "transparent", "style": {"clipPath": "url(#mouth-clip)"}}));
 });
-shapes.core.head = (function head(p__182289,avg_QMARK_){
-var map__182291 = p__182289;
-var map__182291__$1 = ((cljs.core.seq_QMARK_.call(null,map__182291))?cljs.core.apply.call(null,cljs.core.hash_map,map__182291):map__182291);
-var height = cljs.core.get.call(null,map__182291__$1,new cljs.core.Keyword(null,"height","height",1025178622));
-var width = cljs.core.get.call(null,map__182291__$1,new cljs.core.Keyword(null,"width","width",-384071477));
-var cy = cljs.core.get.call(null,map__182291__$1,new cljs.core.Keyword(null,"cy","cy",755331060));
-var cx = cljs.core.get.call(null,map__182291__$1,new cljs.core.Keyword(null,"cx","cx",1272694324));
+shapes.core.head = (function head(p__185073,avg_QMARK_){
+var map__185075 = p__185073;
+var map__185075__$1 = ((cljs.core.seq_QMARK_.call(null,map__185075))?cljs.core.apply.call(null,cljs.core.hash_map,map__185075):map__185075);
+var height = cljs.core.get.call(null,map__185075__$1,new cljs.core.Keyword(null,"height","height",1025178622));
+var width = cljs.core.get.call(null,map__185075__$1,new cljs.core.Keyword(null,"width","width",-384071477));
+var cy = cljs.core.get.call(null,map__185075__$1,new cljs.core.Keyword(null,"cy","cy",755331060));
+var cx = cljs.core.get.call(null,map__185075__$1,new cljs.core.Keyword(null,"cx","cx",1272694324));
 return new cljs.core.PersistentArrayMap(null, 6, [new cljs.core.Keyword(null,"head-cx","head-cx",-1674502265),cx,new cljs.core.Keyword(null,"head-cy","head-cy",-1378313232),cy,new cljs.core.Keyword(null,"head-width","head-width",-652130664),width,new cljs.core.Keyword(null,"head-height","head-height",1646756657),height,new cljs.core.Keyword(null,"head-rx","head-rx",-1157911938),(width / (2)),new cljs.core.Keyword(null,"head-ry","head-ry",-2093507644),(height / (2))], null);
 });
 shapes.core.basic_measurements = (function basic_measurements(avg_QMARK_){
@@ -316,10 +309,10 @@ return new cljs.core.PersistentArrayMap(null, 4, [new cljs.core.Keyword(null,"cx
 * @param {...*} var_args
 */
 shapes.core.face = (function() { 
-var face__delegate = function (avg_QMARK_,p__182292){
-var map__182294 = p__182292;
-var map__182294__$1 = ((cljs.core.seq_QMARK_.call(null,map__182294))?cljs.core.apply.call(null,cljs.core.hash_map,map__182294):map__182294);
-var proportional_QMARK_ = cljs.core.get.call(null,map__182294__$1,new cljs.core.Keyword(null,"proportional?","proportional?",644090690));
+var face__delegate = function (avg_QMARK_,p__185076){
+var map__185078 = p__185076;
+var map__185078__$1 = ((cljs.core.seq_QMARK_.call(null,map__185078))?cljs.core.apply.call(null,cljs.core.hash_map,map__185078):map__185078);
+var proportional_QMARK_ = cljs.core.get.call(null,map__185078__$1,new cljs.core.Keyword(null,"proportional?","proportional?",644090690));
 if(cljs.core.truth_(proportional_QMARK_)){
 return shapes.proportional.nose.call(null,shapes.proportional.eyes.call(null,shapes.proportional.head.call(null,shapes.proportional.basic_measurements.call(null,avg_QMARK_),avg_QMARK_),avg_QMARK_),avg_QMARK_);
 } else {
@@ -327,33 +320,33 @@ return shapes.core.mouth.call(null,shapes.core.nose.call(null,shapes.core.eyes.c
 }
 };
 var face = function (avg_QMARK_,var_args){
-var p__182292 = null;
+var p__185076 = null;
 if (arguments.length > 1) {
-var G__182295__i = 0, G__182295__a = new Array(arguments.length -  1);
-while (G__182295__i < G__182295__a.length) {G__182295__a[G__182295__i] = arguments[G__182295__i + 1]; ++G__182295__i;}
-  p__182292 = new cljs.core.IndexedSeq(G__182295__a,0);
+var G__185079__i = 0, G__185079__a = new Array(arguments.length -  1);
+while (G__185079__i < G__185079__a.length) {G__185079__a[G__185079__i] = arguments[G__185079__i + 1]; ++G__185079__i;}
+  p__185076 = new cljs.core.IndexedSeq(G__185079__a,0);
 } 
-return face__delegate.call(this,avg_QMARK_,p__182292);};
+return face__delegate.call(this,avg_QMARK_,p__185076);};
 face.cljs$lang$maxFixedArity = 1;
-face.cljs$lang$applyTo = (function (arglist__182296){
-var avg_QMARK_ = cljs.core.first(arglist__182296);
-var p__182292 = cljs.core.rest(arglist__182296);
-return face__delegate(avg_QMARK_,p__182292);
+face.cljs$lang$applyTo = (function (arglist__185080){
+var avg_QMARK_ = cljs.core.first(arglist__185080);
+var p__185076 = cljs.core.rest(arglist__185080);
+return face__delegate(avg_QMARK_,p__185076);
 });
 face.cljs$core$IFn$_invoke$arity$variadic = face__delegate;
 return face;
 })()
 ;
-shapes.core.draw_face = (function draw_face(p__182297){
-var map__182299 = p__182297;
-var map__182299__$1 = ((cljs.core.seq_QMARK_.call(null,map__182299))?cljs.core.apply.call(null,cljs.core.hash_map,map__182299):map__182299);
-var measures = map__182299__$1;
-var head_height = cljs.core.get.call(null,map__182299__$1,new cljs.core.Keyword(null,"head-height","head-height",1646756657));
-var head_width = cljs.core.get.call(null,map__182299__$1,new cljs.core.Keyword(null,"head-width","head-width",-652130664));
-var head_ry = cljs.core.get.call(null,map__182299__$1,new cljs.core.Keyword(null,"head-ry","head-ry",-2093507644));
-var head_rx = cljs.core.get.call(null,map__182299__$1,new cljs.core.Keyword(null,"head-rx","head-rx",-1157911938));
-var head_cy = cljs.core.get.call(null,map__182299__$1,new cljs.core.Keyword(null,"head-cy","head-cy",-1378313232));
-var head_cx = cljs.core.get.call(null,map__182299__$1,new cljs.core.Keyword(null,"head-cx","head-cx",-1674502265));
+shapes.core.draw_face = (function draw_face(p__185081){
+var map__185083 = p__185081;
+var map__185083__$1 = ((cljs.core.seq_QMARK_.call(null,map__185083))?cljs.core.apply.call(null,cljs.core.hash_map,map__185083):map__185083);
+var measures = map__185083__$1;
+var head_height = cljs.core.get.call(null,map__185083__$1,new cljs.core.Keyword(null,"head-height","head-height",1646756657));
+var head_width = cljs.core.get.call(null,map__185083__$1,new cljs.core.Keyword(null,"head-width","head-width",-652130664));
+var head_ry = cljs.core.get.call(null,map__185083__$1,new cljs.core.Keyword(null,"head-ry","head-ry",-2093507644));
+var head_rx = cljs.core.get.call(null,map__185083__$1,new cljs.core.Keyword(null,"head-rx","head-rx",-1157911938));
+var head_cy = cljs.core.get.call(null,map__185083__$1,new cljs.core.Keyword(null,"head-cy","head-cy",-1378313232));
+var head_cx = cljs.core.get.call(null,map__185083__$1,new cljs.core.Keyword(null,"head-cx","head-cx",-1674502265));
 return React.createElement("g",{"className": "face", "fill": "white", "stroke": "grey", "strokeWidth": (3)},React.createElement("ellipse",{"cx": head_cx, "cy": head_cy, "rx": head_rx, "ry": head_ry, "strokeWidth": (3), "stroke": "grey", "fill": "white"}),sablono.interpreter.interpret.call(null,shapes.core.draw_eyes.call(null,measures)),sablono.interpreter.interpret.call(null,shapes.core.draw_nose.call(null,measures)),sablono.interpreter.interpret.call(null,shapes.core.draw_mouth.call(null,measures)));
 });
 
