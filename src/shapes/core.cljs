@@ -57,12 +57,12 @@
 
 (defn pupils
   [{:keys [eye-cxa eye-cxb eye-cy eye-rx eye-ry eye-cy] :as measures}
-   dev?]
+   avg?]
   (let [r-max (min
                 (min eye-rx eye-ry)
                 (- (max eye-rx eye-ry) (/ (max eye-rx eye-ry) 3)))
         r-min 5
-        pupil-r (if dev?
+        pupil-r (if avg?
                   (/ (+ r-min r-max) 2)
                   (rand-float r-min r-max))
 
@@ -76,12 +76,12 @@
                           (- (- eye-rx pupil-r))
                           (+ (- eye-rx pupil-r)))
         
-        pupil-cxa (if dev?
+        pupil-cxa (if avg?
                     eye-cxa
                     (+ eye-cxa pupil-cx-offset))
 
         
-        pupil-cxb (if dev?
+        pupil-cxb (if avg?
                     eye-cxb
                     (+ eye-cxb pupil-cx-offset))
 
@@ -95,7 +95,7 @@
 
 
         pupil-cy (cond
-                   dev? eye-cy
+                   avg? eye-cy
 
                    (<= (:max pupil-cy-limits) (:min pupil-cy-limits))
                    (+ eye-cy (:max pupil-cy-limits))
@@ -107,7 +107,7 @@
                                (:max pupil-cy-limits))))
 
         highlight-r
-        (if dev?
+        (if avg?
           (/ pupil-r (avg 2 6))
           (/ pupil-r (rand-float 2 6)))
 
@@ -126,10 +126,10 @@
 
 (defn eyes
   [{:keys [head-cx head-cy head-width head-height head-rx head-ry] :as measures}
-   dev?]
+   avg?]
   (let [max-cx-off (* (/ head-rx 3) 2)
         min-cx-off (/ head-rx 6)
-        eye-cx-offset (if dev?
+        eye-cx-offset (if avg?
                         (avg max-cx-off min-cx-off)
                         (rand-float min-cx-off max-cx-off))
         
@@ -143,7 +143,7 @@
         
         max-cy (+ head-cy (/ head-height 6))
         
-        eye-cy (if dev?
+        eye-cy (if avg?
                  (avg min-cy max-cy)
                  (rand-float min-cy max-cy))
 
@@ -154,7 +154,7 @@
                  (- head-cx eye-cxa)
                  (+ x-intersect-off (/ x-intersect-off 4)))
         rx-min (/ head-width 15)
-        eye-rx (if dev?
+        eye-rx (if avg?
                  (avg rx-max rx-min)
                  (rand-float rx-min rx-max))
         
@@ -170,7 +170,7 @@
         ry-max (- y-max eye-cy)
         ry-min (/ head-height 20)
         
-        eye-ry (if dev?
+        eye-ry (if avg?
                  (avg ry-max ry-min)
                  (rand-float ry-min ry-max))
         
@@ -181,7 +181,7 @@
                    :horizontal-a horizontal-a
                    :horizontal-b (+ eye-cy eye-ry)
                    :vertical-a eye-cxa :vertical-b eye-cxb})]
-    (merge eye-map (pupils eye-map dev?))))
+    (merge eye-map (pupils eye-map avg?))))
 
 
 (defhtml draw-eyes
@@ -240,14 +240,14 @@
            mouth-y
            horizontal-a horizontal-b
            vertical-a vertical-b] :as measures}
-   dev?]
+   avg?]
   (let [nose-cx head-cx
 
         a-to-b (- vertical-b vertical-a)
         max-rx (/ a-to-b 4)
         min-rx (/ a-to-b 12)
         
-        nose-rx (if dev?
+        nose-rx (if avg?
                   (avg max-rx min-rx)
                   (rand-float min-rx max-rx))
 
@@ -257,7 +257,7 @@
         min-ry (/ head-ry 20)
 
         nose-ry (cond
-                  :dev? (avg min-ry max-ry)
+                  :avg? (avg min-ry max-ry)
                   (< max-ry min-ry) max-ry
                   :else (rand-float min-ry max-ry))
         
@@ -267,7 +267,7 @@
         max-cy (- (+ head-cy head-ry) (/ below-b 2) nose-ry)
         
         nose-cy (cond
-                  dev? (avg min-cy max-cy)
+                  avg? (avg min-cy max-cy)
                   (< max-cy min-cy) max-cy
                   :else (rand-float min-cy max-cy))
 
@@ -275,7 +275,7 @@
         min-bridge nose-rx
         max-bridge (+ nose-rx (/ nose-rx 1.5))
 
-        clip-bridge (if dev?
+        clip-bridge (if avg?
                       (avg min-bridge max-bridge)
                       (rand-float min-bridge max-bridge 0.05))
 
@@ -347,7 +347,7 @@
            nose-cy
            horizontal-c a-to-b
            vertical-a] :as measures}
-   dev?]
+   avg?]
   (let [mouth-cx head-cx ;; TODO: have other cxs for off-center mouths
 
         below-c (- (+ head-cy head-ry) horizontal-c)
@@ -358,14 +358,14 @@
 
         min-cy (- (+ head-cy head-ry) mouth-ry (* 3 (/ below-c 4)))
         max-cy (- (+ head-cy head-ry) mouth-ry (/ below-c 4))
-        mouth-cy (if dev?
+        mouth-cy (if avg?
                    (avg min-cy max-cy)
                    (rand-float min-cy max-cy))
 
 
         max-rx (* 1.5 a-to-b)
         min-rx a-to-b
-        mouth-rx (if dev?
+        mouth-rx (if avg?
                    (avg min-rx max-rx)
                    (rand-float min-rx max-rx))
 
@@ -374,7 +374,7 @@
         max-clip-y (max (inc horizontal-c) (+ mouth-cy (* 9 (/ mouth-ry 10))))
         
         mouth-clip-y (cond
-                       dev? (avg min-clip-y max-clip-y)
+                       avg? (avg min-clip-y max-clip-y)
                        (= min-clip-y max-clip-y) max-clip-y
                        :else (rand-float min-clip-y max-clip-y))
 
@@ -384,7 +384,7 @@
                     (/ a-to-b 6))
         min-x-off (/ a-to-b 6)
         clip-x-off (cond
-                     dev? (avg min-x-off max-x-off)
+                     avg? (avg min-x-off max-x-off)
                      (< max-x-off min-x-off) max-x-off
                      :else (rand-float min-x-off max-x-off))
         
@@ -427,7 +427,7 @@
 
 
 (defn head
-  [{:keys [cx cy width height]} dev?]
+  [{:keys [cx cy width height]} avg?]
   {:head-cx cx
    :head-cy cy
    :head-width width
@@ -437,36 +437,35 @@
 
 
 (defn basic-measurements
-  [dev?]
+  [avg?]
   (let [w js/window.innerWidth
         h js/window.innerHeight
         m (min w h)
         max-dimension (max 75 (- m (/ m 5)))
         min-dimension (max 75 (/ m 2))]
 
-    ;; Adding 50 to account for the control buttons
-    {:cx (+ (/ w 2) 50)  ;; 400
+    {:cx (/ w 2)
 
      :cy (/ h 2)
-     :width (if dev?
+     :width (if avg?
               (avg min-dimension max-dimension)
               (rand-float min-dimension max-dimension))
-     :height (if dev?
+     :height (if avg?
                (avg min-dimension max-dimension)
                (rand-float min-dimension max-dimension))}))
 
 (defn face
-  [dev? & {:keys [proportional?]}]
+  [avg? & {:keys [proportional?]}]
   (if proportional?
-    (-> (p/basic-measurements dev?)
-      (p/head dev?)
-      (p/eyes dev?)
-      (p/nose dev?))
-    (-> (basic-measurements dev?)
-      (head dev?)
-      (eyes dev?)
-      (nose dev?)
-      (mouth dev?))))
+    (-> (p/basic-measurements avg?)
+      (p/head avg?)
+      (p/eyes avg?)
+      (p/nose avg?))
+    (-> (basic-measurements avg?)
+      (head avg?)
+      (eyes avg?)
+      (nose avg?)
+      (mouth avg?))))
 
 
 (defhtml draw-face
