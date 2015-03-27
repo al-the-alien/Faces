@@ -235,13 +235,10 @@
 ;;       enough room for the mouth. If this happes, refactor the nose function
 ;;       so nose-cy is calculated BEFORE nose-ry.
 (defn nose
-  [{:keys [head-height head-width head-cx head-cy head-rx head-ry
-           eye-cxa eye-cxb eye-cy eye-rx eye-ry
-           pupil-cy pupil-r
-           mouth-y
-           horizontal-a horizontal-b
-           vertical-a vertical-b] :as measures}
+  [{:keys [head-cx head-cy head-ry
+           horizontal-b vertical-a vertical-b] :as measures}
    avg?]
+  
   (let [nose-cx head-cx
 
         a-to-b (- vertical-b vertical-a)
