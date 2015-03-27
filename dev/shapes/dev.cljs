@@ -10,19 +10,14 @@
   (:refer-clojure :exclude [println]))
 
 
-(def color-scale
-  ["white"  ;; "whitesmoke"
-   "lightgrey" ;; "silver"
-   "darkgrey" "grey" "dimgrey" "black"])
+(defonce app-state (atom {:measurements
+                          (core/face false ; sets dev?
+                            :proportional? false)}))
+
 
 (defn println
   [& content]
   (js/console.log (apply pr-str content)))
-
-
-(defonce app-state (atom {:measurements
-                          (core/face false ; sets dev?
-                            :proportional? false)}))
 
 
 (defhtml section-face
@@ -95,11 +90,49 @@
   [data]
   [:g#sections-toggle
    [:rect.toggle-button
-    {:x 0 :y 400 :width 150 :height 50 :fill "steelblue"
+    {:x 0 :y 335 :width 150 :height 50 :fill "steelblue"
      :on-click #(om/transact! data :sections? not)}]
-   [:text {:x (+ 25 50) :y (+ 30 400)
+   [:text {:x (+ 25 50) :y (+ 30 335)
            :style {:pointer-events "none"}}
     "Toggle sections"]])
+
+
+(defhtml draw-color-scale
+  [color-scale]
+  (for [[i color] (map-indexed vector color-scale)]
+    [:g.color {:text-anchor "middle"}
+     [:rect {:x (* i 50) :y 410
+             :width 45 :height 30
+             :stroke "black"
+             :fill color}]
+     [:text {:x (+ 25 (* i 50)) :y (+ 410 45)
+             :stroke "black"
+             :font-family "Verdana"
+             :font-size 10}
+      color]]))
+
+
+(defhtml dev-interface
+  [data]
+  [:g#dev-interface
+   [:text#dev-info {:x 0 :y 25
+                    :stroke "black"
+                    :font-size 20}
+    (str
+      (if (:dev? data)
+        "Dev mode on"
+        "Dev mode off")
+      (when (:paused? data)
+        "\t:\tChanges Paused"))]
+
+   
+   [:g#controls {:text-anchor "middle"}
+    (dev-mode data)
+    (pause-mode data)
+    (section-controls data)]
+
+   (draw-color-scale ["white" "lightgrey" "darkgrey"
+                      "grey" "dimgrey" "black"])])
 
 
 (defcomponent app
@@ -124,55 +157,21 @@
                                           (om/update! data :measurements
                                             (core/face (:dev? @data)))))}]
 
-         [:text#dev-info {:x 0 :y 25
-                          :stroke "black"
-                          :font-size 20}
-          (str
-            (if (:dev? data)
-              "Dev mode on"
-              "Dev mode off")
-            (when (:paused? data)
-              "\t:\tChanges Paused"))]
-
-         [:g#controls {:text-anchor "middle"}
-          (dev-mode data)
-          (pause-mode data)
-          (section-controls data)]
-        
+         (dev-interface data)
          
-         
-         (let [{:keys [head-cx head-cy head-rx head-ry
-                       head-width head-height]} (:measurements data)]
-           [:g.face {:fill "white" :stroke "grey" :stroke-width 3}
-            [:ellipse {:cx head-cx :cy head-cy :rx head-rx :ry head-ry
-                       :stroke-width 3
-                       :stroke "grey"
-                       :fill "white"}]
-            (core/draw-eyes (:measurements data))
-            (core/draw-nose (:measurements data))
-            (core/draw-mouth (:measurements data))])
+         (core/draw-face (:measurements data))
 
-         (for [[i color] (map-indexed vector color-scale)]
-           [:g.color {:text-anchor "middle"}
-            [:rect {:x (* i 50) :y 335
-                    :width 45 :height 30
-                    :stroke "black"
-                    :fill color}]
-            [:text {:x (+ 25 (* i 50)) :y (+ 335 45)
-                    :stroke "black"
-                    :font-family "Verdana"
-                    :font-size 10}
-             color]])
+         
          (when (:sections? data)
            (section-face (:measurements data)))
          
 
-         (let [{:keys [mouth-clip-y head-cx head-rx head-ry head-cy
+         #_(let [{:keys [mouth-clip-y head-cx head-rx head-ry head-cy
                        mouth-cy mouth-ry]}
                (:measurements data)
                x-offset (core/x-on-ellipse (- head-cy (+ mouth-cy mouth-ry)) 0
                           head-rx head-ry)]
-           #_[:g#points
+           [:g#points
             [:circle {:cx (- head-cx x-offset)
                       :cy mouth-clip-y
                       :r 5 :fill "red"}]])]]])))

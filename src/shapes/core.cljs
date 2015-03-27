@@ -479,3 +479,16 @@
       (eyes dev?)
       (nose dev?)
       (mouth dev?))))
+
+
+(defhtml draw-face
+  [{:keys [head-cx head-cy head-rx head-ry
+           head-width head-height] :as measures}]
+  [:g.face {:fill "white" :stroke "grey" :stroke-width 3}
+     [:ellipse {:cx head-cx :cy head-cy :rx head-rx :ry head-ry
+                :stroke-width 3
+                :stroke "grey"
+                :fill "white"}]
+     (draw-eyes measures)
+     (draw-nose measures)
+     (draw-mouth measures)])
