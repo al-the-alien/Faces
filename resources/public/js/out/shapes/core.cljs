@@ -360,14 +360,14 @@
         max-cy (- (+ head-cy head-ry) mouth-ry (/ below-c 4))
         mouth-cy (if dev?
                    (avg min-cy max-cy)
-                   (rand-nth (range min-cy max-cy 0.1)))
+                   (rand-float min-cy max-cy))
 
 
         max-rx (* 1.5 a-to-b)
         min-rx a-to-b
         mouth-rx (if dev?
                    (avg min-rx max-rx)
-                   (rand-nth (range min-rx max-rx 0.1)))
+                   (rand-float min-rx max-rx))
 
 
         min-clip-y (max (inc horizontal-c) (+ mouth-cy (/ mouth-ry 2)))
@@ -376,7 +376,7 @@
         mouth-clip-y (cond
                        dev? (avg min-clip-y max-clip-y)
                        (= min-clip-y max-clip-y) max-clip-y
-                       :else (rand-nth (range min-clip-y max-clip-y 0.1)))
+                       :else (rand-float min-clip-y max-clip-y))
 
         
         max-x-off (- (x-on-ellipse (+ mouth-cy mouth-ry) head-cy
@@ -386,7 +386,7 @@
         clip-x-off (cond
                      dev? (avg min-x-off max-x-off)
                      (< max-x-off min-x-off) max-x-off
-                     :else (rand-nth (range min-x-off max-x-off 0.1)))
+                     :else (rand-float min-x-off max-x-off))
         
 
         
