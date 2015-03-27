@@ -443,7 +443,7 @@
 
     {:cx (/ w 2)
      :cy (/ h 2)
-     :width (if avg?
+     :width max-dimension #_(if avg?
               (avg min-dimension max-dimension)
               (rand-float min-dimension max-dimension))
      :height (if avg?

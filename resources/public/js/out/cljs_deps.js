@@ -23,6 +23,7 @@ goog.addDependency("../clojure/browser/net.js", ['clojure.browser.net'], ['goog.
 goog.addDependency("../weasel/impls/websocket.js", ['weasel.impls.websocket'], ['cljs.core', 'clojure.browser.net', 'goog.net.WebSocket', 'clojure.browser.event']);
 goog.addDependency("../cljs/reader.js", ['cljs.reader'], ['goog.string', 'cljs.core', 'goog.string.StringBuffer']);
 goog.addDependency("../weasel/repl.js", ['weasel.repl'], ['weasel.impls.websocket', 'cljs.core', 'clojure.browser.net', 'cljs.reader', 'clojure.browser.event']);
+goog.addDependency("../shapes/main.js", ['shapes.main'], ['shapes.core', 'om_tools.core', 'cljs.core', 'sablono.core', 'om.core', 'dommy.core']);
 goog.addDependency("../cljs/core/async/impl/protocols.js", ['cljs.core.async.impl.protocols'], ['cljs.core']);
 goog.addDependency("../cljs/core/async/impl/buffers.js", ['cljs.core.async.impl.buffers'], ['cljs.core', 'cljs.core.async.impl.protocols']);
 goog.addDependency("../cljs/core/async/impl/dispatch.js", ['cljs.core.async.impl.dispatch'], ['cljs.core', 'cljs.core.async.impl.buffers', 'goog.async.nextTick']);
@@ -36,5 +37,4 @@ goog.addDependency("../cljs/repl.js", ['cljs.repl'], ['cljs.core']);
 goog.addDependency("../figwheel/client/socket.js", ['figwheel.client.socket'], ['cljs.core', 'figwheel.client.utils', 'cljs.reader']);
 goog.addDependency("../figwheel/client/heads_up.js", ['figwheel.client.heads_up'], ['cljs.core', 'cljs.core.async', 'figwheel.client.socket', 'clojure.string']);
 goog.addDependency("../figwheel/client.js", ['figwheel.client'], ['goog.Uri', 'cljs.core', 'cljs.core.async', 'figwheel.client.file_reloading', 'figwheel.client.utils', 'cljs.repl', 'figwheel.client.heads_up', 'figwheel.client.socket', 'clojure.string']);
-goog.addDependency("../shapes/dev.js", ['shapes.dev'], ['shapes.core', 'weasel.repl', 'om_tools.core', 'cljs.core', 'sablono.core', 'figwheel.client', 'shapes.proportional', 'om.core', 'dommy.core']);
-goog.addDependency("../shapes/main.js", ['shapes.main'], ['shapes.core', 'om_tools.core', 'cljs.core', 'sablono.core', 'om.core', 'dommy.core']);
+goog.addDependency("../shapes/dev.js", ['shapes.dev'], ['shapes.core', 'weasel.repl', 'om_tools.core', 'cljs.core', 'sablono.core', 'shapes.main', 'figwheel.client', 'shapes.proportional', 'om.core', 'dommy.core']);
