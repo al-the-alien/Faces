@@ -40,6 +40,5 @@
                                    :output-to "resources/public/js/main.js"
                                    :asset-path "js/out"
                                    :pretty-print false
-                                   :optimizations :advanced
-                                   :source-map true}}]}
+                                   :optimizations :advanced}}]}
   :jvm-opts ^:replace ["-Xms512m" "-Xmx512m" "-server"])
