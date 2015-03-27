@@ -450,16 +450,10 @@
      :cy (/ h 2)
      :width (if dev?
               (avg min-dimension max-dimension)
-              (rand-nth (range
-                          min-dimension
-                          max-dimension
-                          0.1)))
+              (rand-float min-dimension max-dimension))
      :height (if dev?
                (avg min-dimension max-dimension)
-               (rand-nth (range
-                           min-dimension
-                           max-dimension
-                           0.1)))}))
+               (rand-float min-dimension max-dimension))}))
 
 (defn face
   [dev? & {:keys [proportional?]}]
