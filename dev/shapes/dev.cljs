@@ -366,9 +366,11 @@
         min-ry (/ head-ry 10)
         mouth-ry max-ry
 
-        min-cy head-cy
+        min-cy (- (+ head-cy head-ry) mouth-ry (* 3 (/ below-c 4)))
         max-cy (- (+ head-cy head-ry) mouth-ry (/ below-c 4))
-        mouth-cy max-cy
+        mouth-cy (if dev?
+                   (avg min-cy max-cy)
+                   (rand-nth (range min-cy max-cy 0.1)))
 
         
         mouth-rx (- head-rx (/ head-rx 20))
