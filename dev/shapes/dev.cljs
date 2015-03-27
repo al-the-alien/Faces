@@ -314,7 +314,9 @@
        :nose-clip-xc clip-x-c :nose-clip-yc clip-y-c
        :nose-clip-width clip-width :nose-clip-height clip-height
        :nose-shadow-clip-y shadow-clip-y
-       :horizontal-c (+ nose-cy nose-ry)})))
+
+       ;; Add 6 to account for the nose shadow
+       :horizontal-c (+ nose-cy nose-ry 6)})))
 
 
 (defhtml draw-nose
