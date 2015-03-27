@@ -435,7 +435,6 @@
         min-dimension (max 75 (/ m 2))]
 
     {:cx (/ w 2)
-
      :cy (/ h 2)
      :width (if avg?
               (avg min-dimension max-dimension)
@@ -459,8 +458,7 @@
 
 
 (defhtml draw-face
-  [{:keys [head-cx head-cy head-rx head-ry
-           head-width head-height] :as measures}]
+  [{:keys [head-cx head-cy head-rx head-ry] :as measures}]
   [:g.face {:fill "white" :stroke "grey" :stroke-width 3}
      [:ellipse {:cx head-cx :cy head-cy :rx head-rx :ry head-ry
                 :stroke-width 3
