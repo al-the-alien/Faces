@@ -6,8 +6,7 @@
             [weasel.repl :as repl]
             [figwheel.client :as figwheel]
             [shapes.proportional :as p]
-            [shapes.core :as core]
-            [shapes.main :as main])
+            [shapes.core :as core])
   (:refer-clojure :exclude [println]))
 
 
@@ -173,7 +172,10 @@
    [:g#controls {:text-anchor "middle"}
     (avg-mode data)
     (pause-mode data)
-    (section-controls data)]])
+    (section-controls data)]
+
+   (draw-color-scale ["white" "lightgrey" "darkgrey"
+                      "grey" "dimgrey" "black"])])
 
 
 (defonce app-state (atom {:measurements
@@ -206,9 +208,6 @@
          (dev-interface data)
 
          (core/draw-face (:measurements data))
-
-         (draw-color-scale ["white" "lightgrey" "darkgrey"
-                      "grey" "dimgrey" "black"])
 
          (when (:sections? data)
            (section-face (:measurements data)))]]])))
