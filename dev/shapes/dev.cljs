@@ -143,13 +143,14 @@
 
 (defhtml draw-color-scale
   [color-scale]
-  (for [[i color] (map-indexed vector color-scale)]
-    [:g.color {:text-anchor "middle"}
-     [:rect {:x (* i 50) :y 410
+  (for [[i color] (map-indexed vector color-scale)
+        :let [w js/window.innerWidth]]
+    [:g.color {:text-anchor "start"}
+     [:rect {:x (- w 45 10) :y (* i 45)
              :width 45 :height 30
              :stroke "black"
              :fill color}]
-     [:text {:x (+ 25 (* i 50)) :y (+ 410 45)
+     [:text {:x (- w 45 10) :y (+ (* i 45) 40)
              :stroke "black"
              :font-family "Verdana"
              :font-size 10}
