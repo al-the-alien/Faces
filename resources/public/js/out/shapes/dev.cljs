@@ -398,15 +398,15 @@
                        :else (rand-nth (range min-clip-y max-clip-y 0.1)))
 
         
-        #_(x-on-ellipse mouth-clip-y head-cy head-rx head-ry)
-        max-x-off (- (x-on-ellipse (- head-cy (+ mouth-cy mouth-ry)) 0
+        max-x-off (- (x-on-ellipse (+ mouth-cy mouth-ry) head-cy
                        head-rx head-ry)
                     (/ a-to-b 6))
         min-x-off (/ a-to-b 6)
-        clip-x-off max-x-off
-        #_(if dev?
-            (avg min-x-off max-x-off)
-            (rand-nth (range min-x-off max-x-off 0.1)))
+        clip-x-off (cond
+                     dev? (avg min-x-off max-x-off)
+                     (< max-x-off min-x-off) max-x-off
+                     :else (rand-nth (range min-x-off max-x-off 0.1)))
+        
 
         
         mouth-clip-x (- head-cx clip-x-off)
