@@ -22,6 +22,11 @@
   (/ (reduce + xs) (count xs)))
 
 
+(defn rand-float
+  [min-x max-x]
+  (rand-nth (range min-x max-x 0.1)))
+
+
 (defn x-on-ellipse
   [y cy a b] ;; a = rx ; b = ry
   ;; The function acts on a normalized ellipse, but is passed a non-normalized
@@ -58,7 +63,7 @@
         r-min 5
         pupil-r (if dev?
                   (/ (+ r-min r-max) 2)
-                  (rand-nth (range r-min r-max 0.1)))
+                  (rand-float r-min r-max))
 
         pupil-c-measures {:cx 0
                           :cy 0
@@ -66,10 +71,9 @@
                           :ry (- eye-ry pupil-r)}
 
 
-        pupil-cx-offset (rand-nth (range
-                                    (- (- eye-rx pupil-r))
-                                    (+ (- eye-rx pupil-r))
-                                    0.1))
+        pupil-cx-offset (rand-float
+                          (- (- eye-rx pupil-r))
+                          (+ (- eye-rx pupil-r)))
         
         pupil-cxa (if dev?
                     eye-cxa
@@ -91,20 +95,15 @@
 
         pupil-cy (cond
                    dev? eye-cy
-                   
-                   (and
-                     (zero? (:min pupil-cy-limits))
-                     (zero? (:min pupil-cy-limits)))
-                   eye-cy
+
+                   (<= (:max pupil-cy-limits) (:min pupil-cy-limits))
+                   (+ eye-cy (:max pupil-cy-limits))
                    
 
                    :else
-                   (+ eye-cy (rand-nth
-                               (range
-                                 (:min pupil-cy-limits)
-                                 (:max pupil-cy-limits)
-                                 0.1))))
-
+                   (+ eye-cy (rand-float
+                               (:min pupil-cy-limits)
+                               (:max pupil-cy-limits))))
 
         highlight-r
         (if dev?
