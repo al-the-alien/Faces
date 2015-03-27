@@ -42,6 +42,11 @@
   ;; y. To account for that, y is subtracted from cy.
   (* a (sqrt (abs (- 1 (square (/ (- cy y) b)))))))
 
+(defn -x-on-ellipse
+  [y a b h k] ;; a = rx ; b = ry ; h = cx ; k = cy
+  (+ h (* a (sqrt (-> (- 1 (square (/ (- y k) b)))
+                    abs)))))
+
 (defn y-on-ellipse
   [x cx a b] ;; a = rx ; b = ry
   ;; The function acts on a normalized ellipse, but is passed a non-normalized
@@ -391,10 +396,12 @@
                        dev? (avg min-clip-y max-clip-y)
                        (= min-clip-y max-clip-y) max-clip-y
                        :else (rand-nth (range min-clip-y max-clip-y 0.1)))
+
         
-        x-intersect-off (x-on-ellipse (+ mouth-cy mouth-ry) head-cy head-rx head-ry)
         #_(x-on-ellipse mouth-clip-y head-cy head-rx head-ry)
-        max-x-off x-intersect-off
+        max-x-off (- (x-on-ellipse (- head-cy (+ mouth-cy mouth-ry)) 0
+                       head-rx head-ry)
+                    (/ a-to-b 6))
         min-x-off (/ a-to-b 6)
         clip-x-off max-x-off
         #_(if dev?
@@ -432,8 +439,8 @@
                     :style {:clip-path "url(#mouth-clip)"}}]
    #_(let [x-offset (x-on-ellipse (+ mouth-cy mouth-ry) head-cy head-rx head-ry)]
            [:g#points
-            [:circle {:cx (- head-cx x-offset)
-                      :cy mouth-clip-y
+            [:circle {:cx mouth-cx
+                      :cy (+ mouth-cy mouth-ry)
                       :r 5 :fill "red"}]])])
 
 
@@ -633,10 +640,12 @@
            (section-face (:measurements data)))
          
 
-         #_(let [{:keys [mouth-clip-y head-cx head-rx head-ry head-cy]}
+         (let [{:keys [mouth-clip-y head-cx head-rx head-ry head-cy
+                       mouth-cy mouth-ry]}
                (:measurements data)
-               x-offset (x-on-ellipse mouth-clip-y head-cy head-rx head-ry)]
-           [:g#points
+               x-offset (x-on-ellipse (- head-cy (+ mouth-cy mouth-ry)) 0
+                          head-rx head-ry)]
+           #_[:g#points
             [:circle {:cx (- head-cx x-offset)
                       :cy mouth-clip-y
                       :r 5 :fill "red"}]])]]])))
