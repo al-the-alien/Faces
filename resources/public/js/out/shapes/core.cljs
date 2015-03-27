@@ -56,7 +56,7 @@
 
 
 (defn pupils
-  [{:keys [eye-cxa eye-cxb eye-cy eye-rx eye-ry eye-cy] :as measures}
+  [{:keys [eye-cxa eye-cxb eye-cy eye-rx eye-ry] :as measures}
    avg?]
   (let [r-max (min
                 (min eye-rx eye-ry)
@@ -121,7 +121,8 @@
     
     {:pupil-r pupil-r
      :pupil-cxa pupil-cxa :pupil-cxb pupil-cxb :pupil-cy pupil-cy
-     :highlight-r highlight-r :highlight-cxa highlight-cxa :highlight-cxb highlight-cxb :highlight-cy highlight-cy}))
+     :highlight-r highlight-r :highlight-cxa highlight-cxa
+     :highlight-cxb highlight-cxb :highlight-cy highlight-cy}))
 
 
 (defn eyes
