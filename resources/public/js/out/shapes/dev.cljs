@@ -64,16 +64,20 @@
            :x2 vertical-b :y2 (+ head-cy head-ry 5)}]])
 
 
-(defhtml dev-mode
+(defhtml avg-mode
   [data]
   [:g#dev-mode {:fill-opacity (if (:paused? data)
                                 0.5
                                 1)}
    [:text {:x 80 :y 50}
-    "Avg. mode Controls"]
+    "Average Mode"]
    [:g#dev-mode-on
     [:rect.on-button
      {:x 25 :y 60 :width 100 :height 50 :fill "darkseagreen"
+      :stroke (if (and (:avg? data) (not (:paused? data)))
+                "black"
+                "transparent")
+      :stroke-width 3
       :on-click #(when-not (:paused? data)
                    (om/update! data :avg? true)
                    (om/update! data :measurements
@@ -85,6 +89,10 @@
    [:g#dev-mode-off
     [:rect.off-button
      {:x 25 :y 115 :width 100 :height 50 :fill "indianred"
+      :stroke (if (or (:avg? data) (:paused? data))
+                "transparent"
+                "black")
+      :stroke-width 3
       :on-click #(when-not (:paused? data)
                    (om/update! data :avg? false))}]
     [:text {:x (+ 25 50) :y (+ 115 30)
@@ -94,33 +102,41 @@
 
 (defhtml pause-mode
   [data]
-  [:g#dev-mode
-   [:text {:x 75 :y 200}
-    "Control Changes"]
-   [:g#dev-mode-on
+  [:g#pause-mode
+   [:text {:x 80 :y 200}
+    "Face Generation"]
+   [:g#pause-mode-off
     [:rect.on-button
-     {:x 0 :y 210 :width 150 :height 50 :fill "darkseagreen"
+     {:x 5 :y 210 :width 150 :height 50 :fill "darkseagreen"
+      :stroke (if-not (:paused? data)
+                "black"
+                "transparent")
+      :stroke-width 3
       :on-click #(om/update! data :paused? false)}]
-    [:text {:x (+ 25 50) :y (+ 210 30)
+    [:text {:x (+ 30 50) :y (+ 210 30)
             :style {:pointer-events "none"}}
-     "Resume changes"]]
+     "Enabled"]]
 
-   [:g#dev-mode-off
+   [:g#pause-mode-on
     [:rect.off-button
-     {:x 0 :y 265 :width 150 :height 50 :fill "indianred"
+     {:x 5 :y 265 :width 150 :height 50 :fill "indianred"
+      :stroke (if (:paused? data)
+                "black"
+                "transparent")
+      :stroke-width 3
       :on-click #(om/update! data :paused? true)}]
-    [:text {:x (+ 25 50) :y (+ 265 30)
+    [:text {:x (+ 30 50) :y (+ 265 30)
             :style {:pointer-events "none"}}
-     "Pause changes"]]])
+     "Disabled"]]])
 
 
 (defhtml section-controls
   [data]
   [:g#sections-toggle
    [:rect.toggle-button
-    {:x 0 :y 335 :width 150 :height 50 :fill "steelblue"
+    {:x 5 :y 335 :width 150 :height 50 :fill "steelblue"
      :on-click #(om/transact! data :sections? not)}]
-   [:text {:x (+ 25 50) :y (+ 30 335)
+   [:text {:x (+ 30 50) :y (+ 30 335)
            :style {:pointer-events "none"}}
     "Toggle sections"]])
 
@@ -143,19 +159,17 @@
 (defhtml dev-interface
   [data]
   [:g#dev-interface
-   [:text#dev-info {:x 0 :y 25
-                    :stroke "black"
-                    :font-size 20}
-    (str
-      (if (:avg? data)
-        "Average mode on"
-        "Average mode off")
-      (when (:paused? data)
-        "\t:\tChanges Paused"))]
+
+   [:text#instructions {:x (/ js/window.innerWidth 2)
+                        :y 25
+                        :text-anchor "middle"
+                        :stroke "black"
+                        :font-size 20}
+    "Click anywhere on the background to generate a new face"]
 
    
    [:g#controls {:text-anchor "middle"}
-    (dev-mode data)
+    (avg-mode data)
     (pause-mode data)
     (section-controls data)]
 

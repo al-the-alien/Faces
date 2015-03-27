@@ -37,4 +37,4 @@ goog.addDependency("../figwheel/client/socket.js", ['figwheel.client.socket'], [
 goog.addDependency("../figwheel/client/heads_up.js", ['figwheel.client.heads_up'], ['cljs.core', 'cljs.core.async', 'figwheel.client.socket', 'clojure.string']);
 goog.addDependency("../figwheel/client.js", ['figwheel.client'], ['goog.Uri', 'cljs.core', 'cljs.core.async', 'figwheel.client.file_reloading', 'figwheel.client.utils', 'cljs.repl', 'figwheel.client.heads_up', 'figwheel.client.socket', 'clojure.string']);
 goog.addDependency("../shapes/dev.js", ['shapes.dev'], ['shapes.core', 'weasel.repl', 'om_tools.core', 'cljs.core', 'sablono.core', 'figwheel.client', 'shapes.proportional', 'om.core', 'dommy.core']);
-goog.addDependency("../shapes/main.js", ['shapes.main'], ['om_tools.core', 'cljs.core', 'sablono.core', 'om.core', 'dommy.core']);
+goog.addDependency("../shapes/main.js", ['shapes.main'], ['shapes.core', 'om_tools.core', 'cljs.core', 'sablono.core', 'om.core', 'dommy.core']);
