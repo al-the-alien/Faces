@@ -301,12 +301,17 @@
         clip-y-ab (- nose-cy (/ clip-height 2))
         
         clip-x-c (- nose-cx (* 2 nose-rx))
-        clip-y-c nose-cy]
+        clip-y-c (- (inc nose-cy)
+                        (y-on-ellipse (+ nose-cx (/ clip-bridge 2))
+                        nose-cx nose-rx nose-ry))
+
+        shadow-clip-y (inc clip-y-c)]
     (merge measures
       {:nose-cx nose-cx :nose-cy nose-cy :nose-rx nose-rx :nose-ry nose-ry
        :nose-clip-xa clip-x-a :nose-clip-xb clip-x-b :nose-clip-yab clip-y-ab
        :nose-clip-xc clip-x-c :nose-clip-yc clip-y-c
        :nose-clip-width clip-width :nose-clip-height clip-height
+       :nose-shadow-clip-y shadow-clip-y
        :horizontal-c (+ nose-cy nose-ry)})))
 
 
@@ -314,7 +319,8 @@
   [{:keys [nose-cx nose-cy nose-rx nose-ry
            nose-clip-xa nose-clip-xb nose-clip-yab
            nose-clip-xc nose-clip-yc
-           nose-clip-width nose-clip-height]}]
+           nose-clip-width nose-clip-height
+           nose-shadow-clip-y]}]
   [:g.nose
    [:defs
     [:clippath#nose-bridge
@@ -323,8 +329,20 @@
      [:rect {:x nose-clip-xb :y nose-clip-yab
              :width nose-clip-width :height nose-clip-height}]
      [:rect {:x nose-clip-xc :y nose-clip-yc
-             :width nose-clip-width :height nose-clip-height}]]]
+             :width nose-clip-width :height nose-clip-height}]]
+    [:clippath#nose-shadow
+     [:rect {:x nose-clip-xc :y nose-shadow-clip-y
+             :width nose-clip-width :height (* 3 nose-clip-height)}]]]
+   [:ellipse.shadow {:cx nose-cx :cy (+ nose-cy 6) :rx nose-rx :ry nose-ry
+                     :fill "darkgrey"
+                     :stroke "transparent"
+                     :style {:clip-path "url(#nose-shadow)"}}]
+   [:ellipse.shadow {:cx nose-cx :cy (+ nose-cy 3) :rx nose-rx :ry nose-ry
+                     :fill "lightgrey"
+                     :stroke "transparent"
+                     :style {:clip-path "url(#nose-shadow)"}}]
    [:ellipse {:cx nose-cx :cy nose-cy :rx nose-rx :ry nose-ry
+              :fill "white" :stroke "transparent"
               :style {:clip-path "url(#nose-bridge)"}}]
    #_[:path.shadow {:d (reduce (fn [acc s]
                                  (str acc " " s))
