@@ -23,8 +23,9 @@
 
 
 (defn rand-float
-  [min-x max-x]
-  (rand-nth (range min-x max-x 0.1)))
+  ([min-x max-x] (rand-float min-x max-x 0.1))
+  ([min-x max-x step]
+   (rand-nth (range min-x max-x step))))
 
 
 (defn x-on-ellipse
@@ -108,7 +109,7 @@
         highlight-r
         (if dev?
           (/ pupil-r (avg 2 6))
-          (/ pupil-r (rand-nth (range 2 6 0.1))))
+          (/ pupil-r (rand-float 2 6)))
 
         highlight-offset (xy-on-pupil (- pupil-r highlight-r))
         
@@ -130,7 +131,7 @@
         min-cx-off (/ head-rx 6)
         eye-cx-offset (if dev?
                         (avg max-cx-off min-cx-off)
-                        (rand-nth (range min-cx-off max-cx-off 0.1)))
+                        (rand-float min-cx-off max-cx-off))
         
         eye-cxa (- head-cx eye-cx-offset)
         eye-cxb (+ head-cx eye-cx-offset)
@@ -144,7 +145,7 @@
         
         eye-cy (if dev?
                  (avg min-cy max-cy)
-                 (rand-nth (range min-cy max-cy 0.1)))
+                 (rand-float min-cy max-cy))
 
         x-intersect (- head-cx (x-on-ellipse eye-cy head-cy head-rx head-ry))
         x-intersect-off (- eye-cxa x-intersect)
@@ -154,8 +155,8 @@
                  (+ x-intersect-off (/ x-intersect-off 4)))
         rx-min (/ head-width 15)
         eye-rx (if dev?
-            (avg rx-max rx-min)
-            (rand-nth (range rx-min rx-max 0.1)))
+                 (avg rx-max rx-min)
+                 (rand-float rx-min rx-max))
         
         
 
@@ -171,7 +172,7 @@
         
         eye-ry (if dev?
                  (avg ry-max ry-min)
-                 (rand-nth (range ry-min ry-max 0.1)))
+                 (rand-float ry-min ry-max))
         
 
         eye-map (merge measures
@@ -248,7 +249,7 @@
         
         nose-rx (if dev?
                   (avg max-rx min-rx)
-                  (rand-nth (range min-rx max-rx 0.1)))
+                  (rand-float min-rx max-rx))
 
         
         
@@ -258,7 +259,7 @@
         nose-ry (cond
                   :dev? (avg min-ry max-ry)
                   (< max-ry min-ry) max-ry
-                  :else (rand-nth (range min-ry max-ry 0.1)))
+                  :else (rand-float min-ry max-ry))
         
 
         min-cy (+ horizontal-b (* 1.5 nose-ry))
@@ -268,7 +269,7 @@
         nose-cy (cond
                   dev? (avg min-cy max-cy)
                   (< max-cy min-cy) max-cy
-                  :else (rand-nth (range min-cy max-cy 0.1)))
+                  :else (rand-float min-cy max-cy))
 
         
         min-bridge nose-rx
@@ -276,7 +277,7 @@
 
         clip-bridge (if dev?
                       (avg min-bridge max-bridge)
-                      (rand-nth (range min-bridge max-bridge 0.05)))
+                      (rand-float min-bridge max-bridge 0.05))
 
         clip-width (* 4 nose-rx)
         clip-height (* 4 nose-ry)
