@@ -314,6 +314,7 @@
        :nose-clip-xc clip-x-c :nose-clip-yc clip-y-c
        :nose-clip-width clip-width :nose-clip-height clip-height
        :nose-shadow-clip-y shadow-clip-y
+       :a-to-b a-to-b
 
        ;; Add 6 to account for the nose shadow
        :horizontal-c (+ nose-cy nose-ry 6)})))
@@ -355,18 +356,19 @@
 
 
 (defn mouth
-  [{:keys [head-height head-cx head-cy head-rx head-ry
+  [{:keys [head-height head-width head-cx head-cy head-rx head-ry
            eye-cxa eye-cxb eye-cy eye-ry
            nose-cy
-           horizontal-c] :as measures}
+           horizontal-c a-to-b
+           vertical-a] :as measures}
    dev?]
   (let [mouth-cx head-cx ;; TODO: have other cxs for off-center mouths
 
         below-c (- (+ head-cy head-ry) horizontal-c)
 
-        max-ry (- head-ry (/ below-c 4))
-        min-ry (/ head-ry 10)
-        mouth-ry max-ry
+        min-ry (- head-ry (* 5 (/ below-c 6)))        
+        max-ry (- head-ry (/ below-c 4))        
+        mouth-ry min-ry
 
         min-cy (- (+ head-cy head-ry) mouth-ry (* 3 (/ below-c 4)))
         max-cy (- (+ head-cy head-ry) mouth-ry (/ below-c 4))
@@ -374,23 +376,36 @@
                    (avg min-cy max-cy)
                    (rand-nth (range min-cy max-cy 0.1)))
 
-        
-        mouth-rx (- head-rx (/ head-rx 20))
 
-        lower-face-top (+ eye-cy eye-ry)
-        lower-face-bottom (+ head-cy head-ry)
-        lower-face (- lower-face-top lower-face-bottom)
+        max-rx (* 1.5 a-to-b)
+        min-rx a-to-b
+        mouth-rx (if dev?
+                   (avg min-rx max-rx)
+                   (rand-nth (range min-rx max-rx 0.1)))
+
+
+        min-clip-y (max (inc horizontal-c) (+ mouth-cy (/ mouth-ry 2)))
+        max-clip-y (max (inc horizontal-c) (+ mouth-cy (* 9 (/ mouth-ry 10))))
         
-        min-ry (- head-ry mouth-cy)
-        ;; (- head-ry (/ head-ry 20))
-        max-ry (- head-ry (/ head-ry 4))
+        mouth-clip-y (cond
+                       dev? (avg min-clip-y max-clip-y)
+                       (= min-clip-y max-clip-y) max-clip-y
+                       :else (rand-nth (range min-clip-y max-clip-y 0.1)))
         
-        ;;        mouth-ry min-ry
+        x-intersect-off (x-on-ellipse (+ mouth-cy mouth-ry) head-cy head-rx head-ry)
+        #_(x-on-ellipse mouth-clip-y head-cy head-rx head-ry)
+        max-x-off x-intersect-off
+        min-x-off (/ a-to-b 6)
+        clip-x-off max-x-off
+        #_(if dev?
+            (avg min-x-off max-x-off)
+            (rand-nth (range min-x-off max-x-off 0.1)))
+
         
-        mouth-clip-x eye-cxa
-        mouth-clip-width (- eye-cxb eye-cxa)
-        mouth-clip-y (+ mouth-cy (/ mouth-ry 2))
-        mouth-clip-height head-height]
+        mouth-clip-x (- head-cx clip-x-off)
+        mouth-clip-width (* 2 clip-x-off)
+        
+        mouth-clip-height head-ry]
     (merge measures
       {:mouth-cx mouth-cx
        :mouth-cy mouth-cy
@@ -403,7 +418,7 @@
        :below-c below-c})))
 
 (defhtml draw-mouth
-  [{:keys [head-cx head-cy head-ry
+  [{:keys [head-cx head-cy head-ry head-rx
            mouth-cx mouth-cy mouth-rx mouth-ry
            mouth-clip-x mouth-clip-y mouth-clip-width mouth-clip-height
            horizontal-c test-height below-c] :as measures}]
@@ -414,7 +429,12 @@
              :width mouth-clip-width :height mouth-clip-height}]]]
    [:ellipse.mouth {:cx mouth-cx :cy mouth-cy :rx mouth-rx :ry mouth-ry
                     :fill "transparent"
-                    :style {:clip-path "url(#mouth-clip)"}}]])
+                    :style {:clip-path "url(#mouth-clip)"}}]
+   #_(let [x-offset (x-on-ellipse (+ mouth-cy mouth-ry) head-cy head-rx head-ry)]
+           [:g#points
+            [:circle {:cx (- head-cx x-offset)
+                      :cy mouth-clip-y
+                      :r 5 :fill "red"}]])])
 
 
 
@@ -613,21 +633,13 @@
            (section-face (:measurements data)))
          
 
-         #_(let [{:keys [head-rx head-ry head-cy head-cx eye-cy eye-cxa eye-cxb]}
+         #_(let [{:keys [mouth-clip-y head-cx head-rx head-ry head-cy]}
                (:measurements data)
-               x-offset (x-on-ellipse eye-cy head-cy head-rx head-ry)
-               y-offset-a (y-on-ellipse eye-cxa head-cx head-rx head-ry)
-               y-offset-b (y-on-ellipse eye-cxb head-cx head-rx head-ry)]
+               x-offset (x-on-ellipse mouth-clip-y head-cy head-rx head-ry)]
            [:g#points
-            [:circle {:cx (+ head-cx x-offset)
-                     :cy eye-cy
-                      :r 5 :fill "red"}]
-            [:circle {:cx eye-cxa
-                     :cy (- head-cy y-offset-a)
-                      :r 5 :fill "blue"}]
-            [:circle {:cx eye-cxb
-                     :cy (- head-cy y-offset-b)
-                     :r 5 :fill "purple"}]])]]])))
+            [:circle {:cx (- head-cx x-offset)
+                      :cy mouth-clip-y
+                      :r 5 :fill "red"}]])]]])))
 
 
 
