@@ -189,7 +189,7 @@
   [{:keys [eye-cxa eye-cxb eye-cy eye-rx eye-ry
            pupil-cxa pupil-cxb pupil-cy pupil-r
            highlight-cxa highlight-cxb highlight-cy highlight-r]}]
-  [:g.eyes
+  [:g#eyes
    [:defs
     [:clippath#eye-a
      [:ellipse {:cx eye-cxa :cy eye-cy
@@ -198,9 +198,11 @@
      [:ellipse {:cx eye-cxb :cy eye-cy
                 :rx eye-rx :ry eye-ry
                 :stroke-width 2}]]]
-   [:ellipse.eye {:cx eye-cxa :cy eye-cy
-                  :rx eye-rx :ry eye-ry
-                  :stroke-width 2}]
+   
+   [:ellipse#eye-a {:cx eye-cxa :cy eye-cy
+                    :rx eye-rx :ry eye-ry
+                    :stroke-width 2}]
+   
    [:g#inner-eye-a {:style {:clip-path "url(#eye-a)"}}
     [:circle.pupil {:cx  pupil-cxa
                     :cy  pupil-cy
@@ -212,10 +214,10 @@
                         :r highlight-r
                         :stroke "transparent"}]]
    
+   [:ellipse#eye-b {:cx eye-cxb :cy eye-cy
+                    :rx eye-rx :ry eye-ry
+                    :stroke-width 2}]
    
-   [:ellipse.eye {:cx eye-cxb :cy eye-cy
-                  :rx eye-rx :ry eye-ry
-                  :stroke-width 2}]
    [:g#inner-eye-b {:style {:clip-path "url(#eye-b)"}}
     [:circle.pupil {:cx pupil-cxb
                     :cy pupil-cy
@@ -288,10 +290,11 @@
         
         clip-x-c (- nose-cx (* 2 nose-rx))
         clip-y-c (- (inc nose-cy)
-                        (y-on-ellipse (+ nose-cx (/ clip-bridge 2))
-                        nose-cx nose-rx nose-ry))
+                   (y-on-ellipse (+ nose-cx (/ clip-bridge 2))
+                     nose-cx nose-rx nose-ry))
 
         shadow-clip-y (inc clip-y-c)]
+    
     (merge measures
       {:nose-cx nose-cx :nose-cy nose-cy :nose-rx nose-rx :nose-ry nose-ry
        :nose-clip-xa clip-x-a :nose-clip-xb clip-x-b :nose-clip-yab clip-y-ab
@@ -310,7 +313,7 @@
            nose-clip-xc nose-clip-yc
            nose-clip-width nose-clip-height
            nose-shadow-clip-y]}]
-  [:g.nose
+  [:g#nose
    [:defs
     [:clippath#nose-bridge
      [:rect {:x nose-clip-xa :y nose-clip-yab
@@ -319,21 +322,26 @@
              :width nose-clip-width :height nose-clip-height}]
      [:rect {:x nose-clip-xc :y nose-clip-yc
              :width nose-clip-width :height nose-clip-height}]]
+    
     [:clippath#nose-shadow
      [:rect {:x nose-clip-xc :y nose-shadow-clip-y
              :width nose-clip-width :height (* 3 nose-clip-height)}]]]
+   
    [:ellipse.shadow {:cx nose-cx :cy (+ nose-cy 6) :rx nose-rx :ry nose-ry
                      :fill "grey"
                      :stroke "transparent"
                      :style {:clip-path "url(#nose-shadow)"}}]
+   
    [:ellipse.shadow {:cx nose-cx :cy (+ nose-cy 4) :rx nose-rx :ry nose-ry
                      :fill "darkgrey"
                      :stroke "transparent"
                      :style {:clip-path "url(#nose-shadow)"}}]
+   
    [:ellipse.shadow {:cx nose-cx :cy (+ nose-cy 2) :rx nose-rx :ry nose-ry
                      :fill "lightgrey"
                      :stroke "transparent"
                      :style {:clip-path "url(#nose-shadow)"}}]
+   
    [:ellipse {:cx nose-cx :cy nose-cy :rx nose-rx :ry nose-ry
               :fill "white" :stroke "transparent"
               :style {:clip-path "url(#nose-bridge)"}}]])
@@ -358,7 +366,6 @@
                    (avg min-cy max-cy)
                    (rand-float min-cy max-cy))
 
-
         max-rx (* 1.5 a-to-b)
         min-rx a-to-b
         mouth-rx (if avg?
@@ -374,7 +381,6 @@
                        (= min-clip-y max-clip-y) max-clip-y
                        :else (rand-float min-clip-y max-clip-y))
 
-        
         max-x-off (- (x-on-ellipse (+ mouth-cy mouth-ry) head-cy
                        head-rx head-ry)
                     (/ a-to-b 6))
@@ -384,12 +390,11 @@
                      (< max-x-off min-x-off) max-x-off
                      :else (rand-float min-x-off max-x-off))
         
-
-        
         mouth-clip-x (- head-cx clip-x-off)
         mouth-clip-width (* 2 clip-x-off)
         
         mouth-clip-height head-ry]
+    
     (merge measures
       {:mouth-cx mouth-cx
        :mouth-cy mouth-cy
@@ -401,6 +406,7 @@
        :mouth-clip-height mouth-clip-height
        :below-c below-c})))
 
+
 (defhtml draw-mouth
   [{:keys [mouth-cx mouth-cy mouth-rx mouth-ry
            mouth-clip-x mouth-clip-y
@@ -410,6 +416,7 @@
     [:clippath#mouth-clip
      [:rect {:x mouth-clip-x :y mouth-clip-y
              :width mouth-clip-width :height mouth-clip-height}]]]
+   
    [:ellipse.mouth {:cx mouth-cx :cy mouth-cy :rx mouth-rx :ry mouth-ry
                     :fill "transparent"
                     :style {:clip-path "url(#mouth-clip)"}}]])
@@ -443,6 +450,7 @@
                (avg min-dimension max-dimension)
                (rand-float min-dimension max-dimension))}))
 
+
 (defn face
   [avg? & {:keys [proportional?]}]
   (if proportional?
@@ -460,10 +468,7 @@
 (defhtml draw-face
   [{:keys [head-cx head-cy head-rx head-ry] :as measures}]
   [:g.face {:fill "white" :stroke "grey" :stroke-width 3}
-     [:ellipse {:cx head-cx :cy head-cy :rx head-rx :ry head-ry
-                :stroke-width 3
-                :stroke "grey"
-                :fill "white"}]
-     (draw-eyes measures)
-     (draw-nose measures)
-     (draw-mouth measures)])
+   [:ellipse {:cx head-cx :cy head-cy :rx head-rx :ry head-ry}]
+   (draw-eyes measures)
+   (draw-nose measures)
+   (draw-mouth measures)])
