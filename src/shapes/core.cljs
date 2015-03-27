@@ -340,13 +340,11 @@
 
 
 (defn mouth
-  [{:keys [head-height head-width head-cx head-cy head-rx head-ry
-           eye-cxa eye-cxb eye-cy eye-ry
-           nose-cy
-           horizontal-c a-to-b
-           vertical-a] :as measures}
+  [{:keys [head-cx head-cy head-rx head-ry 
+           horizontal-c a-to-b] :as measures}
    avg?]
-  (let [mouth-cx head-cx ;; TODO: have other cxs for off-center mouths
+  
+  (let [mouth-cx head-cx
 
         below-c (- (+ head-cy head-ry) horizontal-c)
 
