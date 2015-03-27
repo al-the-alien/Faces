@@ -161,20 +161,8 @@
          
          (core/draw-face (:measurements data))
 
-         
          (when (:sections? data)
-           (section-face (:measurements data)))
-         
-
-         #_(let [{:keys [mouth-clip-y head-cx head-rx head-ry head-cy
-                       mouth-cy mouth-ry]}
-               (:measurements data)
-               x-offset (core/x-on-ellipse (- head-cy (+ mouth-cy mouth-ry)) 0
-                          head-rx head-ry)]
-           [:g#points
-            [:circle {:cx (- head-cx x-offset)
-                      :cy mouth-clip-y
-                      :r 5 :fill "red"}]])]]])))
+           (section-face (:measurements data)))]]])))
 
 
 
@@ -184,6 +172,3 @@
 (figwheel/start {:build-id "dev"})
 
 (om/root app app-state {:target (sel1 :#app)})
-
-(defonce bezier-nose-mouth-overlap
-  {:measurements {:mouth-cx2 497.5438596491228, :nose-cy 361.4, :nose-y 324.995, :highlight-cxb 530.3980681015346, :eye-cxb 519.5657894736842, :head-ry 182.05, :eye-cy 169.49, :mouth-cy 360.23999999999995, :pupil-r 5.2, :nose-x1 467.1475, :head-cx 483.5, :mouth-x1 459.4561403508772, :pupil-cy 204.69566325039642, :highlight-cxa 458.2664891541661, :mouth-x2 507.5438596491228, :nose-x2 499.8525, :highlight-r 2.3636363636363633, :head-cy 204.6, :head-height 364.1, :eye-cxa 447.4342105263158, :nose-cx2 531.405, :eye-rx 22.273333333333333, :pupil-cxb 528.3924561403509, :nose-cx1 435.59499999999997, :pupil-cxa 456.26087719298243, :highlight-cy 202.69005128921276, :head-width 274.1, :mouth-cx1 469.4561403508772, :head-rx 137.05, :mouth-y 350.23999999999995, :eye-ry 63.605000000000004}, :paused? true})

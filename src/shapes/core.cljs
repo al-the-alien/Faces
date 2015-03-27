@@ -3,7 +3,6 @@
    [om.core :as om]
    [sablono.core :as html :refer-macros [html defhtml]]
    [om-tools.core :refer-macros [defcomponent]]
-   [dommy.core :refer-macros [sel1]]
    [shapes.proportional :as p]))
 
 (defn square
@@ -29,11 +28,6 @@
   ;; y. To account for that, y is subtracted from cy.
   (* a (sqrt (abs (- 1 (square (/ (- cy y) b)))))))
 
-(defn -x-on-ellipse
-  [y a b h k] ;; a = rx ; b = ry ; h = cx ; k = cy
-  (+ h (* a (sqrt (-> (- 1 (square (/ (- y k) b)))
-                    abs)))))
-
 (defn y-on-ellipse
   [x cx a b] ;; a = rx ; b = ry
   ;; The function acts on a normalized ellipse, but is passed a non-normalized
@@ -47,7 +41,9 @@
      :max max-y}))
 
 
-(defn xy-on-circle
+(defn xy-on-pupil
+  "Takes the radius of a circle with origin (0, 0).
+  Returns a number w, where (w, w) is on the circumference of the circle."
   [pupil-r]
   (sqrt
     (/ (square pupil-r) 2)))
@@ -75,7 +71,6 @@
                                     (+ (- eye-rx pupil-r))
                                     0.1))
         
-        
         pupil-cxa (if dev?
                     eye-cxa
                     (+ eye-cxa pupil-cx-offset))
@@ -94,7 +89,6 @@
                           (:ry pupil-c-measures))
 
 
-        ;; FIXME: pupils occasionally extend past the edges of the eye.
         pupil-cy (cond
                    dev? eye-cy
                    
@@ -117,7 +111,7 @@
           (/ pupil-r (avg 2 6))
           (/ pupil-r (rand-nth (range 2 6 0.1))))
 
-        highlight-offset (xy-on-circle (- pupil-r highlight-r))
+        highlight-offset (xy-on-pupil (- pupil-r highlight-r))
         
         highlight-cxa (+ pupil-cxa highlight-offset)
         

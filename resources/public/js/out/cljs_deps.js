@@ -17,7 +17,7 @@ goog.addDependency("../sablono/core.js", ['sablono.core'], ['goog.dom', 'sablono
 goog.addDependency("../dommy/utils.js", ['dommy.utils'], ['cljs.core']);
 goog.addDependency("../dommy/core.js", ['dommy.core'], ['cljs.core', 'dommy.utils', 'clojure.string']);
 goog.addDependency("../shapes/proportional.js", ['shapes.proportional'], ['om_tools.core', 'cljs.core', 'sablono.core', 'om.core', 'dommy.core']);
-goog.addDependency("../shapes/core.js", ['shapes.core'], ['om_tools.core', 'cljs.core', 'sablono.core', 'shapes.proportional', 'om.core', 'dommy.core']);
+goog.addDependency("../shapes/core.js", ['shapes.core'], ['om_tools.core', 'cljs.core', 'sablono.core', 'shapes.proportional', 'om.core']);
 goog.addDependency("../clojure/browser/event.js", ['clojure.browser.event'], ['cljs.core', 'goog.events.EventTarget', 'goog.events.EventType', 'goog.events']);
 goog.addDependency("../clojure/browser/net.js", ['clojure.browser.net'], ['goog.net.xpc.CfgFields', 'goog.net.XhrIo', 'goog.json', 'goog.Uri', 'cljs.core', 'goog.net.EventType', 'goog.net.xpc.CrossPageChannel', 'clojure.browser.event']);
 goog.addDependency("../weasel/impls/websocket.js", ['weasel.impls.websocket'], ['cljs.core', 'clojure.browser.net', 'goog.net.WebSocket', 'clojure.browser.event']);
