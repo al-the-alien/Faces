@@ -41,26 +41,28 @@
 (defcomponent app
   [data owner]
   (render [_]
-    (html
-      [:div.container
-       [:svg {:version 1.1
-              :baseProfile "full"
-              :width js/window.innerWidth
-              :height js/window.innerHeight
-              :xmlns "http://www.w3.org/2000/svg"}
-        [:g#canvas {:font-family "Verdana"                          
-                    :style {:user-select "none"
-                            :-ms-user-select "none"
-                            :-moz-user-select "none"
-                            :-webkit-user-select "none"
+          (html
+           [:div.container
+            [:svg {:version 1.1
+                   :baseProfile "full"
+                   :width js/window.innerWidth
+                   :height js/window.innerHeight
+                   :xmlns "http://www.w3.org/2000/svg"}
+             [:g#canvas {:font-family "Verdana"                          
+                         :style {:user-select "none"
+                                 :-ms-user-select "none"
+                                 :-moz-user-select "none"
+                                 :-webkit-user-select "none"
 
-                            :cursor "default"}}
-         [:rect#background {:x 0 :y 0 :width "100%" :height "100%"
-                            :fill "white"}]
+                                 :cursor "default"}}
+              [:rect#background {:x 0 :y 0 :width "100%" :height "100%"
+                                 :fill "white"}]
 
-         (interface data {:x 50 :y (/ js/window.innerHeight 10)})
+              (interface data {:x 50 :y (/ js/window.innerHeight 10)})
 
-         (core/draw-face (:measurements data))]]])))
+              (core/draw-face (:measurements data))]]])))
+
+
 
 (om/root app app-state {:target (sel1 :#app)})
 
