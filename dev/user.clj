@@ -2,8 +2,7 @@
   "Tools for interactive development with the REPL. This file should
   not be included in a production build of the application."
   (:require [clojure.tools.namespace.repl :refer [refresh]]
-            [cemerick.piggieback :as pb]
-            [weasel.repl.websocket :as repl]))
+            [figwheel-sidecar.repl-api :refer [cljs-repl]]))
 
 (def system
   "A Var containing an object representing the application under
@@ -36,8 +35,3 @@
   []
   (stop)
   (refresh :after 'user/go))
-
-(defn browser-repl
-  "Starts a browser REPL using Weasel"
-  []
-  (pb/cljs-repl :repl-env (repl/repl-env :ip "0.0.0.0" :port 9001)))
